@@ -31,6 +31,7 @@ const Index = () => {
                 title={course.title}
                 author={course.author}
                 thumbnail={course.thumbnail}
+                locked={course.locked}
                 className="animate-fade-in"
                 style={{ animationDelay: `${index * 100}ms` }}
               />
