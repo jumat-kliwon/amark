@@ -33,6 +33,7 @@ export interface Course {
   participants: number;
   duration: string;
   progress: number;
+  locked: boolean;
   chapters: Chapter[];
   curriculum: Week[];
 }
@@ -70,6 +71,7 @@ export const courses: Course[] = [
     participants: 3250,
     duration: "12,5 jam",
     progress: 71,
+    locked: false,
     chapters: [
       { id: "1-1", title: "Bagian 1: Introduction to Personal Branding", lessonsCompleted: 2, totalLessons: 5, duration: "45m" },
       { id: "1-2", title: "Bagian 2: Finding Your Unique Value", lessonsCompleted: 0, totalLessons: 7, duration: "1j 15m" },
@@ -173,6 +175,7 @@ export const courses: Course[] = [
     participants: 1890,
     duration: "15,5 jam",
     progress: 25,
+    locked: true,
     chapters: [
       { id: "2-1", title: "Bagian 1: Advanced Brand Strategy", lessonsCompleted: 0, totalLessons: 6, duration: "1j 10m" },
       { id: "2-2", title: "Bagian 2: Partnership & Collaboration", lessonsCompleted: 0, totalLessons: 5, duration: "55m" },
@@ -194,6 +197,7 @@ export const courses: Course[] = [
     participants: 2100,
     duration: "8,5 jam",
     progress: 0,
+    locked: false,
     chapters: [
       { id: "3-1", title: "Bagian 1: Fashion Fundamentals", lessonsCompleted: 0, totalLessons: 4, duration: "40m" },
       { id: "3-2", title: "Bagian 2: Building Your Wardrobe", lessonsCompleted: 0, totalLessons: 6, duration: "1j 20m" },
@@ -214,6 +218,7 @@ export const courses: Course[] = [
     participants: 2780,
     duration: "10 jam",
     progress: 45,
+    locked: false,
     chapters: [
       { id: "4-1", title: "Bagian 1: Strategy Foundations", lessonsCompleted: 0, totalLessons: 5, duration: "55m" },
       { id: "4-2", title: "Bagian 2: Content Planning", lessonsCompleted: 0, totalLessons: 7, duration: "1j 25m" },
@@ -234,6 +239,7 @@ export const courses: Course[] = [
     participants: 4120,
     duration: "18 jam",
     progress: 10,
+    locked: true,
     chapters: [
       { id: "5-1", title: "Bagian 1: Equipment & Setup", lessonsCompleted: 0, totalLessons: 6, duration: "1j 15m" },
       { id: "5-2", title: "Bagian 2: Shooting Techniques", lessonsCompleted: 0, totalLessons: 8, duration: "1j 45m" },
@@ -255,6 +261,7 @@ export const courses: Course[] = [
     participants: 2340,
     duration: "14 jam",
     progress: 0,
+    locked: true,
     chapters: [
       { id: "6-1", title: "Bagian 1: Revenue Fundamentals", lessonsCompleted: 0, totalLessons: 5, duration: "50m" },
       { id: "6-2", title: "Bagian 2: Platform Monetization", lessonsCompleted: 0, totalLessons: 7, duration: "1j 30m" },
@@ -275,6 +282,7 @@ export const courses: Course[] = [
     participants: 1560,
     duration: "11 jam",
     progress: 0,
+    locked: false,
     chapters: [
       { id: "7-1", title: "Bagian 1: Product Planning", lessonsCompleted: 0, totalLessons: 4, duration: "45m" },
       { id: "7-2", title: "Bagian 2: Building Your Product", lessonsCompleted: 0, totalLessons: 8, duration: "1j 50m" },
@@ -295,6 +303,7 @@ export const courses: Course[] = [
     participants: 5670,
     duration: "9 jam",
     progress: 55,
+    locked: false,
     chapters: [
       { id: "8-1", title: "Bagian 1: Instagram Fundamentals", lessonsCompleted: 0, totalLessons: 5, duration: "55m" },
       { id: "8-2", title: "Bagian 2: Growth Strategies", lessonsCompleted: 0, totalLessons: 9, duration: "2j" },
@@ -315,6 +324,7 @@ export const courses: Course[] = [
     participants: 980,
     duration: "7,5 jam",
     progress: 0,
+    locked: false,
     chapters: [
       { id: "9-1", title: "Bagian 1: Getting Started", lessonsCompleted: 0, totalLessons: 4, duration: "40m" },
       { id: "9-2", title: "Bagian 2: Going Live", lessonsCompleted: 0, totalLessons: 6, duration: "1j 15m" },
