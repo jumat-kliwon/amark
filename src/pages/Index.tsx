@@ -26,6 +26,7 @@ const Index = () => {
             {filteredCourses.map((course, index) => (
               <CourseCard
                 key={course.id}
+                id={course.id}
                 number={course.number}
                 title={course.title}
                 author={course.author}
