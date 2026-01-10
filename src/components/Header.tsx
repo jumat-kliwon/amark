@@ -1,4 +1,5 @@
 import { ChevronDown } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
 import {
   NavigationMenu,
   NavigationMenuList,
@@ -6,12 +7,22 @@ import {
   NavigationMenuLink,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+import { cn } from "@/lib/utils";
+
+const navItems = [
+  { label: "Courses", href: "/" },
+  { label: "Subscription", href: "/subscription" },
+  { label: "Certificate", href: "/certificate" },
+  { label: "Affiliate", href: "/affiliate" },
+];
 
 const Header = () => {
+  const location = useLocation();
+
   return (
     <header className="sticky top-0 z-50 flex h-16 items-center justify-between border-b border-border bg-background px-6">
       <div className="flex items-center gap-8">
-        <div className="flex items-center gap-3">
+        <Link to="/" className="flex items-center gap-3">
           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-foreground">
             <span className="text-lg font-bold text-background">A</span>
           </div>
@@ -19,30 +30,25 @@ const Header = () => {
             AKADEMI<br />
             <span className="text-sm font-medium text-muted-foreground">CREATOR</span>
           </span>
-        </div>
+        </Link>
 
         <NavigationMenu>
           <NavigationMenuList>
-            <NavigationMenuItem>
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                Courses
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                Subscription
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                Certificate
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                Affiliate
-              </NavigationMenuLink>
-            </NavigationMenuItem>
+            {navItems.map((item) => (
+              <NavigationMenuItem key={item.href}>
+                <NavigationMenuLink asChild>
+                  <Link
+                    to={item.href}
+                    className={cn(
+                      navigationMenuTriggerStyle(),
+                      location.pathname === item.href && "bg-accent"
+                    )}
+                  >
+                    {item.label}
+                  </Link>
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+            ))}
           </NavigationMenuList>
         </NavigationMenu>
       </div>
