@@ -1,5 +1,5 @@
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, Play, Star, Users, Clock, ChevronDown, Search } from "lucide-react";
+import { ArrowLeft, Play, Star, Users, Clock, Search } from "lucide-react";
 import { courses } from "@/data/courses";
 import Header from "@/components/Header";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -11,8 +11,13 @@ import {
 } from "@/components/ui/accordion";
 
 const CourseDetail = () => {
-  const { id } = useParams();
+  const { id, lessonId } = useParams();
   const course = courses.find((c) => c.id === id);
+
+  // Find current lesson from curriculum
+  const currentLesson = course?.curriculum
+    .flatMap((week) => week.lessons)
+    .find((lesson) => lesson.id === lessonId);
 
   if (!course) {
     return (
@@ -41,12 +46,17 @@ const CourseDetail = () => {
           <div className="relative bg-card">
             <div className="mx-auto max-w-5xl px-6 py-8">
               <Link 
-                to="/" 
+                to={`/course/${id}`} 
                 className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
                 <ArrowLeft className="h-4 w-4" />
-                Kembali ke Courses
+                Kembali ke Course Overview
               </Link>
+
+              {/* Lesson Title */}
+              {currentLesson && (
+                <h1 className="mb-4 text-2xl font-bold">{currentLesson.title}</h1>
+              )}
               
               <div className="grid gap-8">
                 {/* Full Width Video Embed */}
@@ -64,7 +74,7 @@ const CourseDetail = () => {
                   {/* Subtitle overlay */}
                   <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
                     <div className="rounded-md bg-black/80 px-4 py-2 text-sm text-white">
-                      {course.description.slice(0, 60)}...
+                      {currentLesson?.title || course.description.slice(0, 60)}...
                     </div>
                   </div>
                 </div>
@@ -185,29 +195,37 @@ const CourseDetail = () => {
 
             {/* Chapter List */}
             <div className="p-2">
-              <Accordion type="single" collapsible className="w-full">
-                {course.chapters.map((chapter, index) => (
-                  <AccordionItem key={chapter.id} value={chapter.id} className="border-0">
+              <Accordion type="multiple" defaultValue={course.curriculum.map(w => w.id)} className="w-full">
+                {course.curriculum.map((week) => (
+                  <AccordionItem key={week.id} value={week.id} className="border-0">
                     <AccordionTrigger className="px-3 py-4 hover:bg-card hover:no-underline rounded-lg">
                       <div className="flex-1 text-left">
                         <h4 className="text-sm font-medium leading-tight">
-                          {chapter.title}
+                          {week.title}
                         </h4>
                         <p className="mt-1 text-xs text-muted-foreground">
-                          {chapter.lessonsCompleted} / {chapter.totalLessons} | {chapter.duration}
+                          {week.lessons.filter(l => l.completed).length} / {week.lessons.length} lessons
                         </p>
                       </div>
                     </AccordionTrigger>
                     <AccordionContent className="pb-2 pl-3">
-                      <div className="space-y-2">
-                        {Array.from({ length: chapter.totalLessons }).map((_, i) => (
-                          <div
-                            key={i}
-                            className="flex items-center gap-3 rounded-md px-3 py-2 text-sm hover:bg-card cursor-pointer transition-colors"
+                      <div className="space-y-1">
+                        {week.lessons.map((lesson) => (
+                          <Link
+                            key={lesson.id}
+                            to={`/course/${id}/lesson/${lesson.id}`}
+                            className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors ${
+                              lesson.id === lessonId 
+                                ? "bg-primary text-primary-foreground" 
+                                : "hover:bg-card"
+                            }`}
                           >
-                            <Play className="h-4 w-4 text-muted-foreground" />
-                            <span>Lesson {i + 1}</span>
-                          </div>
+                            <Play className="h-4 w-4" />
+                            <span className={lesson.completed && lesson.id !== lessonId ? "text-muted-foreground" : ""}>
+                              {lesson.title}
+                            </span>
+                            <span className="ml-auto text-xs opacity-70">{lesson.duration}</span>
+                          </Link>
                         ))}
                       </div>
                     </AccordionContent>
