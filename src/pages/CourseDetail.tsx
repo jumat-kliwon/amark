@@ -48,32 +48,17 @@ const CourseDetail = () => {
                 Kembali ke Courses
               </Link>
               
-              <div className="grid gap-8 lg:grid-cols-2">
-                {/* Left: Course Info */}
-                <div>
-                  <h1 className="mb-6 text-3xl font-bold tracking-tight lg:text-4xl">
-                    {course.title}
-                  </h1>
-                  <ul className="space-y-3">
-                    {course.highlights.map((highlight, index) => (
-                      <li key={index} className="flex items-center gap-3 text-muted-foreground">
-                        <span className="h-1.5 w-1.5 rounded-full bg-foreground" />
-                        {highlight}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                
-                {/* Right: Video Thumbnail */}
-                <div className="relative aspect-video overflow-hidden rounded-xl">
+              <div className="grid gap-8">
+                {/* Full Width Video Embed */}
+                <div className="relative aspect-video w-full overflow-hidden rounded-xl">
                   <img
                     src={course.thumbnail}
                     alt={course.title}
                     className="h-full w-full object-cover"
                   />
                   <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-                    <button className="flex h-16 w-16 items-center justify-center rounded-full bg-white/90 text-black transition-transform hover:scale-110">
-                      <Play className="h-7 w-7 fill-current" />
+                    <button className="flex h-20 w-20 items-center justify-center rounded-full bg-white/90 text-black transition-transform hover:scale-110">
+                      <Play className="h-8 w-8 fill-current" />
                     </button>
                   </div>
                   {/* Subtitle overlay */}
