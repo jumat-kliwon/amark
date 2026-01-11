@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
-import { Crown, Calendar, CreditCard, ArrowRight, Settings, Download, Eye, RefreshCw, CheckCircle2, XCircle, Clock, AlertCircle } from "lucide-react";
+import { Crown, Calendar, CreditCard, ArrowRight, Settings, Download, Eye, RefreshCw, CheckCircle2, XCircle, Clock, AlertCircle, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -26,7 +26,7 @@ const currentSubscription = {
   ],
 };
 
-// More detailed payment history
+// More detailed payment history (extended for pagination demo)
 const paymentHistory = [
   { 
     id: "INV-2024-1210",
@@ -75,6 +75,33 @@ const paymentHistory = [
     period: "10 Agu 2024 - 10 Sep 2024",
     refundReason: "Permintaan pengguna",
   },
+  { 
+    id: "INV-2024-0710",
+    date: "10 Juli 2024", 
+    amount: "Rp 99.000", 
+    status: "success",
+    method: "DANA",
+    plan: "Basic",
+    period: "10 Jul 2024 - 10 Agu 2024",
+  },
+  { 
+    id: "INV-2024-0610",
+    date: "10 Juni 2024", 
+    amount: "Rp 99.000", 
+    status: "success",
+    method: "BCA Virtual Account",
+    plan: "Basic",
+    period: "10 Jun 2024 - 10 Jul 2024",
+  },
+  { 
+    id: "INV-2024-0510",
+    date: "10 Mei 2024", 
+    amount: "Rp 99.000", 
+    status: "success",
+    method: "GoPay",
+    plan: "Basic",
+    period: "10 Mei 2024 - 10 Jun 2024",
+  },
 ];
 
 type PaymentStatus = "success" | "pending" | "failed" | "refunded";
@@ -114,9 +141,15 @@ const getStatusConfig = (status: PaymentStatus) => {
   }
 };
 
+const ITEMS_PER_PAGE = 3;
+
 const Subscription = () => {
   const [selectedPayment, setSelectedPayment] = useState<typeof paymentHistory[0] | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
+  const totalPages = Math.ceil(paymentHistory.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedPayments = paymentHistory.slice(startIndex, startIndex + ITEMS_PER_PAGE);
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -203,7 +236,7 @@ const Subscription = () => {
             </Button>
           </div>
           <div className="divide-y divide-border">
-            {paymentHistory.map((payment) => {
+            {paginatedPayments.map((payment) => {
               const statusConfig = getStatusConfig(payment.status as PaymentStatus);
               const StatusIcon = statusConfig.icon;
               
@@ -280,6 +313,46 @@ const Subscription = () => {
               );
             })}
           </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between border-t border-border p-4">
+              <p className="text-sm text-muted-foreground">
+                Menampilkan {startIndex + 1}-{Math.min(startIndex + ITEMS_PER_PAGE, paymentHistory.length)} dari {paymentHistory.length} transaksi
+              </p>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="h-8 w-8"
+                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                  disabled={currentPage === 1}
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                  <Button
+                    key={page}
+                    variant={currentPage === page ? "default" : "outline"}
+                    size="icon"
+                    className="h-8 w-8"
+                    onClick={() => setCurrentPage(page)}
+                  >
+                    {page}
+                  </Button>
+                ))}
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="h-8 w-8"
+                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                  disabled={currentPage === totalPages}
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
       </main>
 
