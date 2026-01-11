@@ -1,4 +1,4 @@
-import { Bell, CheckCheck, Trash2, MessageCircle, CreditCard, Award, BookOpen } from "lucide-react";
+import { Bell, CheckCheck, Trash2 } from "lucide-react";
 import { useState } from "react";
 import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,6 @@ const notifications = [
     message: "Modul 5: Advanced React Patterns telah ditambahkan ke kursus React Mastery.",
     time: "5 menit lalu",
     read: false,
-    icon: BookOpen,
   },
   {
     id: 2,
@@ -22,7 +21,6 @@ const notifications = [
     message: "Pembayaran langganan bulanan Anda sebesar Rp 99.000 telah berhasil diproses.",
     time: "1 jam lalu",
     read: false,
-    icon: CreditCard,
   },
   {
     id: 3,
@@ -31,7 +29,6 @@ const notifications = [
     message: "Selamat! Sertifikat untuk kursus UI/UX Design Fundamentals telah diterbitkan.",
     time: "2 jam lalu",
     read: false,
-    icon: Award,
   },
   {
     id: 4,
@@ -40,7 +37,6 @@ const notifications = [
     message: "Mentor telah membalas pertanyaan Anda di forum diskusi React Hooks.",
     time: "5 jam lalu",
     read: true,
-    icon: MessageCircle,
   },
   {
     id: 5,
@@ -49,7 +45,6 @@ const notifications = [
     message: "Anda belum melanjutkan kursus JavaScript Basics selama 3 hari. Yuk lanjutkan!",
     time: "1 hari lalu",
     read: true,
-    icon: BookOpen,
   },
   {
     id: 6,
@@ -58,7 +53,6 @@ const notifications = [
     message: "Langganan Anda akan berakhir dalam 7 hari. Perpanjang sekarang untuk akses tanpa gangguan.",
     time: "2 hari lalu",
     read: true,
-    icon: CreditCard,
   },
 ];
 
@@ -157,9 +151,7 @@ const Notifications = () => {
               </p>
             </div>
           ) : (
-            filteredNotifications.map((notification) => {
-              const IconComponent = notification.icon;
-              return (
+            filteredNotifications.map((notification) => (
                 <div
                   key={notification.id}
                   className={cn(
@@ -173,13 +165,8 @@ const Notifications = () => {
                   )}
 
                   {/* Icon */}
-                  <div
-                    className={cn(
-                      "flex h-10 w-10 shrink-0 items-center justify-center rounded-full",
-                      getTypeColor()
-                    )}
-                  >
-                    <IconComponent className="h-5 w-5" />
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors group-hover:bg-foreground group-hover:text-background">
+                    <Bell className="h-5 w-5" />
                   </div>
 
                   {/* Content */}
@@ -221,8 +208,7 @@ const Notifications = () => {
                     </Button>
                   </div>
                 </div>
-              );
-            })
+              ))
           )}
         </div>
       </main>
