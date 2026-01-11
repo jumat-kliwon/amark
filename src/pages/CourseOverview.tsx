@@ -5,12 +5,7 @@ import Header from "@/components/Header";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 const CourseOverview = () => {
   const { id } = useParams();
@@ -35,11 +30,9 @@ const CourseOverview = () => {
   const totalLessons = course.curriculum.reduce((acc, week) => acc + week.lessons.length, 0);
   const completedLessons = course.curriculum.reduce(
     (acc, week) => acc + week.lessons.filter((l) => l.completed).length,
-    0
+    0,
   );
-  const firstUncompletedLesson = course.curriculum
-    .flatMap((week) => week.lessons)
-    .find((lesson) => !lesson.completed);
+  const firstUncompletedLesson = course.curriculum.flatMap((week) => week.lessons).find((lesson) => !lesson.completed);
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -62,14 +55,12 @@ const CourseOverview = () => {
               <Badge variant="secondary" className="mb-4">
                 {course.category.replace("-", " ").toUpperCase()}
               </Badge>
-              
+
               <h1 className="mb-4 text-3xl font-bold tracking-tight lg:text-4xl">
                 {course.number}. {course.title}
               </h1>
-              
-              <p className="mb-6 text-lg text-muted-foreground leading-relaxed">
-                {course.description}
-              </p>
+
+              <p className="mb-6 text-lg text-muted-foreground leading-relaxed">{course.description}</p>
 
               {/* Stats */}
               <div className="mb-6 flex flex-wrap items-center gap-6 text-sm">
@@ -109,44 +100,12 @@ const CourseOverview = () => {
               <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-lg">
                 {/* Thumbnail */}
                 <div className="relative aspect-video">
-                  <img
-                    src={course.thumbnail}
-                    alt={course.title}
-                    className="h-full w-full object-cover"
-                  />
+                  <img src={course.thumbnail} alt={course.title} className="h-full w-full object-cover" />
                   <div className="absolute inset-0 flex items-center justify-center bg-black/40">
                     <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/90 text-black transition-transform hover:scale-110">
                       <Play className="h-7 w-7 fill-current" />
                     </div>
                   </div>
-                </div>
-
-                {/* Progress Info */}
-                <div className="p-5">
-                  <div className="mb-4 flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">Progress Kamu</span>
-                    <span className="text-sm font-semibold text-primary">{course.progress}%</span>
-                  </div>
-                  <Progress value={course.progress} className="mb-4 h-2" />
-                  
-                  <div className="mb-4 flex items-center gap-2 text-sm text-muted-foreground">
-                    <CheckCircle2 className="h-4 w-4 text-green-500" />
-                    <span>{completedLessons} dari {totalLessons} materi selesai</span>
-                  </div>
-
-                  {firstUncompletedLesson ? (
-                    <Button asChild className="w-full" size="lg">
-                      <Link to={`/course/${course.id}/lesson/${firstUncompletedLesson.id}`}>
-                        <Play className="mr-2 h-4 w-4" />
-                        Lanjutkan Belajar
-                      </Link>
-                    </Button>
-                  ) : (
-                    <Button className="w-full" size="lg" variant="secondary">
-                      <Trophy className="mr-2 h-4 w-4" />
-                      Course Selesai!
-                    </Button>
-                  )}
                 </div>
               </div>
             </div>
@@ -178,9 +137,11 @@ const CourseOverview = () => {
               >
                 <AccordionTrigger className="px-5 py-4 hover:no-underline hover:bg-muted/30 [&[data-state=open]]:bg-muted/20">
                   <div className="flex flex-1 items-center gap-4 text-left">
-                    <div className={`flex h-10 w-10 items-center justify-center rounded-full ${
-                      isWeekComplete ? "bg-green-500/20" : "bg-muted"
-                    }`}>
+                    <div
+                      className={`flex h-10 w-10 items-center justify-center rounded-full ${
+                        isWeekComplete ? "bg-green-500/20" : "bg-muted"
+                      }`}
+                    >
                       {isWeekComplete ? (
                         <CheckCircle2 className="h-5 w-5 text-green-500" />
                       ) : (
