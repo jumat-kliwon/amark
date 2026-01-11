@@ -1,9 +1,8 @@
-import { useState, useMemo } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Play, Star, Users, Clock, Search, CheckCircle2, Circle, ChevronRight } from "lucide-react";
-import { courses, Lesson } from "@/data/courses";
+import { useMemo } from "react";
+import { useParams, Link } from "react-router-dom";
+import { ArrowLeft, Star, Users, Clock, Search, CheckCircle2, Play } from "lucide-react";
+import { courses } from "@/data/courses";
 import Header from "@/components/Header";
-import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Accordion,
@@ -11,23 +10,10 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { useToast } from "@/hooks/use-toast";
 
 const CourseDetail = () => {
-  const { id, lessonId } = useParams();
-  const navigate = useNavigate();
-  const { toast } = useToast();
+  const { id } = useParams();
   const course = courses.find((c) => c.id === id);
-
-  // Local state for completed lessons (in real app, this would be stored in database)
-  const [completedLessons, setCompletedLessons] = useState<string[]>(() => {
-    // Initialize with lessons that are already marked as completed in data
-    if (!course) return [];
-    return course.curriculum
-      .flatMap((week) => week.lessons)
-      .filter((lesson) => lesson.completed)
-      .map((lesson) => lesson.id);
-  });
 
   // Find current lesson from curriculum
   const allLessons = useMemo(() => {
@@ -35,45 +21,14 @@ const CourseDetail = () => {
     return course.curriculum.flatMap((week) => week.lessons);
   }, [course]);
 
-  const currentLesson = allLessons.find((lesson) => lesson.id === lessonId);
-  const currentLessonIndex = allLessons.findIndex((lesson) => lesson.id === lessonId);
-  const nextLesson = currentLessonIndex >= 0 && currentLessonIndex < allLessons.length - 1 
-    ? allLessons[currentLessonIndex + 1] 
-    : null;
-
-  const isCurrentLessonCompleted = lessonId ? completedLessons.includes(lessonId) : false;
-
-  const handleMarkAsDone = () => {
-    if (!lessonId) return;
-
-    if (isCurrentLessonCompleted) {
-      // Unmark as done
-      setCompletedLessons((prev) => prev.filter((id) => id !== lessonId));
-      toast({
-        title: "Lesson ditandai belum selesai",
-        description: "Progress Anda telah diperbarui.",
-      });
-    } else {
-      // Mark as done
-      setCompletedLessons((prev) => [...prev, lessonId]);
-      toast({
-        title: "Lesson selesai! 🎉",
-        description: nextLesson 
-          ? "Lanjut ke materi berikutnya?"
-          : "Anda telah menyelesaikan semua materi!",
-      });
-    }
-  };
-
-  const handleContinue = () => {
-    if (nextLesson) {
-      // Mark current as done if not already
-      if (lessonId && !completedLessons.includes(lessonId)) {
-        setCompletedLessons((prev) => [...prev, lessonId]);
-      }
-      navigate(`/course/${id}/lesson/${nextLesson.id}`);
-    }
-  };
+  // Get completed lessons from data
+  const completedLessons = useMemo(() => {
+    if (!course) return [];
+    return course.curriculum
+      .flatMap((week) => week.lessons)
+      .filter((lesson) => lesson.completed)
+      .map((lesson) => lesson.id);
+  }, [course]);
 
   if (!course) {
     return (
@@ -109,59 +64,16 @@ const CourseDetail = () => {
                 Kembali ke Course Overview
               </Link>
 
-              {/* Lesson Title with Mark as Done */}
-              {currentLesson && (
-                <div className="mb-4 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    {isCurrentLessonCompleted ? (
-                      <CheckCircle2 className="h-6 w-6 text-green-500" />
-                    ) : (
-                      <Circle className="h-6 w-6 text-muted-foreground" />
-                    )}
-                    <h1 className="text-2xl font-bold">{currentLesson.title}</h1>
-                  </div>
-                  
-                  <Button
-                    onClick={handleMarkAsDone}
-                    variant={isCurrentLessonCompleted ? "outline" : "default"}
-                    size="sm"
-                    className={isCurrentLessonCompleted ? "border-green-500 text-green-500 hover:bg-green-500/10" : ""}
-                  >
-                    {isCurrentLessonCompleted ? (
-                      <>
-                        <CheckCircle2 className="mr-2 h-4 w-4" />
-                        Sudah Selesai
-                      </>
-                    ) : (
-                      <>
-                        <Circle className="mr-2 h-4 w-4" />
-                        Mark as Done
-                      </>
-                    )}
-                  </Button>
-                </div>
-              )}
+              {/* Course Title */}
+              <h1 className="mb-4 text-2xl font-bold">{course.title}</h1>
               
-              <div className="grid gap-8">
-                {/* Full Width Video Embed */}
-                <div className="relative aspect-video w-full overflow-hidden rounded-xl">
-                  <img
-                    src={course.thumbnail}
-                    alt={course.title}
-                    className="h-full w-full object-cover"
-                  />
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-                    <button className="flex h-20 w-20 items-center justify-center rounded-full bg-white/90 text-black transition-transform hover:scale-110">
-                      <Play className="h-8 w-8 fill-current" />
-                    </button>
-                  </div>
-                  {/* Subtitle overlay */}
-                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
-                    <div className="rounded-md bg-black/80 px-4 py-2 text-sm text-white">
-                      {currentLesson?.title || course.description.slice(0, 60)}...
-                    </div>
-                  </div>
-                </div>
+              {/* Cover Image */}
+              <div className="relative aspect-video w-full overflow-hidden rounded-xl">
+                <img
+                  src={course.thumbnail}
+                  alt={course.title}
+                  className="h-full w-full object-cover"
+                />
               </div>
             </div>
           </div>
@@ -312,24 +224,19 @@ const CourseDetail = () => {
                       <div className="space-y-1">
                         {week.lessons.map((lesson) => {
                           const isCompleted = completedLessons.includes(lesson.id);
-                          const isActive = lesson.id === lessonId;
                           
                           return (
                             <Link
                               key={lesson.id}
                               to={`/course/${id}/lesson/${lesson.id}`}
-                              className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors ${
-                                isActive 
-                                  ? "bg-primary text-primary-foreground" 
-                                  : "hover:bg-card"
-                              }`}
+                              className="flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors hover:bg-card"
                             >
                               {isCompleted ? (
-                                <CheckCircle2 className={`h-4 w-4 ${isActive ? "" : "text-green-500"}`} />
+                                <CheckCircle2 className="h-4 w-4 text-green-500" />
                               ) : (
                                 <Play className="h-4 w-4" />
                               )}
-                              <span className={isCompleted && !isActive ? "text-muted-foreground" : ""}>
+                              <span className={isCompleted ? "text-muted-foreground" : ""}>
                                 {lesson.title}
                               </span>
                               <span className="ml-auto text-xs opacity-70">{lesson.duration}</span>
