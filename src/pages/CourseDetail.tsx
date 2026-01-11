@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Play, Star, Users, Clock, Search, CheckCircle2, Circle, ChevronRight } from "lucide-react";
+import { ArrowLeft, Play, Star, Users, Clock, Search, CheckCircle2, Circle, ChevronRight, MessageCircle } from "lucide-react";
 import { courses, Lesson } from "@/data/courses";
 import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
@@ -168,33 +168,67 @@ const CourseDetail = () => {
 
           {/* Tabs Section */}
           <div className="border-b border-border">
-          <div className="mx-auto max-w-5xl px-6 py-8">
-            <h2 className="mb-4 text-lg font-semibold">Gambaran Umum</h2>
-            <p className="mb-8 text-lg leading-relaxed text-muted-foreground">
-              {course.description}
-            </p>
-            
-            {/* Stats */}
-            <div className="flex flex-wrap items-center gap-8">
-              <div className="flex items-center gap-2">
-                <span className="text-xl font-semibold">{course.rating}</span>
-                <Star className="h-5 w-5 fill-yellow-500 text-yellow-500" />
-                <span className="text-sm text-muted-foreground">
-                  {course.totalRatings.toLocaleString()} peringkat
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-xl font-semibold">{course.participants.toLocaleString()}</span>
-                <Users className="h-5 w-5 text-muted-foreground" />
-                <span className="text-sm text-muted-foreground">Peserta</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-xl font-semibold">{course.duration}</span>
-                <Clock className="h-5 w-5 text-muted-foreground" />
-                <span className="text-sm text-muted-foreground">Total</span>
-              </div>
+            <div className="mx-auto max-w-5xl px-6">
+              <Tabs defaultValue="overview" className="w-full">
+                <TabsList className="h-auto w-full justify-start gap-0 rounded-none border-0 bg-transparent p-0">
+                  <TabsTrigger 
+                    value="overview" 
+                    className="rounded-none border-b-2 border-transparent px-4 py-3 data-[state=active]:border-foreground data-[state=active]:bg-transparent"
+                  >
+                    Gambaran Umum
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="discussion" 
+                    className="rounded-none border-b-2 border-transparent px-4 py-3 data-[state=active]:border-foreground data-[state=active]:bg-transparent"
+                  >
+                    <MessageCircle className="mr-2 h-4 w-4" />
+                    Diskusi
+                  </TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="overview" className="py-8">
+                  <p className="mb-8 text-lg leading-relaxed text-muted-foreground">
+                    {course.description}
+                  </p>
+                  
+                  {/* Stats */}
+                  <div className="flex flex-wrap items-center gap-8">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xl font-semibold">{course.rating}</span>
+                      <Star className="h-5 w-5 fill-yellow-500 text-yellow-500" />
+                      <span className="text-sm text-muted-foreground">
+                        {course.totalRatings.toLocaleString()} peringkat
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xl font-semibold">{course.participants.toLocaleString()}</span>
+                      <Users className="h-5 w-5 text-muted-foreground" />
+                      <span className="text-sm text-muted-foreground">Peserta</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xl font-semibold">{course.duration}</span>
+                      <Clock className="h-5 w-5 text-muted-foreground" />
+                      <span className="text-sm text-muted-foreground">Total</span>
+                    </div>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="discussion" className="py-8">
+                  <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border py-16 text-center">
+                    <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+                      <MessageCircle className="h-8 w-8 text-primary" />
+                    </div>
+                    <h3 className="mb-2 text-xl font-semibold">Fitur Diskusi Segera Hadir!</h3>
+                    <p className="max-w-md text-muted-foreground">
+                      Kami sedang mengembangkan fitur diskusi untuk membantu Anda berinteraksi dengan instruktur dan peserta lainnya. Nantikan update selanjutnya!
+                    </p>
+                    <span className="mt-4 inline-flex items-center rounded-full bg-primary/10 px-4 py-2 text-sm font-medium text-primary">
+                      Coming Soon
+                    </span>
+                  </div>
+                </TabsContent>
+              </Tabs>
             </div>
-          </div>
           </div>
         </div>
 
