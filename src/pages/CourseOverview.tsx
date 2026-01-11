@@ -49,64 +49,46 @@ const CourseOverview = () => {
             Kembali ke Courses
           </Link>
 
-          <div className="grid gap-8 lg:grid-cols-5">
-            {/* Left: Course Info */}
-            <div className="lg:col-span-3">
-              <Badge variant="secondary" className="mb-4">
-                {course.category.replace("-", " ").toUpperCase()}
-              </Badge>
+          <div>
+            <Badge variant="secondary" className="mb-4">
+              {course.category.replace("-", " ").toUpperCase()}
+            </Badge>
 
-              <h1 className="mb-4 text-3xl font-bold tracking-tight lg:text-4xl">
-                {course.number}. {course.title}
-              </h1>
+            <h1 className="mb-4 text-3xl font-bold tracking-tight lg:text-4xl">
+              {course.number}. {course.title}
+            </h1>
 
-              <p className="mb-6 text-lg text-muted-foreground leading-relaxed">{course.description}</p>
+            <p className="mb-6 text-lg text-muted-foreground leading-relaxed">{course.description}</p>
 
-              {/* Stats */}
-              <div className="mb-6 flex flex-wrap items-center gap-6 text-sm">
-                <div className="flex items-center gap-2">
-                  <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
-                  <span className="font-semibold">{course.rating}</span>
-                  <span className="text-muted-foreground">({course.totalRatings.toLocaleString()} ulasan)</span>
-                </div>
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Users className="h-4 w-4" />
-                  <span>{course.participants.toLocaleString()} peserta</span>
-                </div>
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Clock className="h-4 w-4" />
-                  <span>{course.duration}</span>
-                </div>
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <BookOpen className="h-4 w-4" />
-                  <span>{totalLessons} materi</span>
-                </div>
+            {/* Stats */}
+            <div className="mb-6 flex flex-wrap items-center gap-6 text-sm">
+              <div className="flex items-center gap-2">
+                <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
+                <span className="font-semibold">{course.rating}</span>
+                <span className="text-muted-foreground">({course.totalRatings.toLocaleString()} ulasan)</span>
               </div>
-
-              {/* Author */}
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary">
-                  <span className="text-sm font-bold text-primary-foreground">A</span>
-                </div>
-                <div>
-                  <p className="text-sm font-medium">Dibuat oleh</p>
-                  <p className="text-sm text-muted-foreground">{course.author}</p>
-                </div>
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <Users className="h-4 w-4" />
+                <span>{course.participants.toLocaleString()} peserta</span>
+              </div>
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <Clock className="h-4 w-4" />
+                <span>{course.duration}</span>
+              </div>
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <BookOpen className="h-4 w-4" />
+                <span>{totalLessons} materi</span>
               </div>
             </div>
 
-            {/* Right: Thumbnail & Progress Card */}
-            <div className="lg:col-span-2">
-              <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-lg">
-                {/* Thumbnail */}
-                <div className="relative aspect-video">
-                  <img src={course.thumbnail} alt={course.title} className="h-full w-full object-cover" />
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-                    <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/90 text-black transition-transform hover:scale-110">
-                      <Play className="h-7 w-7 fill-current" />
-                    </div>
-                  </div>
-                </div>
+            {/* Author */}
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary">
+                <span className="text-sm font-bold text-primary-foreground">A</span>
+              </div>
+              <div>
+                <p className="text-sm font-medium">Dibuat oleh</p>
+                <p className="text-sm text-muted-foreground">{course.author}</p>
               </div>
             </div>
           </div>
