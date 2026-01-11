@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import CourseOverview from "./pages/CourseOverview";
 import CourseDetail from "./pages/CourseDetail";
 import Subscription from "./pages/Subscription";
+import SubscriptionPlans from "./pages/SubscriptionPlans";
 import Certificate from "./pages/Certificate";
 import Affiliate from "./pages/Affiliate";
 import EditProfile from "./pages/EditProfile";
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/course/:id" element={<CourseOverview />} />
           <Route path="/course/:id/lesson/:lessonId" element={<CourseDetail />} />
           <Route path="/subscription" element={<Subscription />} />
+          <Route path="/subscription/plans" element={<SubscriptionPlans />} />
           <Route path="/certificate" element={<Certificate />} />
           <Route path="/affiliate" element={<Affiliate />} />
           <Route path="/settings/profile" element={<EditProfile />} />
