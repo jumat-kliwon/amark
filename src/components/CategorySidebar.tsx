@@ -2,18 +2,41 @@ import { useState } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+interface SubCategory {
+  id: string;
+  name: string;
+}
+
 interface Category {
   id: string;
   name: string;
   hasSubmenu?: boolean;
-  isExpanded?: boolean;
+  children?: SubCategory[];
 }
 
 const categories: Category[] = [
   { id: "fast-track", name: "Fast Track" },
-  { id: "content-creator", name: "Content Creator", hasSubmenu: true },
+  { 
+    id: "content-creator", 
+    name: "Content Creator", 
+    hasSubmenu: true,
+    children: [
+      { id: "cc-tiktok", name: "TikTok Creator" },
+      { id: "cc-youtube", name: "YouTube Creator" },
+      { id: "cc-podcast", name: "Podcasting" },
+    ]
+  },
   { id: "monetization", name: "Monetization" },
-  { id: "digital-product", name: "Digital Product", hasSubmenu: true },
+  { 
+    id: "digital-product", 
+    name: "Digital Product", 
+    hasSubmenu: true,
+    children: [
+      { id: "dp-ebook", name: "E-Book & Guide" },
+      { id: "dp-course", name: "Online Course" },
+      { id: "dp-template", name: "Templates" },
+    ]
+  },
   { id: "kumpulan-live", name: "Kumpulan Live" },
   { id: "ig-hack", name: "IG Hack" },
   { id: "bonus", name: "Bonus" },
@@ -52,9 +75,10 @@ const CategorySidebar = ({ selectedCategory, onSelectCategory }: CategorySidebar
             <div key={category.id}>
               <button
                 onClick={() => {
-                  onSelectCategory(category.id);
                   if (category.hasSubmenu) {
                     toggleExpand(category.id);
+                  } else {
+                    onSelectCategory(category.id);
                   }
                 }}
                 className={cn(
@@ -73,6 +97,26 @@ const CategorySidebar = ({ selectedCategory, onSelectCategory }: CategorySidebar
                   )
                 )}
               </button>
+              
+              {/* Child Menu */}
+              {category.hasSubmenu && category.children && expandedCategories.includes(category.id) && (
+                <div className="ml-3 mt-1 space-y-1 border-l border-border pl-3">
+                  {category.children.map((child) => (
+                    <button
+                      key={child.id}
+                      onClick={() => onSelectCategory(child.id)}
+                      className={cn(
+                        "flex w-full items-center rounded-lg px-3 py-2 text-left text-sm transition-colors",
+                        selectedCategory === child.id
+                          ? "bg-sidebar-accent text-foreground font-medium"
+                          : "text-muted-foreground hover:bg-sidebar-accent/50 hover:text-foreground"
+                      )}
+                    >
+                      {child.name}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           ))}
         </nav>
