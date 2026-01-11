@@ -16,6 +16,7 @@ interface CourseCardProps {
   id: string;
   number: string;
   title: string;
+  description: string;
   author: string;
   thumbnail: string;
   locked?: boolean;
@@ -23,7 +24,7 @@ interface CourseCardProps {
   style?: React.CSSProperties;
 }
 
-const CourseCard = ({ id, number, title, author, thumbnail, locked = false, className, style }: CourseCardProps) => {
+const CourseCard = ({ id, number, title, description, author, thumbnail, locked = false, className, style }: CourseCardProps) => {
   const [showModal, setShowModal] = useState(false);
 
   const handleClick = (e: React.MouseEvent) => {
@@ -76,12 +77,15 @@ const CourseCard = ({ id, number, title, author, thumbnail, locked = false, clas
 
           {/* Content */}
           <div className="p-4">
-            <div className="mb-3 flex items-center gap-2">
+            <div className="mb-2 flex items-center gap-2">
               <h3 className="flex-1 text-base font-semibold leading-tight">
                 {number}. {title}
               </h3>
               {locked && <Lock className="h-4 w-4 text-muted-foreground" />}
             </div>
+            <p className="mb-3 line-clamp-2 text-sm text-muted-foreground">
+              {description}
+            </p>
             <div className="flex items-center gap-2">
               <div className="flex h-6 w-6 items-center justify-center rounded-full bg-foreground">
                 <span className="text-xs font-bold text-background">A</span>
