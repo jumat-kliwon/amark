@@ -168,101 +168,33 @@ const CourseDetail = () => {
 
           {/* Tabs Section */}
           <div className="border-b border-border">
-            <div className="mx-auto max-w-5xl px-6">
-              <Tabs defaultValue="overview" className="w-full">
-                <TabsList className="h-auto w-full justify-start gap-0 rounded-none border-0 bg-transparent p-0">
-                  <TabsTrigger 
-                    value="search" 
-                    className="rounded-none border-b-2 border-transparent px-4 py-3 data-[state=active]:border-foreground data-[state=active]:bg-transparent"
-                  >
-                    <Search className="h-4 w-4" />
-                  </TabsTrigger>
-                  <TabsTrigger 
-                    value="overview" 
-                    className="rounded-none border-b-2 border-transparent px-4 py-3 data-[state=active]:border-foreground data-[state=active]:bg-transparent"
-                  >
-                    Gambaran Umum
-                  </TabsTrigger>
-                  <TabsTrigger 
-                    value="qa" 
-                    className="rounded-none border-b-2 border-transparent px-4 py-3 data-[state=active]:border-foreground data-[state=active]:bg-transparent"
-                  >
-                    T&J
-                  </TabsTrigger>
-                  <TabsTrigger 
-                    value="notes" 
-                    className="rounded-none border-b-2 border-transparent px-4 py-3 data-[state=active]:border-foreground data-[state=active]:bg-transparent"
-                  >
-                    Catatan
-                  </TabsTrigger>
-                  <TabsTrigger 
-                    value="announcements" 
-                    className="rounded-none border-b-2 border-transparent px-4 py-3 data-[state=active]:border-foreground data-[state=active]:bg-transparent"
-                  >
-                    Pengumuman
-                  </TabsTrigger>
-                  <TabsTrigger 
-                    value="reviews" 
-                    className="rounded-none border-b-2 border-transparent px-4 py-3 data-[state=active]:border-foreground data-[state=active]:bg-transparent"
-                  >
-                    Ulasan
-                  </TabsTrigger>
-                  <TabsTrigger 
-                    value="tools" 
-                    className="rounded-none border-b-2 border-transparent px-4 py-3 data-[state=active]:border-foreground data-[state=active]:bg-transparent"
-                  >
-                    Alat pembelajaran
-                  </TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="overview" className="py-8">
-                  <p className="mb-8 text-lg leading-relaxed text-muted-foreground">
-                    {course.description}
-                  </p>
-                  
-                  {/* Stats */}
-                  <div className="flex flex-wrap items-center gap-8">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xl font-semibold">{course.rating}</span>
-                      <Star className="h-5 w-5 fill-yellow-500 text-yellow-500" />
-                      <span className="text-sm text-muted-foreground">
-                        {course.totalRatings.toLocaleString()} peringkat
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-xl font-semibold">{course.participants.toLocaleString()}</span>
-                      <Users className="h-5 w-5 text-muted-foreground" />
-                      <span className="text-sm text-muted-foreground">Peserta</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-xl font-semibold">{course.duration}</span>
-                      <Clock className="h-5 w-5 text-muted-foreground" />
-                      <span className="text-sm text-muted-foreground">Total</span>
-                    </div>
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="qa" className="py-8">
-                  <p className="text-muted-foreground">Belum ada pertanyaan untuk kursus ini.</p>
-                </TabsContent>
-
-                <TabsContent value="notes" className="py-8">
-                  <p className="text-muted-foreground">Catatan Anda akan muncul di sini.</p>
-                </TabsContent>
-
-                <TabsContent value="announcements" className="py-8">
-                  <p className="text-muted-foreground">Belum ada pengumuman.</p>
-                </TabsContent>
-
-                <TabsContent value="reviews" className="py-8">
-                  <p className="text-muted-foreground">Ulasan dari peserta lain akan muncul di sini.</p>
-                </TabsContent>
-
-                <TabsContent value="tools" className="py-8">
-                  <p className="text-muted-foreground">Alat pembelajaran akan tersedia segera.</p>
-                </TabsContent>
-              </Tabs>
+          <div className="mx-auto max-w-5xl px-6 py-8">
+            <h2 className="mb-4 text-lg font-semibold">Gambaran Umum</h2>
+            <p className="mb-8 text-lg leading-relaxed text-muted-foreground">
+              {course.description}
+            </p>
+            
+            {/* Stats */}
+            <div className="flex flex-wrap items-center gap-8">
+              <div className="flex items-center gap-2">
+                <span className="text-xl font-semibold">{course.rating}</span>
+                <Star className="h-5 w-5 fill-yellow-500 text-yellow-500" />
+                <span className="text-sm text-muted-foreground">
+                  {course.totalRatings.toLocaleString()} peringkat
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-xl font-semibold">{course.participants.toLocaleString()}</span>
+                <Users className="h-5 w-5 text-muted-foreground" />
+                <span className="text-sm text-muted-foreground">Peserta</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-xl font-semibold">{course.duration}</span>
+                <Clock className="h-5 w-5 text-muted-foreground" />
+                <span className="text-sm text-muted-foreground">Total</span>
+              </div>
             </div>
+          </div>
           </div>
         </div>
 
