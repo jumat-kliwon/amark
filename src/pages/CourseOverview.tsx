@@ -47,7 +47,7 @@ const CourseOverview = () => {
             alt={course.title} 
             className="h-full w-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/95 to-background/60" />
+          <div className="absolute inset-0 bg-background/90" />
         </div>
 
         {/* Content */}
