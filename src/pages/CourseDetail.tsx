@@ -109,15 +109,36 @@ const CourseDetail = () => {
                 Kembali ke Course Overview
               </Link>
 
-              {/* Lesson Title */}
+              {/* Lesson Title with Mark as Done */}
               {currentLesson && (
-                <div className="mb-4 flex items-center gap-3">
-                  {isCurrentLessonCompleted ? (
-                    <CheckCircle2 className="h-6 w-6 text-green-500" />
-                  ) : (
-                    <Circle className="h-6 w-6 text-muted-foreground" />
-                  )}
-                  <h1 className="text-2xl font-bold">{currentLesson.title}</h1>
+                <div className="mb-4 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    {isCurrentLessonCompleted ? (
+                      <CheckCircle2 className="h-6 w-6 text-green-500" />
+                    ) : (
+                      <Circle className="h-6 w-6 text-muted-foreground" />
+                    )}
+                    <h1 className="text-2xl font-bold">{currentLesson.title}</h1>
+                  </div>
+                  
+                  <Button
+                    onClick={handleMarkAsDone}
+                    variant={isCurrentLessonCompleted ? "outline" : "default"}
+                    size="sm"
+                    className={isCurrentLessonCompleted ? "border-green-500 text-green-500 hover:bg-green-500/10" : ""}
+                  >
+                    {isCurrentLessonCompleted ? (
+                      <>
+                        <CheckCircle2 className="mr-2 h-4 w-4" />
+                        Sudah Selesai
+                      </>
+                    ) : (
+                      <>
+                        <Circle className="mr-2 h-4 w-4" />
+                        Mark as Done
+                      </>
+                    )}
+                  </Button>
                 </div>
               )}
               
@@ -140,43 +161,6 @@ const CourseDetail = () => {
                       {currentLesson?.title || course.description.slice(0, 60)}...
                     </div>
                   </div>
-                </div>
-
-                {/* Mark as Done Button */}
-                <div className="flex flex-wrap items-center gap-4">
-                  <Button
-                    onClick={handleMarkAsDone}
-                    variant={isCurrentLessonCompleted ? "outline" : "default"}
-                    className={isCurrentLessonCompleted ? "border-green-500 text-green-500 hover:bg-green-500/10" : ""}
-                  >
-                    {isCurrentLessonCompleted ? (
-                      <>
-                        <CheckCircle2 className="mr-2 h-4 w-4" />
-                        Sudah Selesai
-                      </>
-                    ) : (
-                      <>
-                        <Circle className="mr-2 h-4 w-4" />
-                        Mark as Done
-                      </>
-                    )}
-                  </Button>
-
-                  {nextLesson && (
-                    <Button onClick={handleContinue} variant="secondary">
-                      Lanjut: {nextLesson.title}
-                      <ChevronRight className="ml-2 h-4 w-4" />
-                    </Button>
-                  )}
-
-                  {!nextLesson && isCurrentLessonCompleted && (
-                    <Button asChild variant="secondary">
-                      <Link to={`/course/${id}`}>
-                        Kembali ke Overview
-                        <ChevronRight className="ml-2 h-4 w-4" />
-                      </Link>
-                    </Button>
-                  )}
                 </div>
               </div>
             </div>
