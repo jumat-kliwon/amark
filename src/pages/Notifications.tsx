@@ -85,19 +85,8 @@ const Notifications = () => {
     setNotificationList((prev) => prev.filter((n) => n.id !== id));
   };
 
-  const getTypeColor = (type: string) => {
-    switch (type) {
-      case "course":
-        return "bg-blue-500/10 text-blue-500";
-      case "payment":
-        return "bg-green-500/10 text-green-500";
-      case "certificate":
-        return "bg-amber-500/10 text-amber-500";
-      case "discussion":
-        return "bg-purple-500/10 text-purple-500";
-      default:
-        return "bg-muted text-muted-foreground";
-    }
+  const getTypeColor = () => {
+    return "bg-muted text-muted-foreground";
   };
 
   return (
@@ -187,7 +176,7 @@ const Notifications = () => {
                   <div
                     className={cn(
                       "flex h-10 w-10 shrink-0 items-center justify-center rounded-full",
-                      getTypeColor(notification.type)
+                      getTypeColor()
                     )}
                   >
                     <IconComponent className="h-5 w-5" />
