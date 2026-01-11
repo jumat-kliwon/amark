@@ -1,4 +1,4 @@
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, User, Lock, LogOut } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import {
   NavigationMenu,
@@ -7,6 +7,13 @@ import {
   NavigationMenuLink,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 
 const navItems = [
@@ -53,10 +60,36 @@ const Header = () => {
         </NavigationMenu>
       </div>
 
-      <div className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
-        <span className="text-sm font-medium">asditap</span>
-        <ChevronDown className="h-4 w-4 text-muted-foreground" />
-      </div>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <button className="flex items-center gap-2 rounded-md px-2 py-1 hover:bg-accent transition-colors">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary">
+              <span className="text-sm font-bold text-primary-foreground">A</span>
+            </div>
+            <span className="text-sm font-medium">asditap</span>
+            <ChevronDown className="h-4 w-4 text-muted-foreground" />
+          </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-48">
+          <DropdownMenuItem asChild>
+            <Link to="/settings/profile" className="flex items-center gap-2 cursor-pointer">
+              <User className="h-4 w-4" />
+              Edit Profil
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link to="/settings/password" className="flex items-center gap-2 cursor-pointer">
+              <Lock className="h-4 w-4" />
+              Ubah Password
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem className="flex items-center gap-2 text-destructive cursor-pointer">
+            <LogOut className="h-4 w-4" />
+            Keluar
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </header>
   );
 };
