@@ -12,6 +12,7 @@ import Certificate from "./pages/Certificate";
 import Affiliate from "./pages/Affiliate";
 import EditProfile from "./pages/EditProfile";
 import UpdatePassword from "./pages/UpdatePassword";
+import Notifications from "./pages/Notifications";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -32,6 +33,7 @@ const App = () => (
           <Route path="/affiliate" element={<Affiliate />} />
           <Route path="/settings/profile" element={<EditProfile />} />
           <Route path="/settings/password" element={<UpdatePassword />} />
+          <Route path="/notifications" element={<Notifications />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

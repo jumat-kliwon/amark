@@ -1,4 +1,4 @@
-import { ChevronDown, User, Lock, LogOut } from "lucide-react";
+import { ChevronDown, User, Lock, LogOut, Bell } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import {
   NavigationMenu,
@@ -15,6 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 const navItems = [
   { label: "Courses", href: "/" },
@@ -22,6 +23,8 @@ const navItems = [
   { label: "Certificate", href: "/certificate" },
   { label: "Affiliate", href: "/affiliate" },
 ];
+
+const unreadNotifications = 3;
 
 const Header = () => {
   const location = useLocation();
@@ -60,7 +63,20 @@ const Header = () => {
         </NavigationMenu>
       </div>
 
-      <DropdownMenu>
+      <div className="flex items-center gap-2">
+        {/* Notification Bell */}
+        <Button variant="ghost" size="icon" className="relative" asChild>
+          <Link to="/notifications">
+            <Bell className="h-5 w-5" />
+            {unreadNotifications > 0 && (
+              <span className="absolute -right-0.5 -top-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-destructive text-[10px] font-bold text-destructive-foreground">
+                {unreadNotifications > 9 ? "9+" : unreadNotifications}
+              </span>
+            )}
+          </Link>
+        </Button>
+
+        <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button className="flex items-center gap-2 rounded-md px-2 py-1 hover:bg-accent transition-colors">
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary">
@@ -89,7 +105,8 @@ const Header = () => {
             Keluar
           </DropdownMenuItem>
         </DropdownMenuContent>
-      </DropdownMenu>
+        </DropdownMenu>
+      </div>
     </header>
   );
 };
