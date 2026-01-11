@@ -29,6 +29,7 @@ const Index = () => {
                 id={course.id}
                 number={course.number}
                 title={course.title}
+                description={course.description}
                 author={course.author}
                 thumbnail={course.thumbnail}
                 locked={course.locked}
