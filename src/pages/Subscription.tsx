@@ -1,62 +1,22 @@
+import { Link } from "react-router-dom";
 import Header from "@/components/Header";
-import { Check, Crown, Calendar, CreditCard } from "lucide-react";
+import { Crown, Calendar, CreditCard, ArrowRight, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
-const plans = [
-  {
-    id: "basic",
-    name: "Basic",
-    price: "Rp 99.000",
-    period: "/bulan",
-    description: "Cocok untuk pemula yang ingin belajar",
-    features: [
-      "Akses 5 course dasar",
-      "Sertifikat digital",
-      "Forum komunitas",
-      "Update materi bulanan",
-    ],
-  },
-  {
-    id: "pro",
-    name: "Pro",
-    price: "Rp 199.000",
-    period: "/bulan",
-    description: "Untuk creator yang serius berkembang",
-    features: [
-      "Akses semua course",
-      "Sertifikat digital",
-      "Forum komunitas",
-      "Update materi bulanan",
-      "Konsultasi 1-on-1",
-      "Akses ke live session",
-    ],
-    popular: true,
-  },
-  {
-    id: "enterprise",
-    name: "Enterprise",
-    price: "Rp 499.000",
-    period: "/bulan",
-    description: "Untuk tim dan perusahaan",
-    features: [
-      "Semua fitur Pro",
-      "Akses untuk 5 anggota tim",
-      "Dashboard admin",
-      "Laporan progress tim",
-      "Priority support",
-      "Custom training",
-    ],
-  },
-];
-
 // Mock current subscription data
 const currentSubscription = {
-  plan: "basic",
+  plan: "Basic",
   status: "active",
   startDate: "10 Desember 2024",
   nextBillingDate: "10 Januari 2025",
   price: "Rp 99.000",
+  features: [
+    "Akses 5 course dasar",
+    "Sertifikat digital",
+    "Forum komunitas",
+    "Update materi bulanan",
+  ],
 };
 
 const Subscription = () => {
@@ -64,121 +24,113 @@ const Subscription = () => {
     <div className="min-h-screen bg-background">
       <Header />
       
-      <main className="mx-auto max-w-6xl px-6 py-12">
-        {/* Current Subscription Info */}
-        <div className="mb-12 rounded-2xl border border-border bg-card p-6">
-          <div className="flex items-start justify-between">
+      <main className="mx-auto max-w-3xl px-6 py-12">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold">Subscription Saya</h1>
+          <p className="text-muted-foreground">
+            Kelola subscription dan lihat detail paket Anda
+          </p>
+        </div>
+
+        {/* Current Subscription Card */}
+        <div className="mb-8 rounded-2xl border border-border bg-card overflow-hidden">
+          {/* Header */}
+          <div className="flex items-center justify-between border-b border-border bg-muted/30 p-6">
             <div className="flex items-center gap-4">
               <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10">
                 <Crown className="h-7 w-7 text-primary" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h2 className="text-xl font-bold">Subscription Aktif</h2>
+                  <h2 className="text-xl font-bold">Paket {currentSubscription.plan}</h2>
                   <Badge variant="default" className="bg-green-500/20 text-green-500 hover:bg-green-500/20">
                     {currentSubscription.status === "active" ? "Aktif" : "Tidak Aktif"}
                   </Badge>
                 </div>
-                <p className="text-muted-foreground">
-                  Paket <span className="font-semibold text-foreground">{plans.find(p => p.id === currentSubscription.plan)?.name}</span>
+                <p className="text-sm text-muted-foreground">
+                  {currentSubscription.price}/bulan
                 </p>
               </div>
             </div>
-            <Button variant="outline">Kelola Subscription</Button>
           </div>
 
-          <div className="mt-6 grid gap-4 border-t border-border pt-6 sm:grid-cols-3">
-            <div className="flex items-center gap-3">
-              <Calendar className="h-5 w-5 text-muted-foreground" />
-              <div>
-                <p className="text-xs text-muted-foreground">Mulai Berlangganan</p>
-                <p className="font-medium">{currentSubscription.startDate}</p>
+          {/* Details */}
+          <div className="p-6">
+            <div className="grid gap-6 sm:grid-cols-2">
+              <div className="flex items-center gap-4 rounded-lg border border-border bg-muted/20 p-4">
+                <Calendar className="h-5 w-5 text-muted-foreground" />
+                <div>
+                  <p className="text-xs text-muted-foreground">Mulai Berlangganan</p>
+                  <p className="font-medium">{currentSubscription.startDate}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-4 rounded-lg border border-border bg-muted/20 p-4">
+                <Calendar className="h-5 w-5 text-muted-foreground" />
+                <div>
+                  <p className="text-xs text-muted-foreground">Tagihan Berikutnya</p>
+                  <p className="font-medium">{currentSubscription.nextBillingDate}</p>
+                </div>
               </div>
             </div>
-            <div className="flex items-center gap-3">
-              <Calendar className="h-5 w-5 text-muted-foreground" />
-              <div>
-                <p className="text-xs text-muted-foreground">Tagihan Berikutnya</p>
-                <p className="font-medium">{currentSubscription.nextBillingDate}</p>
-              </div>
+
+            {/* Features */}
+            <div className="mt-6">
+              <h3 className="mb-3 text-sm font-semibold text-muted-foreground">FITUR YANG TERMASUK</h3>
+              <ul className="grid gap-2 sm:grid-cols-2">
+                {currentSubscription.features.map((feature) => (
+                  <li key={feature} className="flex items-center gap-2 text-sm">
+                    <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+                    {feature}
+                  </li>
+                ))}
+              </ul>
             </div>
-            <div className="flex items-center gap-3">
-              <CreditCard className="h-5 w-5 text-muted-foreground" />
-              <div>
-                <p className="text-xs text-muted-foreground">Biaya Bulanan</p>
-                <p className="font-medium">{currentSubscription.price}</p>
-              </div>
-            </div>
+          </div>
+
+          {/* Actions */}
+          <div className="flex flex-col gap-3 border-t border-border bg-muted/20 p-6 sm:flex-row">
+            <Button asChild>
+              <Link to="/subscription/plans">
+                <ArrowRight className="mr-2 h-4 w-4" />
+                Upgrade Paket
+              </Link>
+            </Button>
+            <Button variant="outline">
+              <CreditCard className="mr-2 h-4 w-4" />
+              Kelola Pembayaran
+            </Button>
+            <Button variant="ghost" className="text-destructive hover:text-destructive">
+              Batalkan Subscription
+            </Button>
           </div>
         </div>
 
-        <div className="mb-12 text-center">
-          <h1 className="mb-4 text-4xl font-bold">Upgrade Paket Anda</h1>
-          <p className="text-lg text-muted-foreground">
-            Tingkatkan skill Anda dengan akses penuh ke semua materi pembelajaran
-          </p>
-        </div>
-
-        <div className="grid gap-8 md:grid-cols-3">
-          {plans.map((plan) => {
-            const isCurrentPlan = plan.id === currentSubscription.plan;
-            
-            return (
-              <div
-                key={plan.name}
-                className={`relative rounded-2xl border p-8 transition-all hover:shadow-lg ${
-                  plan.popular
-                    ? "border-primary bg-card shadow-lg"
-                    : isCurrentPlan
-                    ? "border-green-500 bg-card"
-                    : "border-border bg-card"
-                }`}
-              >
-                {plan.popular && !isCurrentPlan && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <span className="rounded-full bg-primary px-4 py-1 text-xs font-semibold text-primary-foreground">
-                      Paling Populer
-                    </span>
-                  </div>
-                )}
-                
-                {isCurrentPlan && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <span className="rounded-full bg-green-500 px-4 py-1 text-xs font-semibold text-white">
-                      Paket Anda
-                    </span>
-                  </div>
-                )}
-
-                <div className="mb-6">
-                  <h3 className="mb-2 text-xl font-bold">{plan.name}</h3>
-                  <p className="text-sm text-muted-foreground">{plan.description}</p>
+        {/* Billing History */}
+        <div className="rounded-2xl border border-border bg-card">
+          <div className="flex items-center justify-between border-b border-border p-6">
+            <h3 className="font-semibold">Riwayat Pembayaran</h3>
+            <Button variant="ghost" size="sm">
+              <Settings className="mr-2 h-4 w-4" />
+              Pengaturan
+            </Button>
+          </div>
+          <div className="divide-y divide-border">
+            {[
+              { date: "10 Desember 2024", amount: "Rp 99.000", status: "Berhasil" },
+              { date: "10 November 2024", amount: "Rp 99.000", status: "Berhasil" },
+              { date: "10 Oktober 2024", amount: "Rp 99.000", status: "Berhasil" },
+            ].map((payment, index) => (
+              <div key={index} className="flex items-center justify-between p-4">
+                <div>
+                  <p className="font-medium">{payment.amount}</p>
+                  <p className="text-sm text-muted-foreground">{payment.date}</p>
                 </div>
-
-                <div className="mb-6">
-                  <span className="text-4xl font-bold">{plan.price}</span>
-                  <span className="text-muted-foreground">{plan.period}</span>
-                </div>
-
-                <ul className="mb-8 space-y-3">
-                  {plan.features.map((feature) => (
-                    <li key={feature} className="flex items-center gap-3 text-sm">
-                      <Check className="h-4 w-4 text-primary" />
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-
-                <Button
-                  className="w-full"
-                  variant={isCurrentPlan ? "outline" : plan.popular ? "default" : "outline"}
-                  disabled={isCurrentPlan}
-                >
-                  {isCurrentPlan ? "Paket Aktif" : "Pilih Paket"}
-                </Button>
+                <Badge variant="outline" className="text-green-500 border-green-500/30">
+                  {payment.status}
+                </Badge>
               </div>
-            );
-          })}
+            ))}
+          </div>
         </div>
       </main>
     </div>
