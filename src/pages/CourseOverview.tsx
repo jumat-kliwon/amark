@@ -38,57 +38,104 @@ const CourseOverview = () => {
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
 
-      {/* Hero Section */}
-      <div className="relative border-b border-border bg-gradient-to-b from-card to-background">
-        <div className="mx-auto max-w-6xl px-6 py-8">
+      {/* Hero Section with Cover */}
+      <div className="relative overflow-hidden">
+        {/* Background Cover Image */}
+        <div className="absolute inset-0">
+          <img 
+            src={course.thumbnail} 
+            alt={course.title} 
+            className="h-full w-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/95 to-background/60" />
+        </div>
+
+        {/* Content */}
+        <div className="relative mx-auto max-w-6xl px-6 py-10">
           <Link
             to="/"
-            className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            className="mb-8 inline-flex items-center gap-2 rounded-full bg-background/50 backdrop-blur-sm px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-background/70 transition-all"
           >
             <ArrowLeft className="h-4 w-4" />
             Kembali ke Courses
           </Link>
 
-          <div>
-            <Badge variant="secondary" className="mb-4">
-              {course.category.replace("-", " ").toUpperCase()}
-            </Badge>
-
-            <h1 className="mb-4 text-3xl font-bold tracking-tight lg:text-4xl">
-              {course.number}. {course.title}
-            </h1>
-
-            <p className="mb-6 text-lg text-muted-foreground leading-relaxed">{course.description}</p>
-
-            {/* Stats */}
-            <div className="mb-6 flex flex-wrap items-center gap-6 text-sm">
-              <div className="flex items-center gap-2">
-                <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
-                <span className="font-semibold">{course.rating}</span>
-                <span className="text-muted-foreground">({course.totalRatings.toLocaleString()} ulasan)</span>
-              </div>
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <Users className="h-4 w-4" />
-                <span>{course.participants.toLocaleString()} peserta</span>
-              </div>
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <Clock className="h-4 w-4" />
-                <span>{course.duration}</span>
-              </div>
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <BookOpen className="h-4 w-4" />
-                <span>{totalLessons} materi</span>
+          <div className="grid gap-8 lg:grid-cols-3">
+            {/* Left: Course Cover */}
+            <div className="lg:col-span-1">
+              <div className="group relative overflow-hidden rounded-2xl border border-white/10 shadow-2xl">
+                <div className="aspect-[4/3]">
+                  <img 
+                    src={course.thumbnail} 
+                    alt={course.title} 
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                </div>
+                <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary shadow-lg transition-transform duration-300 group-hover:scale-110">
+                    <Play className="h-7 w-7 fill-primary-foreground text-primary-foreground ml-1" />
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* Author */}
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary">
-                <span className="text-sm font-bold text-primary-foreground">A</span>
+            {/* Right: Course Info */}
+            <div className="lg:col-span-2 flex flex-col justify-center">
+              <Badge variant="secondary" className="mb-4 w-fit bg-primary/20 text-primary border-0">
+                {course.category.replace("-", " ").toUpperCase()}
+              </Badge>
+
+              <h1 className="mb-4 text-3xl font-bold tracking-tight lg:text-4xl xl:text-5xl">
+                {course.number}. {course.title}
+              </h1>
+
+              <p className="mb-6 text-lg text-muted-foreground leading-relaxed max-w-2xl">
+                {course.description}
+              </p>
+
+              {/* Stats Grid */}
+              <div className="mb-8 grid grid-cols-2 gap-4 sm:flex sm:flex-wrap sm:gap-6">
+                <div className="flex items-center gap-2 rounded-lg bg-card/50 backdrop-blur-sm px-4 py-3 border border-border/50">
+                  <Star className="h-5 w-5 fill-yellow-500 text-yellow-500" />
+                  <div>
+                    <span className="font-bold">{course.rating}</span>
+                    <span className="text-xs text-muted-foreground ml-1">({course.totalRatings.toLocaleString()})</span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 rounded-lg bg-card/50 backdrop-blur-sm px-4 py-3 border border-border/50">
+                  <Users className="h-5 w-5 text-primary" />
+                  <span className="text-sm">{course.participants.toLocaleString()} peserta</span>
+                </div>
+                <div className="flex items-center gap-2 rounded-lg bg-card/50 backdrop-blur-sm px-4 py-3 border border-border/50">
+                  <Clock className="h-5 w-5 text-primary" />
+                  <span className="text-sm">{course.duration}</span>
+                </div>
+                <div className="flex items-center gap-2 rounded-lg bg-card/50 backdrop-blur-sm px-4 py-3 border border-border/50">
+                  <BookOpen className="h-5 w-5 text-primary" />
+                  <span className="text-sm">{totalLessons} materi</span>
+                </div>
               </div>
-              <div>
-                <p className="text-sm font-medium">Dibuat oleh</p>
-                <p className="text-sm text-muted-foreground">{course.author}</p>
+
+              {/* Author & CTA */}
+              <div className="flex flex-wrap items-center gap-6">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/60 shadow-lg">
+                    <span className="text-sm font-bold text-primary-foreground">A</span>
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground">Dibuat oleh</p>
+                    <p className="font-medium">{course.author}</p>
+                  </div>
+                </div>
+
+                {firstUncompletedLesson && (
+                  <Link to={`/course/${course.id}/lesson/${firstUncompletedLesson.id}`}>
+                    <Button size="lg" className="shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow">
+                      <Play className="h-4 w-4 mr-2" />
+                      {completedLessons > 0 ? "Lanjutkan Belajar" : "Mulai Belajar"}
+                    </Button>
+                  </Link>
+                )}
               </div>
             </div>
           </div>
