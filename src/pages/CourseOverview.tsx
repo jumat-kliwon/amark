@@ -39,19 +39,10 @@ const CourseOverview = () => {
       <Header />
 
       {/* Hero Section with Cover */}
-      <div className="relative overflow-hidden">
-        {/* Background Cover Image */}
-        <div className="absolute inset-0">
-          <img 
-            src={course.thumbnail} 
-            alt={course.title} 
-            className="h-full w-full object-cover"
-          />
-          <div className="absolute inset-0 bg-background/90" />
-        </div>
+      <div className="bg-card">
 
         {/* Content */}
-        <div className="relative mx-auto max-w-6xl px-6 py-10">
+        <div className="mx-auto max-w-6xl px-6 py-10">
           <Link
             to="/"
             className="mb-8 inline-flex items-center gap-2 rounded-full bg-background/50 backdrop-blur-sm px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-background/70 transition-all"
