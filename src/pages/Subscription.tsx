@@ -73,18 +73,6 @@ const Subscription = () => {
               </div>
             </div>
 
-            {/* Features */}
-            <div className="mt-6">
-              <h3 className="mb-3 text-sm font-semibold text-muted-foreground">FITUR YANG TERMASUK</h3>
-              <ul className="grid gap-2 sm:grid-cols-2">
-                {currentSubscription.features.map((feature) => (
-                  <li key={feature} className="flex items-center gap-2 text-sm">
-                    <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-            </div>
           </div>
 
           {/* Actions */}
