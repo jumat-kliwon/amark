@@ -15,14 +15,14 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Header />
       
-      <main className="flex gap-6 p-6">
+      <main className="flex flex-col lg:flex-row gap-4 lg:gap-6 p-4 sm:p-6">
         <CategorySidebar
           selectedCategory={selectedCategory}
           onSelectCategory={setSelectedCategory}
         />
 
         <section className="flex-1">
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3">
             {filteredCourses.map((course, index) => (
               <CourseCard
                 key={course.id}
@@ -40,8 +40,8 @@ const Index = () => {
           </div>
 
           {filteredCourses.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-20 text-center">
-              <p className="text-lg text-muted-foreground">
+            <div className="flex flex-col items-center justify-center py-16 sm:py-20 text-center px-4">
+              <p className="text-base sm:text-lg text-muted-foreground">
                 Belum ada course di kategori ini
               </p>
             </div>
