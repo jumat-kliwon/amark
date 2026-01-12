@@ -167,7 +167,7 @@ const Notifications = () => {
                   {/* Top row: Icon + Content */}
                   <div className="flex gap-3 sm:gap-4 flex-1 min-w-0">
                     {/* Icon */}
-                    <div className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors group-hover:bg-foreground group-hover:text-background">
+                    <div className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors group-hover:bg-destructive group-hover:text-destructive-foreground">
                       <Bell className="h-4 w-4 sm:h-5 sm:w-5" />
                     </div>
 
