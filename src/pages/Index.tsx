@@ -5,7 +5,7 @@ import CourseCard from "@/components/CourseCard";
 import { courses } from "@/data/courses";
 
 const Index = () => {
-  const [selectedCategory, setSelectedCategory] = useState("fast-track");
+  const [selectedCategory, setSelectedCategory] = useState("");
 
   const filteredCourses = selectedCategory
     ? courses.filter((course) => course.category === selectedCategory)

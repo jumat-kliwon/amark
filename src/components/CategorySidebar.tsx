@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronDown, ChevronRight, Menu } from "lucide-react";
+import { ChevronDown, ChevronRight, Menu, LayoutGrid } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -82,6 +82,23 @@ const SidebarContent = ({
     <div>
       <h3 className="mb-4 text-lg font-semibold">Courses:</h3>
       <nav className="space-y-1">
+        {/* Semua Kursus / Reset Filter */}
+        <button
+          onClick={() => {
+            onSelectCategory("");
+            onItemClick?.();
+          }}
+          className={cn(
+            "flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm font-medium transition-colors",
+            selectedCategory === ""
+              ? "bg-sidebar-accent text-foreground"
+              : "text-muted-foreground hover:bg-sidebar-accent/50 hover:text-foreground"
+          )}
+        >
+          <LayoutGrid className="h-4 w-4" />
+          Semua Kursus
+        </button>
+
         {categories.map((category) => (
           <div key={category.id}>
             <button
