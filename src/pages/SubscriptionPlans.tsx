@@ -1,9 +1,29 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
-import { Check, ArrowLeft } from "lucide-react";
+import { Check, ArrowLeft, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
-const plans = [
+interface Plan {
+  id: string;
+  name: string;
+  price: string;
+  period: string;
+  description: string;
+  features: string[];
+  popular?: boolean;
+}
+
+const plans: Plan[] = [
   {
     id: "basic",
     name: "Basic",
@@ -54,6 +74,41 @@ const plans = [
 const currentPlanId = "basic";
 
 const SubscriptionPlans = () => {
+  const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [couponCode, setCouponCode] = useState("");
+  const [couponApplied, setCouponApplied] = useState(false);
+  const [couponError, setCouponError] = useState("");
+
+  const handleSelectPlan = (plan: Plan) => {
+    setSelectedPlan(plan);
+    setCouponCode("");
+    setCouponApplied(false);
+    setCouponError("");
+    setIsModalOpen(true);
+  };
+
+  const handleApplyCoupon = () => {
+    if (!couponCode.trim()) {
+      setCouponError("Masukkan kode kupon");
+      return;
+    }
+    // Simulate coupon validation (would be API call in real app)
+    if (couponCode.toUpperCase() === "DISKON20") {
+      setCouponApplied(true);
+      setCouponError("");
+    } else {
+      setCouponError("Kode kupon tidak valid");
+      setCouponApplied(false);
+    }
+  };
+
+  const handleConfirmOrder = () => {
+    // Handle order confirmation (would integrate with payment gateway)
+    console.log("Order confirmed:", { plan: selectedPlan, coupon: couponCode });
+    setIsModalOpen(false);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -128,6 +183,7 @@ const SubscriptionPlans = () => {
                   className="w-full"
                   variant={isCurrentPlan ? "outline" : plan.popular ? "default" : "outline"}
                   disabled={isCurrentPlan}
+                  onClick={() => !isCurrentPlan && handleSelectPlan(plan)}
                 >
                   {isCurrentPlan ? "Paket Aktif" : "Pilih Paket"}
                 </Button>
@@ -146,6 +202,98 @@ const SubscriptionPlans = () => {
           </p>
         </div>
       </main>
+
+      {/* Order Summary Modal */}
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Ringkasan Pesanan</DialogTitle>
+            <DialogDescription>
+              Periksa detail pesanan Anda sebelum melanjutkan pembayaran
+            </DialogDescription>
+          </DialogHeader>
+
+          {selectedPlan && (
+            <div className="space-y-6">
+              {/* Plan Details */}
+              <div className="rounded-lg border p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="font-semibold">{selectedPlan.name}</h4>
+                  <span className="font-bold text-primary">
+                    {selectedPlan.price}
+                    <span className="text-sm font-normal text-muted-foreground">
+                      {selectedPlan.period}
+                    </span>
+                  </span>
+                </div>
+                <p className="text-sm text-muted-foreground">{selectedPlan.description}</p>
+              </div>
+
+              {/* Coupon Input */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Kode Kupon</label>
+                <div className="flex gap-2">
+                  <div className="relative flex-1">
+                    <Tag className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    <Input
+                      placeholder="Masukkan kode kupon"
+                      value={couponCode}
+                      onChange={(e) => {
+                        setCouponCode(e.target.value.toUpperCase());
+                        setCouponError("");
+                        setCouponApplied(false);
+                      }}
+                      className="pl-10"
+                      maxLength={20}
+                    />
+                  </div>
+                  <Button variant="outline" onClick={handleApplyCoupon}>
+                    Terapkan
+                  </Button>
+                </div>
+                {couponError && (
+                  <p className="text-sm text-destructive">{couponError}</p>
+                )}
+                {couponApplied && (
+                  <p className="text-sm text-green-500">Kupon berhasil diterapkan! Diskon 20%</p>
+                )}
+              </div>
+
+              {/* Order Summary */}
+              <div className="space-y-2 border-t pt-4">
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Subtotal</span>
+                  <span>{selectedPlan.price}</span>
+                </div>
+                {couponApplied && (
+                  <div className="flex justify-between text-sm text-green-500">
+                    <span>Diskon (20%)</span>
+                    <span>- Rp {(parseInt(selectedPlan.price.replace(/\D/g, '')) * 0.2).toLocaleString('id-ID')}</span>
+                  </div>
+                )}
+                <div className="flex justify-between font-semibold text-lg border-t pt-2">
+                  <span>Total</span>
+                  <span className="text-primary">
+                    Rp {couponApplied 
+                      ? (parseInt(selectedPlan.price.replace(/\D/g, '')) * 0.8).toLocaleString('id-ID')
+                      : parseInt(selectedPlan.price.replace(/\D/g, '')).toLocaleString('id-ID')
+                    }
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <DialogFooter className="gap-2">
+            <Button variant="outline" onClick={() => setIsModalOpen(false)}>
+              Batal
+            </Button>
+            <Button onClick={handleConfirmOrder}>
+              Lanjutkan Pembayaran
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
