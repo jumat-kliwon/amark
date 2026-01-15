@@ -589,21 +589,16 @@ const Subscription = () => {
                     {/* Right: Actions */}
                     <div className="flex items-center gap-2 flex-shrink-0">
                       <Button 
-                        variant="ghost" 
-                        size="icon" 
-                        className="h-8 w-8"
+                        variant="outline" 
+                        size="sm"
+                        className="text-xs"
                         onClick={() => setSelectedPayment(payment)}
                       >
-                        <Eye className="h-4 w-4" />
+                        <Eye className="h-4 w-4 mr-1" />
+                        View
                       </Button>
-                      {payment.status_label === "Paid" && (
-                        <Button variant="ghost" size="icon" className="h-8 w-8">
-                          <Download className="h-4 w-4" />
-                        </Button>
-                      )}
                       {payment.status_label === "Pending" && payment.payment_detail?.snap_redirect_url && (
                         <Button 
-                          variant="outline" 
                           size="sm" 
                           className="text-xs"
                           onClick={() => window.open(payment.payment_detail?.snap_redirect_url, '_blank')}
