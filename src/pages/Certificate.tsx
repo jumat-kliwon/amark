@@ -66,10 +66,6 @@ const Certificate = () => {
                     <Eye className="mr-2 h-4 w-4" />
                     Preview
                   </Button>
-                  <Button variant="outline" size="sm">
-                    <Share2 className="mr-2 h-4 w-4" />
-                    Bagikan
-                  </Button>
                   <Button size="sm">
                     <Download className="mr-2 h-4 w-4" />
                     Unduh
