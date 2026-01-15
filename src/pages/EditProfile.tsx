@@ -1,21 +1,20 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { User, Mail, Phone, ArrowLeft, Save } from "lucide-react";
+import { User, Mail, Phone, ArrowLeft, Save, AtSign } from "lucide-react";
 import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 
 const EditProfile = () => {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
-    name: "Asditap",
-    email: "asditap@example.com",
-    phone: "+62 812 3456 7890",
-    bio: "Content creator dan digital marketer yang sedang belajar personal branding.",
+    name: "Budi",
+    email: "asditap@gmail.com",
+    phone_number: "082243629916",
+    username: "asditap",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -129,13 +128,13 @@ const EditProfile = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="phone">Nomor Telepon</Label>
+              <Label htmlFor="phone_number">Nomor Telepon</Label>
               <div className="relative">
                 <Phone className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
-                  id="phone"
-                  name="phone"
-                  value={formData.phone}
+                  id="phone_number"
+                  name="phone_number"
+                  value={formData.phone_number}
                   onChange={handleChange}
                   className="pl-10"
                   placeholder="Masukkan nomor telepon"
@@ -145,19 +144,19 @@ const EditProfile = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="bio">Bio</Label>
-              <Textarea
-                id="bio"
-                name="bio"
-                value={formData.bio}
-                onChange={handleChange}
-                placeholder="Ceritakan tentang diri Anda"
-                rows={4}
-                maxLength={500}
-              />
-              <p className="text-xs text-muted-foreground">
-                {formData.bio.length}/500 karakter
-              </p>
+              <Label htmlFor="username">Username</Label>
+              <div className="relative">
+                <AtSign className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  id="username"
+                  name="username"
+                  value={formData.username}
+                  onChange={handleChange}
+                  className="pl-10"
+                  placeholder="Masukkan username"
+                  maxLength={50}
+                />
+              </div>
             </div>
 
             <div className="flex gap-4 pt-4">
