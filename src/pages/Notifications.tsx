@@ -110,30 +110,12 @@ const Notifications = () => {
           )}
         </div>
 
-        {/* Filter Tabs */}
-        <div className="mb-6 flex gap-2">
-          <Button
-            variant={filter === "all" ? "default" : "outline"}
-            size="sm"
-            onClick={() => setFilter("all")}
-          >
-            Semua
-            <Badge variant="secondary" className="ml-2">
-              {notificationList.length}
-            </Badge>
-          </Button>
-          <Button
-            variant={filter === "unread" ? "default" : "outline"}
-            size="sm"
-            onClick={() => setFilter("unread")}
-          >
-            Belum Dibaca
-            {unreadCount > 0 && (
-              <Badge variant="destructive" className="ml-2">
-                {unreadCount}
-              </Badge>
-            )}
-          </Button>
+        {/* Filter Header */}
+        <div className="mb-6 flex items-center gap-2">
+          <span className="text-sm font-medium">Semua Notifikasi</span>
+          <Badge variant="secondary">
+            {notificationList.length}
+          </Badge>
         </div>
 
         {/* Notification List */}
