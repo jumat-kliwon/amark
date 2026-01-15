@@ -511,19 +511,12 @@ const Subscription = () => {
           </div>
 
           {/* Actions */}
-          <div className="flex flex-col gap-3 border-t border-border bg-muted/20 p-6 sm:flex-row">
+          <div className="border-t border-border bg-muted/20 p-6">
             <Button asChild>
               <Link to="/subscription/plans">
                 <ArrowRight className="mr-2 h-4 w-4" />
                 Upgrade Paket
               </Link>
-            </Button>
-            <Button variant="outline">
-              <CreditCard className="mr-2 h-4 w-4" />
-              Kelola Pembayaran
-            </Button>
-            <Button variant="ghost" className="text-destructive hover:text-destructive">
-              Batalkan Subscription
             </Button>
           </div>
         </div>
