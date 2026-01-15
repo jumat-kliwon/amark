@@ -13,17 +13,33 @@ import { useState } from "react";
 
 // Mock current subscription data
 const currentSubscription = {
-  plan: "Basic",
-  status: "active",
-  startDate: "10 Desember 2024",
-  nextBillingDate: "10 Januari 2025",
-  price: "Rp 99.000",
-  features: [
-    "Akses 5 course dasar",
-    "Sertifikat digital",
-    "Forum komunitas",
-    "Update materi bulanan",
-  ],
+  name: "VIP Acre 1 Tahun",
+  price: "1997000.00",
+  accessType: "Lifetime",
+  status: "Active",
+  startDate: "2026-01-15T04:22:39.000000Z",
+  endDate: null,
+};
+
+// Helper function to format date
+const formatDate = (dateString: string | null) => {
+  if (!dateString) return "-";
+  const date = new Date(dateString);
+  return date.toLocaleDateString("id-ID", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+};
+
+// Helper function to format price
+const formatPrice = (price: string) => {
+  const numPrice = parseFloat(price);
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 0,
+  }).format(numPrice);
 };
 
 // More detailed payment history (extended for pagination demo)
@@ -172,13 +188,13 @@ const Subscription = () => {
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h2 className="text-xl font-bold">Paket {currentSubscription.plan}</h2>
+                  <h2 className="text-xl font-bold">{currentSubscription.name}</h2>
                   <Badge variant="default" className="bg-green-500/20 text-green-500 hover:bg-green-500/20">
-                    {currentSubscription.status === "active" ? "Aktif" : "Tidak Aktif"}
+                    {currentSubscription.status}
                   </Badge>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  {currentSubscription.price}/bulan
+                  {formatPrice(currentSubscription.price)}
                 </p>
               </div>
             </div>
@@ -186,19 +202,26 @@ const Subscription = () => {
 
           {/* Details */}
           <div className="p-6">
-            <div className="grid gap-6 sm:grid-cols-2">
+            <div className="grid gap-6 sm:grid-cols-3">
               <div className="flex items-center gap-4 rounded-lg border border-border bg-muted/20 p-4">
                 <Calendar className="h-5 w-5 text-muted-foreground" />
                 <div>
                   <p className="text-xs text-muted-foreground">Mulai Berlangganan</p>
-                  <p className="font-medium">{currentSubscription.startDate}</p>
+                  <p className="font-medium">{formatDate(currentSubscription.startDate)}</p>
                 </div>
               </div>
               <div className="flex items-center gap-4 rounded-lg border border-border bg-muted/20 p-4">
                 <Calendar className="h-5 w-5 text-muted-foreground" />
                 <div>
-                  <p className="text-xs text-muted-foreground">Tagihan Berikutnya</p>
-                  <p className="font-medium">{currentSubscription.nextBillingDate}</p>
+                  <p className="text-xs text-muted-foreground">Berakhir</p>
+                  <p className="font-medium">{currentSubscription.endDate ? formatDate(currentSubscription.endDate) : "Selamanya"}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-4 rounded-lg border border-border bg-muted/20 p-4">
+                <Crown className="h-5 w-5 text-muted-foreground" />
+                <div>
+                  <p className="text-xs text-muted-foreground">Tipe Akses</p>
+                  <p className="font-medium">{currentSubscription.accessType}</p>
                 </div>
               </div>
             </div>
