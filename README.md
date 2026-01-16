@@ -1,73 +1,118 @@
-# Welcome to your Lovable project
+# ACRE26 - Platform Kursus Online
 
-## Project info
+Platform pembelajaran online yang dibangun dengan Next.js untuk menampilkan dan mengelola kursus, pelajaran, sertifikat, dan langganan.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## Teknologi yang Digunakan
 
-## How can I edit this code?
+Proyek ini dibangun dengan:
 
-There are several ways of editing your application.
+- **Next.js 14** - Framework React dengan App Router
+- **TypeScript** - Type safety untuk JavaScript
+- **React 18** - Library UI
+- **shadcn/ui** - Komponen UI yang dapat dikustomisasi
+- **Tailwind CSS** - Framework CSS utility-first
+- **React Query (TanStack Query)** - State management dan data fetching
+- **React Hook Form** - Form management
+- **Zod** - Schema validation
+- **Lucide React** - Icon library
 
-**Use Lovable**
+## Fitur
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+- 🎓 **Katalog Kursus** - Browse dan cari kursus berdasarkan kategori
+- 📚 **Detail Kursus** - Lihat detail kursus dan pelajaran
+- 🎥 **Pelajaran** - Akses konten pelajaran
+- 📜 **Sertifikat** - Kelola sertifikat penyelesaian
+- 💳 **Langganan** - Manajemen paket langganan
+- 👤 **Profil** - Edit profil dan password
+- 🔔 **Notifikasi** - Sistem notifikasi
+- 🤝 **Afiliasi** - Program afiliasi
 
-Changes made via Lovable will be committed automatically to this repo.
+## Persyaratan
 
-**Use your preferred IDE**
+- Node.js 18+ atau Bun
+- npm, yarn, pnpm, atau bun
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## Instalasi dan Menjalankan Proyek
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+### Menggunakan npm
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
+# Clone repository
 git clone <YOUR_GIT_URL>
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+# Masuk ke direktori proyek
+cd acre26
 
-# Step 3: Install the necessary dependencies.
-npm i
+# Install dependencies
+npm install
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Jalankan development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+### Menggunakan Bun
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```sh
+# Clone repository
+git clone <YOUR_GIT_URL>
 
-**Use GitHub Codespaces**
+# Masuk ke direktori proyek
+cd acre26
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+# Install dependencies
+bun install
 
-## What technologies are used for this project?
+# Jalankan development server
+bun run dev
+```
 
-This project is built with:
+Aplikasi akan berjalan di [http://localhost:3000](http://localhost:3000)
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## Scripts yang Tersedia
 
-## How can I deploy this project?
+- `npm run dev` - Menjalankan development server
+- `npm run build` - Build aplikasi untuk production
+- `npm run start` - Menjalankan production server
+- `npm run lint` - Menjalankan ESLint
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+## Struktur Proyek
 
-## Can I connect a custom domain to my Lovable project?
+```
+src/
+├── app/              # Next.js App Router pages
+│   ├── course/       # Halaman kursus
+│   ├── certificate/  # Halaman sertifikat
+│   ├── subscription/ # Halaman langganan
+│   ├── settings/     # Halaman pengaturan
+│   └── ...
+├── components/        # Komponen React
+│   ├── ui/           # shadcn/ui components
+│   └── ...
+├── pages/            # Komponen halaman
+├── hooks/            # Custom React hooks
+├── lib/              # Utility functions
+└── data/             # Data statis
+```
 
-Yes, you can!
+## Deployment
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+Untuk deploy aplikasi ini, Anda dapat menggunakan:
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+- **Vercel** (Recommended untuk Next.js)
+- **Netlify**
+- **AWS Amplify**
+- Platform lainnya yang mendukung Next.js
+
+### Deploy ke Vercel
+
+```sh
+# Install Vercel CLI
+npm i -g vercel
+
+# Deploy
+vercel
+```
+
+## Lisensi
+
+Private project
