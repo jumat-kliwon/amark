@@ -1,5 +1,7 @@
+"use client";
+
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -36,7 +38,7 @@ const CourseCard = ({ id, number, title, description, author, thumbnail, locked 
 
   return (
     <>
-      <Link to={locked ? "#" : `/course/${id}`} onClick={handleClick}>
+      <Link href={locked ? "#" : `/course/${id}`} onClick={handleClick}>
         <div
           className={cn(
             "group cursor-pointer overflow-hidden rounded-xl bg-card transition-all duration-300 hover:bg-card-hover hover:shadow-xl hover:shadow-primary/5",
@@ -128,7 +130,7 @@ const CourseCard = ({ id, number, title, description, author, thumbnail, locked 
 
           <DialogFooter className="flex-col gap-2 sm:flex-col">
             <Button asChild className="w-full">
-              <Link to="/subscription" onClick={() => setShowModal(false)}>
+              <Link href="/subscription" onClick={() => setShowModal(false)}>
                 Lihat Paket Subscription
               </Link>
             </Button>

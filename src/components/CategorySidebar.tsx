@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { ChevronDown, ChevronRight, Menu, LayoutGrid } from "lucide-react";
 import { cn } from "@/lib/utils";

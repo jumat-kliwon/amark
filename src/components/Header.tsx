@@ -1,5 +1,8 @@
+"use client";
+
 import { ChevronDown, User, Lock, LogOut, Bell, Menu } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   NavigationMenu,
   NavigationMenuList,
@@ -35,7 +38,7 @@ const navItems = [
 const unreadNotifications = 3;
 
 const Header = () => {
-  const location = useLocation();
+  const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
@@ -68,7 +71,7 @@ const Header = () => {
                   onClick={() => setMobileMenuOpen(false)}
                   className={cn(
                     "rounded-lg px-4 py-3 text-sm font-medium transition-colors",
-                    location.pathname === item.href
+                    pathname === item.href
                       ? "bg-accent text-accent-foreground"
                       : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
                   )}
@@ -81,7 +84,7 @@ const Header = () => {
         </Sheet>
 
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 sm:gap-3">
+        <Link href="/" className="flex items-center gap-2 sm:gap-3">
           <div className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full bg-foreground">
             <span className="text-base sm:text-lg font-bold text-background">A</span>
           </div>
@@ -98,10 +101,10 @@ const Header = () => {
               <NavigationMenuItem key={item.href}>
                 <NavigationMenuLink asChild>
                   <Link
-                    to={item.href}
+                    href={item.href}
                     className={cn(
                       navigationMenuTriggerStyle(),
-                      location.pathname === item.href && "bg-accent"
+                      pathname === item.href && "bg-accent"
                     )}
                   >
                     {item.label}
@@ -116,7 +119,7 @@ const Header = () => {
       <div className="flex items-center gap-1 sm:gap-2">
         {/* Notification Bell */}
         <Button variant="ghost" size="icon" className="relative h-9 w-9 sm:h-10 sm:w-10" asChild>
-          <Link to="/notifications">
+          <Link href="/notifications">
             <Bell className="h-5 w-5" />
             {unreadNotifications > 0 && (
               <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 sm:h-5 sm:w-5 items-center justify-center rounded-full bg-destructive text-[9px] sm:text-[10px] font-bold text-destructive-foreground">
@@ -138,13 +141,13 @@ const Header = () => {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">
             <DropdownMenuItem asChild>
-              <Link to="/settings/profile" className="flex items-center gap-2 cursor-pointer">
+              <Link href="/settings/profile" className="flex items-center gap-2 cursor-pointer">
                 <User className="h-4 w-4" />
                 Edit Profil
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <Link to="/settings/password" className="flex items-center gap-2 cursor-pointer">
+              <Link href="/settings/password" className="flex items-center gap-2 cursor-pointer">
                 <Lock className="h-4 w-4" />
                 Ubah Password
               </Link>
