@@ -67,7 +67,7 @@ const Header = () => {
               {navItems.map((item) => (
                 <Link
                   key={item.href}
-                  to={item.href}
+                  href={item.href}
                   onClick={() => setMobileMenuOpen(false)}
                   className={cn(
                     "rounded-lg px-4 py-3 text-sm font-medium transition-colors",

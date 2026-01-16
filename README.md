@@ -1,73 +1,141 @@
-# Welcome to your Lovable project
+# ACRE26 - Platform Kursus Online
 
-## Project info
+Platform pembelajaran online yang dibangun dengan Next.js untuk menampilkan dan mengelola kursus, pelajaran, sertifikat, dan langganan.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## Teknologi yang Digunakan
 
-## How can I edit this code?
+Proyek ini dibangun dengan:
 
-There are several ways of editing your application.
+- **Next.js 16.1.2** - Framework React dengan App Router, Turbopack, dan React Compiler
+- **React 19** - Library UI dengan optimasi terbaru
+- **TypeScript 5.8+** - Type safety untuk JavaScript
+- **Turbopack** - Bundler default Next.js 16 untuk build dan dev yang lebih cepat
+- **React Compiler** - Optimasi render otomatis dan memoization
+- **shadcn/ui** - Komponen UI yang dapat dikustomisasi
+- **Tailwind CSS** - Framework CSS utility-first
+- **React Query (TanStack Query)** - State management dan data fetching
+- **React Hook Form** - Form management
+- **Zod** - Schema validation
+- **Lucide React** - Icon library
 
-**Use Lovable**
+## Fitur
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+### Fitur Aplikasi
+- 🎓 **Katalog Kursus** - Browse dan cari kursus berdasarkan kategori
+- 📚 **Detail Kursus** - Lihat detail kursus dan pelajaran
+- 🎥 **Pelajaran** - Akses konten pelajaran
+- 📜 **Sertifikat** - Kelola sertifikat penyelesaian
+- 💳 **Langganan** - Manajemen paket langganan
+- 👤 **Profil** - Edit profil dan password
+- 🔔 **Notifikasi** - Sistem notifikasi
+- 🤝 **Afiliasi** - Program afiliasi
 
-Changes made via Lovable will be committed automatically to this repo.
+### Fitur Teknologi Next.js 16
+- ⚡ **Turbopack** - Build dan dev server yang lebih cepat (default bundler)
+- 🚀 **React Compiler** - Optimasi render otomatis, mengurangi kebutuhan `useMemo` dan `useCallback` manual
+- 💾 **Image Optimization** - Optimasi gambar dengan cache TTL 4 jam default
+- 📦 **Modern Tooling** - ESLint 9, TypeScript 5.8+, dan tooling terbaru
 
-**Use your preferred IDE**
+## Persyaratan
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- **Node.js 20.9.0+** (Next.js 16 memerlukan Node.js 20.9.0 atau lebih tinggi)
+- npm, yarn, pnpm, atau bun
+- TypeScript 5.1.0+ (sudah termasuk dalam dependencies)
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## Instalasi dan Menjalankan Proyek
 
-Follow these steps:
+### Menggunakan npm
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
+# Clone repository
 git clone <YOUR_GIT_URL>
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+# Masuk ke direktori proyek
+cd acre26
 
-# Step 3: Install the necessary dependencies.
-npm i
+# Install dependencies
+npm install --legacy-peer-deps
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Jalankan development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+### Menggunakan Bun
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```sh
+# Clone repository
+git clone <YOUR_GIT_URL>
 
-**Use GitHub Codespaces**
+# Masuk ke direktori proyek
+cd acre26
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+# Install dependencies
+bun install
 
-## What technologies are used for this project?
+# Jalankan development server
+bun run dev
+```
 
-This project is built with:
+Aplikasi akan berjalan di [http://localhost:3000](http://localhost:3000)
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## Scripts yang Tersedia
 
-## How can I deploy this project?
+- `npm run dev` - Menjalankan development server dengan Turbopack (default)
+- `npm run build` - Build aplikasi untuk production dengan Turbopack
+- `npm run start` - Menjalankan production server
+- `npm run lint` - Menjalankan ESLint (Next.js 16 menggunakan ESLint 9)
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+### Catatan Build
 
-## Can I connect a custom domain to my Lovable project?
+- Next.js 16 menggunakan **Turbopack** sebagai bundler default untuk build dan dev yang lebih cepat
+- Jika perlu menggunakan Webpack (tidak disarankan), gunakan: `next dev --webpack` atau `next build --webpack`
 
-Yes, you can!
+## Struktur Proyek
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+```
+src/
+├── app/              # Next.js App Router pages
+│   ├── course/       # Halaman kursus
+│   ├── certificate/  # Halaman sertifikat
+│   ├── subscription/ # Halaman langganan
+│   ├── settings/     # Halaman pengaturan
+│   └── ...
+├── components/        # Komponen React
+│   ├── ui/           # shadcn/ui components
+│   └── ...
+├── pages/            # Komponen halaman
+├── hooks/            # Custom React hooks
+├── lib/              # Utility functions
+└── data/             # Data statis
+```
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+## Deployment
+
+Untuk deploy aplikasi ini, Anda dapat menggunakan:
+
+- **Vercel** (Recommended untuk Next.js 16)
+- **Netlify**
+- **AWS Amplify**
+- Platform lainnya yang mendukung Next.js 16
+
+### Persyaratan Deployment
+
+Pastikan platform deployment Anda mendukung:
+- **Node.js 20.9.0+** (wajib untuk Next.js 16)
+- Next.js 16.1.2 dengan Turbopack
+
+### Deploy ke Vercel
+
+```sh
+# Install Vercel CLI
+npm i -g vercel
+
+# Deploy
+vercel
+```
+
+Vercel secara otomatis akan mendeteksi Next.js 16 dan menggunakan konfigurasi optimal.
+
+## Lisensi
+
+Private project
