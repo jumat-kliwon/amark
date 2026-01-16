@@ -6,9 +6,11 @@ Platform pembelajaran online yang dibangun dengan Next.js untuk menampilkan dan 
 
 Proyek ini dibangun dengan:
 
-- **Next.js 14** - Framework React dengan App Router
-- **TypeScript** - Type safety untuk JavaScript
-- **React 18** - Library UI
+- **Next.js 16.1.2** - Framework React dengan App Router, Turbopack, dan React Compiler
+- **React 19** - Library UI dengan optimasi terbaru
+- **TypeScript 5.8+** - Type safety untuk JavaScript
+- **Turbopack** - Bundler default Next.js 16 untuk build dan dev yang lebih cepat
+- **React Compiler** - Optimasi render otomatis dan memoization
 - **shadcn/ui** - Komponen UI yang dapat dikustomisasi
 - **Tailwind CSS** - Framework CSS utility-first
 - **React Query (TanStack Query)** - State management dan data fetching
@@ -18,6 +20,7 @@ Proyek ini dibangun dengan:
 
 ## Fitur
 
+### Fitur Aplikasi
 - 🎓 **Katalog Kursus** - Browse dan cari kursus berdasarkan kategori
 - 📚 **Detail Kursus** - Lihat detail kursus dan pelajaran
 - 🎥 **Pelajaran** - Akses konten pelajaran
@@ -27,10 +30,17 @@ Proyek ini dibangun dengan:
 - 🔔 **Notifikasi** - Sistem notifikasi
 - 🤝 **Afiliasi** - Program afiliasi
 
+### Fitur Teknologi Next.js 16
+- ⚡ **Turbopack** - Build dan dev server yang lebih cepat (default bundler)
+- 🚀 **React Compiler** - Optimasi render otomatis, mengurangi kebutuhan `useMemo` dan `useCallback` manual
+- 💾 **Image Optimization** - Optimasi gambar dengan cache TTL 4 jam default
+- 📦 **Modern Tooling** - ESLint 9, TypeScript 5.8+, dan tooling terbaru
+
 ## Persyaratan
 
-- Node.js 18+ atau Bun
+- **Node.js 20.9.0+** (Next.js 16 memerlukan Node.js 20.9.0 atau lebih tinggi)
 - npm, yarn, pnpm, atau bun
+- TypeScript 5.1.0+ (sudah termasuk dalam dependencies)
 
 ## Instalasi dan Menjalankan Proyek
 
@@ -44,7 +54,7 @@ git clone <YOUR_GIT_URL>
 cd acre26
 
 # Install dependencies
-npm install
+npm install --legacy-peer-deps
 
 # Jalankan development server
 npm run dev
@@ -70,10 +80,15 @@ Aplikasi akan berjalan di [http://localhost:3000](http://localhost:3000)
 
 ## Scripts yang Tersedia
 
-- `npm run dev` - Menjalankan development server
-- `npm run build` - Build aplikasi untuk production
+- `npm run dev` - Menjalankan development server dengan Turbopack (default)
+- `npm run build` - Build aplikasi untuk production dengan Turbopack
 - `npm run start` - Menjalankan production server
-- `npm run lint` - Menjalankan ESLint
+- `npm run lint` - Menjalankan ESLint (Next.js 16 menggunakan ESLint 9)
+
+### Catatan Build
+
+- Next.js 16 menggunakan **Turbopack** sebagai bundler default untuk build dan dev yang lebih cepat
+- Jika perlu menggunakan Webpack (tidak disarankan), gunakan: `next dev --webpack` atau `next build --webpack`
 
 ## Struktur Proyek
 
@@ -98,10 +113,16 @@ src/
 
 Untuk deploy aplikasi ini, Anda dapat menggunakan:
 
-- **Vercel** (Recommended untuk Next.js)
+- **Vercel** (Recommended untuk Next.js 16)
 - **Netlify**
 - **AWS Amplify**
-- Platform lainnya yang mendukung Next.js
+- Platform lainnya yang mendukung Next.js 16
+
+### Persyaratan Deployment
+
+Pastikan platform deployment Anda mendukung:
+- **Node.js 20.9.0+** (wajib untuk Next.js 16)
+- Next.js 16.1.2 dengan Turbopack
 
 ### Deploy ke Vercel
 
@@ -112,6 +133,8 @@ npm i -g vercel
 # Deploy
 vercel
 ```
+
+Vercel secara otomatis akan mendeteksi Next.js 16 dan menggunakan konfigurasi optimal.
 
 ## Lisensi
 
