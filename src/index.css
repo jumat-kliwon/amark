@@ -30,7 +30,7 @@
 
     --border: 0 0% 20%;
     --input: 0 0% 20%;
-    --ring: 262 83% 58%;
+    --ring: 0 0% 18%;
 
     --radius: 0.75rem;
 
@@ -76,7 +76,7 @@
 
     --border: 0 0% 20%;
     --input: 0 0% 20%;
-    --ring: 262 83% 58%;
+    --ring: 0 0% 18%;
   }
 }
 
@@ -96,17 +96,42 @@
     scrollbar-width: thin;
     scrollbar-color: hsl(var(--muted)) transparent;
   }
-  
+
   .scrollbar-thin::-webkit-scrollbar {
     width: 6px;
   }
-  
+
   .scrollbar-thin::-webkit-scrollbar-track {
     background: transparent;
   }
-  
+
   .scrollbar-thin::-webkit-scrollbar-thumb {
     background-color: hsl(var(--muted));
     border-radius: 3px;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+
+  .swiperss .swiper-pagination-bullet {
+    background: #555 !important;
+    opacity: 1;
+  }
+
+  .swiperss .swiper-pagination-bullet-active {
+    background: #ef4444 !important;
+  }
+
+  .video-js {
+    font-family: inherit;
   }
 }
