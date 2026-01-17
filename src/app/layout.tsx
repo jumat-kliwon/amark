@@ -1,16 +1,16 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "@/index.css";
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { Providers } from "./providers";
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import '@/index.css';
+import { Toaster } from '@/components/ui/toaster';
+import { Toaster as Sonner } from '@/components/ui/sonner';
+import { TooltipProvider } from '@/components/ui/tooltip';
+import { Providers } from './providers';
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: "Acre26 - Learning Platform",
-  description: "Platform pembelajaran online",
+  title: 'Acre26 - Learning Platform',
+  description: 'Platform pembelajaran online',
 };
 
 export default function RootLayout({
@@ -24,7 +24,7 @@ export default function RootLayout({
         <Providers>
           <TooltipProvider>
             <Toaster />
-            <Sonner />
+            <Sonner position="top-right" />
             {children}
           </TooltipProvider>
         </Providers>
