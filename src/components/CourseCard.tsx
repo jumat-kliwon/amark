@@ -82,14 +82,15 @@ const CourseCard = ({
             />
             {/* Logo overlay */}
             <div className="absolute left-3 top-3 flex items-center gap-1.5 rounded-md bg-background/80 px-2 py-1 backdrop-blur-sm">
-              <div className="flex h-5 w-5 items-center justify-center rounded-full bg-foreground">
-                <span className="text-xs font-bold text-background">A</span>
-              </div>
-              <span className="text-[10px] font-medium leading-tight">
-                AKADEMI
-                <br />
-                CREATOR
-              </span>
+              <Image
+                src="/images/logo.webp"
+                alt="ACRE Logo"
+                width={100}
+                height={32}
+                className="object-contain"
+                priority
+                unoptimized
+              />
             </div>
 
             {/* Lock overlay */}
