@@ -34,10 +34,7 @@ function SwiperRow({
     >
       {[...images, ...images].map((img, i) => (
         <SwiperSlide key={i}>
-          <div
-            className="relative h-[40px] md:h-[120px]
-                       rounded-xl overflow-hidden"
-          >
+          <div className="relative h-[40px] md:h-[120px] rounded-xl overflow-hidden">
             <Image
               src={img}
               alt=""
