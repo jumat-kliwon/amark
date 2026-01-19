@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import Link from "next/link";
-import { Lock } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { useState } from 'react';
+import Link from 'next/link';
+import { Lock } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import {
   Dialog,
   DialogContent,
@@ -11,12 +11,12 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import Image from 'next/image';
 
 interface CourseCardProps {
   id: string;
-  number: string;
   title: string;
   description: string;
   author: string;
@@ -26,7 +26,16 @@ interface CourseCardProps {
   style?: React.CSSProperties;
 }
 
-const CourseCard = ({ id, number, title, description, author, thumbnail, locked = false, className, style }: CourseCardProps) => {
+const CourseCard = ({
+  id,
+  title,
+  description,
+  author,
+  thumbnail,
+  locked = false,
+  className,
+  style,
+}: CourseCardProps) => {
   const [showModal, setShowModal] = useState(false);
 
   const handleClick = (e: React.MouseEvent) => {
@@ -38,24 +47,38 @@ const CourseCard = ({ id, number, title, description, author, thumbnail, locked 
 
   return (
     <>
-      <Link href={locked ? "#" : `/course/${id}`} onClick={handleClick}>
+      <Link href={locked ? '#' : `/course/${id}`} onClick={handleClick}>
         <div
           className={cn(
-            "group cursor-pointer overflow-hidden rounded-xl bg-card transition-all duration-300 hover:bg-card-hover hover:shadow-xl hover:shadow-primary/5",
-            locked && "opacity-80",
-            className
+            'group cursor-pointer overflow-hidden rounded-xl bg-card transition-all duration-300 hover:bg-card-hover hover:shadow-xl hover:shadow-primary/5',
+            locked && 'opacity-80',
+            className,
           )}
           style={style}
         >
           {/* Thumbnail */}
           <div className="relative aspect-[16/10] overflow-hidden">
-            <img
+            {/* <img
               src={thumbnail}
               alt={title}
               className={cn(
-                "h-full w-full object-cover transition-transform duration-500 group-hover:scale-105",
-                locked && "grayscale"
+                'h-full w-full object-cover transition-transform duration-500 group-hover:scale-105',
+                locked && 'grayscale',
               )}
+            /> */}
+            <Image
+              src={
+                thumbnail
+                  ? `https://lms.acrehub.lol/storage/${thumbnail}`
+                  : '/images/course-placeholder.png'
+              }
+              alt={title}
+              fill
+              className={cn(
+                'h-full w-full object-cover transition-transform duration-500 group-hover:scale-105',
+                locked && 'grayscale',
+              )}
+              unoptimized
             />
             {/* Logo overlay */}
             <div className="absolute left-3 top-3 flex items-center gap-1.5 rounded-md bg-background/80 px-2 py-1 backdrop-blur-sm">
@@ -63,7 +86,9 @@ const CourseCard = ({ id, number, title, description, author, thumbnail, locked 
                 <span className="text-xs font-bold text-background">A</span>
               </div>
               <span className="text-[10px] font-medium leading-tight">
-                AKADEMI<br />CREATOR
+                AKADEMI
+                <br />
+                CREATOR
               </span>
             </div>
 
@@ -81,7 +106,7 @@ const CourseCard = ({ id, number, title, description, author, thumbnail, locked 
           <div className="p-4">
             <div className="mb-2 flex items-center gap-2">
               <h3 className="flex-1 text-base font-semibold leading-tight">
-                {number}. {title}
+                {title}
               </h3>
               {locked && <Lock className="h-4 w-4 text-muted-foreground" />}
             </div>
@@ -109,8 +134,9 @@ const CourseCard = ({ id, number, title, description, author, thumbnail, locked 
               Akses Terbatas
             </DialogTitle>
             <DialogDescription className="text-center">
-              Kamu belum memiliki subscription aktif untuk mengakses course ini. 
-              Silakan berlangganan untuk mendapatkan akses penuh ke semua materi.
+              Kamu belum memiliki subscription aktif untuk mengakses course ini.
+              Silakan berlangganan untuk mendapatkan akses penuh ke semua
+              materi.
             </DialogDescription>
           </DialogHeader>
 
@@ -122,7 +148,7 @@ const CourseCard = ({ id, number, title, description, author, thumbnail, locked 
                 className="h-16 w-24 rounded-md object-cover"
               />
               <div>
-                <h4 className="font-semibold">{number}. {title}</h4>
+                <h4 className="font-semibold">{title}</h4>
                 <p className="text-sm text-muted-foreground">{author}</p>
               </div>
             </div>
@@ -134,7 +160,11 @@ const CourseCard = ({ id, number, title, description, author, thumbnail, locked 
                 Lihat Paket Subscription
               </Link>
             </Button>
-            <Button variant="ghost" className="w-full" onClick={() => setShowModal(false)}>
+            <Button
+              variant="ghost"
+              className="w-full"
+              onClick={() => setShowModal(false)}
+            >
               Nanti Saja
             </Button>
           </DialogFooter>

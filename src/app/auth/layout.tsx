@@ -1,4 +1,3 @@
-import Footer from '@/components/landing/footer';
 import { SidebarProvider } from '@/components/ui/sidebar';
 
 export default function AuthLayout({
@@ -11,7 +10,6 @@ export default function AuthLayout({
       <div className="flex min-h-screen w-full">
         <div className="flex-1 flex flex-col">
           <main className="flex-1 bg-zinc-950">{children}</main>
-          <Footer />
         </div>
       </div>
     </SidebarProvider>

@@ -16,10 +16,10 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
+import { useCourses } from '@/hooks/use-course';
 
-const ITEMS_PER_PAGE = 6;
-
-export default function HomePage() {
+export default function CoursePage() {
+  const course = useCourses();
   const [selectedCategory, setSelectedCategory] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -39,11 +39,11 @@ export default function HomePage() {
     setCurrentPage(1);
   }, [selectedCategory, searchQuery]);
 
-  const totalPages = Math.ceil(filteredCourses.length / ITEMS_PER_PAGE);
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const totalPages = Math.ceil(filteredCourses.length / course.limit);
+  const startIndex = (currentPage - 1) * course.limit;
   const paginatedCourses = filteredCourses.slice(
     startIndex,
-    startIndex + ITEMS_PER_PAGE,
+    startIndex + course.limit,
   );
 
   const clearSearch = () => setSearchQuery('');
@@ -89,8 +89,8 @@ export default function HomePage() {
 
       <main className="flex flex-col lg:flex-row gap-4 lg:gap-6 p-4 sm:p-6">
         <CategorySidebar
-          selectedCategory={selectedCategory}
-          onSelectCategory={setSelectedCategory}
+          selectedCategory={course.category}
+          onSelectCategory={course.setCategory}
         />
 
         <section className="flex-1">
@@ -118,29 +118,45 @@ export default function HomePage() {
           </div>
 
           {/* Results info */}
-          {filteredCourses.length > 0 && (
+          {/* {filteredCourses.length > 0 && (
             <p className="mb-4 text-sm text-muted-foreground">
               Menampilkan {startIndex + 1}-
-              {Math.min(startIndex + ITEMS_PER_PAGE, filteredCourses.length)}{' '}
+              {Math.min(startIndex + course.limit, filteredCourses.length)}{' '}
               dari {filteredCourses.length} kursus
             </p>
-          )}
+          )} */}
 
           <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3">
-            {paginatedCourses.map((course, index) => (
-              <CourseCard
-                key={course.id}
-                id={course.id}
-                number={course.number}
-                title={course.title}
-                description={course.description}
-                author={course.author}
-                thumbnail={course.thumbnail}
-                locked={course.locked}
-                className="animate-fade-in"
-                style={{ animationDelay: `${index * 100}ms` }}
-              />
-            ))}
+            {course.loadingCourses ? (
+              Array.from({ length: 6 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="h-[280px] bg-zinc-800 rounded-lg animate-pulse"
+                />
+              ))
+            ) : course.courses.data.length ? (
+              <>
+                {course.courses.data.map((course, index) => (
+                  <CourseCard
+                    key={course.id}
+                    id={course.slug}
+                    title={course.title}
+                    description={course.title}
+                    author={course.instructor.name}
+                    thumbnail={course.thumbnail}
+                    locked={course.has_access}
+                    className="animate-fade-in"
+                    style={{ animationDelay: `${index * 100}ms` }}
+                  />
+                ))}
+              </>
+            ) : (
+              <div className="h-[280px] rounded-lg col-span-1 sm:col-span-2 lg:col-span-3 flex items-center justify-center">
+                <p className="text-base sm:text-lg text-muted-foreground">
+                  Empty List
+                </p>
+              </div>
+            )}
           </div>
 
           {filteredCourses.length === 0 && (
