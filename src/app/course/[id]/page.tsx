@@ -1,19 +1,36 @@
-"use client";
+'use client';
 
-import { useParams } from "next/navigation";
-import Link from "next/link";
-import { ArrowLeft, Play, Clock, Users, Star, CheckCircle2, Circle, BookOpen, Trophy } from "lucide-react";
-import { courses } from "@/data/courses";
-import Header from "@/components/Header";
-import { Progress } from "@/components/ui/progress";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { useParams } from 'next/navigation';
+import Link from 'next/link';
+import {
+  ArrowLeft,
+  Play,
+  Clock,
+  Users,
+  Star,
+  CheckCircle2,
+  Circle,
+  BookOpen,
+  Trophy,
+} from 'lucide-react';
+import { courses } from '@/data/courses';
+import Header from '@/components/Header';
+import { Progress } from '@/components/ui/progress';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
+import { useLesson } from '@/hooks/use-lesson';
+import Image from 'next/image';
 
 export default function CourseOverviewPage() {
   const params = useParams();
   const id = params.id as string;
-  const course = courses.find((c) => c.id === id);
+  const course = useLesson();
 
   if (!course) {
     return (
@@ -31,12 +48,9 @@ export default function CourseOverviewPage() {
     );
   }
 
-  const totalLessons = course.curriculum.reduce((acc, week) => acc + week.lessons.length, 0);
-  const completedLessons = course.curriculum.reduce(
-    (acc, week) => acc + week.lessons.filter((l) => l.completed).length,
-    0,
-  );
-  const firstUncompletedLesson = course.curriculum.flatMap((week) => week.lessons).find((lesson) => !lesson.completed);
+  const totalLessons = course.moduleList?.progress.total_lessons;
+  const completedLessons = course.moduleList?.progress.completed_lessons;
+  const firstUncompletedLesson = course.moduleList?.progress.completed_lessons;
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -44,7 +58,6 @@ export default function CourseOverviewPage() {
 
       {/* Hero Section with Cover */}
       <div className="bg-card">
-
         {/* Content */}
         <div className="mx-auto max-w-6xl px-6 py-10">
           <Link
@@ -60,10 +73,12 @@ export default function CourseOverviewPage() {
             <div className="lg:col-span-1">
               <div className="group relative overflow-hidden rounded-2xl border border-white/10 shadow-2xl">
                 <div className="aspect-[4/3]">
-                  <img 
-                    src={course.thumbnail} 
-                    alt={course.title} 
+                  <Image
+                    src={course.detailCourse?.data.thumbnail_url}
+                    alt={course.detailCourse?.data.title}
                     className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    fill
+                    unoptimized
                   />
                 </div>
                 <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -76,16 +91,19 @@ export default function CourseOverviewPage() {
 
             {/* Right: Course Info */}
             <div className="lg:col-span-2 flex flex-col justify-center">
-              <Badge variant="secondary" className="mb-4 w-fit bg-primary/20 text-primary border-0">
-                {course.category.replace("-", " ").toUpperCase()}
+              <Badge
+                variant="secondary"
+                className="mb-4 w-fit bg-primary/20 text-primary border-0"
+              >
+                {course.detailCourse?.data.category.name.toUpperCase()}
               </Badge>
 
               <h1 className="mb-4 text-3xl font-bold tracking-tight lg:text-4xl xl:text-5xl">
-                {course.number}. {course.title}
+                {course.detailCourse?.data.title}
               </h1>
 
               <p className="mb-6 text-lg text-muted-foreground leading-relaxed max-w-2xl">
-                {course.description}
+                {course.detailCourse?.data.short_description}
               </p>
 
               {/* Stats Grid */}
@@ -93,17 +111,23 @@ export default function CourseOverviewPage() {
                 <div className="flex items-center gap-2 rounded-lg bg-card/50 backdrop-blur-sm px-4 py-3 border border-border/50">
                   <Star className="h-5 w-5 fill-yellow-500 text-yellow-500" />
                   <div>
-                    <span className="font-bold">{course.rating}</span>
-                    <span className="text-xs text-muted-foreground ml-1">({course.totalRatings.toLocaleString()})</span>
+                    <span className="font-bold">2</span>
+                    <span className="text-xs text-muted-foreground ml-1">
+                      ({course.detailCourse?.data.id.toLocaleString()})
+                    </span>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 rounded-lg bg-card/50 backdrop-blur-sm px-4 py-3 border border-border/50">
                   <Users className="h-5 w-5 text-primary" />
-                  <span className="text-sm">{course.participants.toLocaleString()} peserta</span>
+                  <span className="text-sm">
+                    {course.detailCourse?.data.id.toLocaleString()} peserta
+                  </span>
                 </div>
                 <div className="flex items-center gap-2 rounded-lg bg-card/50 backdrop-blur-sm px-4 py-3 border border-border/50">
                   <Clock className="h-5 w-5 text-primary" />
-                  <span className="text-sm">{course.duration}</span>
+                  <span className="text-sm">
+                    {course.detailCourse?.data.id}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2 rounded-lg bg-card/50 backdrop-blur-sm px-4 py-3 border border-border/50">
                   <BookOpen className="h-5 w-5 text-primary" />
@@ -115,19 +139,30 @@ export default function CourseOverviewPage() {
               <div className="flex flex-wrap items-center gap-6">
                 <div className="flex items-center gap-3">
                   <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/60 shadow-lg">
-                    <span className="text-sm font-bold text-primary-foreground">A</span>
+                    <span className="text-sm font-bold text-primary-foreground">
+                      A
+                    </span>
                   </div>
                   <div>
                     <p className="text-xs text-muted-foreground">Dibuat oleh</p>
-                    <p className="font-medium">{course.author}</p>
+                    <p className="font-medium">
+                      {course.detailCourse?.data.instructor.name}
+                    </p>
                   </div>
                 </div>
 
                 {firstUncompletedLesson && (
-                  <Link href={`/course/${course.id}/lesson/${firstUncompletedLesson.id}`}>
-                    <Button size="lg" className="shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow">
+                  <Link
+                    href={`/course/${course.detailCourse?.data.id}/lesson/${firstUncompletedLesson}`}
+                  >
+                    <Button
+                      size="lg"
+                      className="shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow"
+                    >
                       <Play className="h-4 w-4 mr-2" />
-                      {completedLessons > 0 ? "Lanjutkan Belajar" : "Mulai Belajar"}
+                      {completedLessons > 0
+                        ? 'Lanjutkan Belajar'
+                        : 'Mulai Belajar'}
                     </Button>
                   </Link>
                 )}
@@ -143,33 +178,42 @@ export default function CourseOverviewPage() {
           <div>
             <h2 className="text-2xl font-bold">Kurikulum</h2>
             <p className="text-sm text-muted-foreground">
-              {course.curriculum.length} bagian • {totalLessons} materi • {course.duration} total
+              {course.moduleList?.data.length} bagian • {totalLessons} materi •{' '}
+              {course.detailCourse?.data.id} total
             </p>
           </div>
         </div>
 
-        <Accordion type="multiple" defaultValue={[course.curriculum[0]?.id]} className="space-y-3">
-          {course.curriculum.map((week, weekIndex) => {
-            const weekCompletedLessons = week.lessons.filter((l) => l.completed).length;
+        <Accordion
+          type="multiple"
+          defaultValue={[String(course.moduleList?.data[0].id)]}
+          className="space-y-3"
+        >
+          {course.moduleList?.data.map((week, weekIndex) => {
+            const weekCompletedLessons = week.lessons.filter(
+              (l) => l.is_completed,
+            ).length;
             const isWeekComplete = weekCompletedLessons === week.lessons.length;
 
             return (
               <AccordionItem
                 key={week.id}
-                value={week.id}
+                value={String(week.id)}
                 className="overflow-hidden rounded-xl border border-border bg-card"
               >
                 <AccordionTrigger className="px-5 py-4 hover:no-underline hover:bg-muted/30 [&[data-state=open]]:bg-muted/20">
                   <div className="flex flex-1 items-center gap-4 text-left">
                     <div
                       className={`flex h-10 w-10 items-center justify-center rounded-full ${
-                        isWeekComplete ? "bg-green-500/20" : "bg-muted"
+                        isWeekComplete ? 'bg-green-500/20' : 'bg-muted'
                       }`}
                     >
                       {isWeekComplete ? (
                         <CheckCircle2 className="h-5 w-5 text-green-500" />
                       ) : (
-                        <span className="text-sm font-semibold text-muted-foreground">{weekIndex + 1}</span>
+                        <span className="text-sm font-semibold text-muted-foreground">
+                          {weekIndex + 1}
+                        </span>
                       )}
                     </div>
                     <div className="flex-1">
@@ -184,23 +228,31 @@ export default function CourseOverviewPage() {
                   {week.lessons.map((lesson) => (
                     <Link
                       key={lesson.id}
-                      href={`/course/${course.id}/lesson/${lesson.id}`}
+                      href={`/course/${course.detailCourse?.data.id}/lesson/${lesson.id}`}
                       className="flex items-center gap-4 border-b border-border px-5 py-4 transition-colors hover:bg-muted/30 last:border-b-0"
                     >
                       <div className="flex h-8 w-8 items-center justify-center">
-                        {lesson.completed ? (
+                        {lesson.is_completed ? (
                           <CheckCircle2 className="h-5 w-5 text-green-500" />
                         ) : (
                           <Circle className="h-5 w-5 text-muted-foreground" />
                         )}
                       </div>
                       <div className="flex-1">
-                        <p className={`text-sm ${lesson.completed ? "text-muted-foreground" : "font-medium"}`}>
+                        <p
+                          className={`text-sm ${
+                            lesson.is_completed
+                              ? 'text-muted-foreground'
+                              : 'font-medium'
+                          }`}
+                        >
                           {lesson.title}
                         </p>
                       </div>
                       <div className="flex items-center gap-3">
-                        <span className="text-xs text-muted-foreground">{lesson.duration}</span>
+                        <span className="text-xs text-muted-foreground">
+                          {lesson.id}
+                        </span>
                         <Play className="h-4 w-4 text-muted-foreground" />
                       </div>
                     </Link>

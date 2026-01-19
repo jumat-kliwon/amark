@@ -142,7 +142,7 @@ export default function CoursePage() {
                     description={course.title}
                     author={course.instructor.name}
                     thumbnail={course.thumbnail}
-                    locked={course.has_access}
+                    locked={!course.has_access}
                     className="animate-fade-in"
                     style={{ animationDelay: `${index * 100}ms` }}
                   />
