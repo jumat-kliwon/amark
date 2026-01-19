@@ -16,7 +16,8 @@ export const useCourses = () => {
   });
 
   const { data: courses, isLoading: loadingCourses } = useQuery({
-    queryKey: ['courses'],
+    // include params so data refetches when filters change
+    queryKey: ['courses', page, limit, search, category],
     queryFn: () => CourseService.getCourses({ page, limit, search, category }),
   });
 
