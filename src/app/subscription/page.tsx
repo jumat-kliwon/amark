@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Header from "@/components/Header";
-import { Crown, Calendar, CreditCard, ArrowRight, Settings, Download, Eye, RefreshCw, CheckCircle2, XCircle, Clock, AlertCircle, ChevronLeft, ChevronRight } from "lucide-react";
+import { Crown, Calendar, CreditCard, ArrowRight, Settings, Download, Eye, RefreshCw, CheckCircle2, XCircle, Clock, AlertCircle, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -12,16 +12,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useState } from "react";
-
-// Mock current subscription data
-const currentSubscription = {
-  name: "VIP Acre 1 Tahun",
-  price: "1997000.00",
-  accessType: "Lifetime",
-  status: "Active",
-  startDate: "2026-01-15T04:22:39.000000Z",
-  endDate: null,
-};
+import { useUserWithMembership } from "@/hooks/use-user";
 
 // Helper function to format date
 const formatDate = (dateString: string | null) => {
@@ -204,6 +195,7 @@ const ITEMS_PER_PAGE = 3;
 export default function SubscriptionPage() {
   const [selectedPayment, setSelectedPayment] = useState<typeof paymentHistory[0] | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const { user, membership, isLoading: isLoadingMembership } = useUserWithMembership();
 
   const totalPages = Math.ceil(paymentHistory.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -222,64 +214,92 @@ export default function SubscriptionPage() {
         </div>
 
         {/* Current Subscription Card */}
-        <div className="mb-8 rounded-2xl border border-border bg-card overflow-hidden">
-          {/* Header */}
-          <div className="flex items-center justify-between border-b border-border bg-muted/30 p-6">
-            <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10">
-                <Crown className="h-7 w-7 text-primary" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h2 className="text-xl font-bold">{currentSubscription.name}</h2>
-                  <Badge variant="default" className="bg-green-500/20 text-green-500 hover:bg-green-500/20">
-                    {currentSubscription.status}
-                  </Badge>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  {formatPrice(currentSubscription.price)}
-                </p>
-              </div>
-            </div>
+        {isLoadingMembership ? (
+          <div className="mb-8 flex items-center justify-center rounded-2xl border border-border bg-card p-12">
+            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+            <p className="ml-3 text-muted-foreground">Memuat data subscription...</p>
           </div>
-
-          {/* Details */}
-          <div className="p-6">
-            <div className="grid gap-6 sm:grid-cols-3">
-              <div className="flex items-center gap-4 rounded-lg border border-border bg-muted/20 p-4">
-                <Calendar className="h-5 w-5 text-muted-foreground" />
-                <div>
-                  <p className="text-xs text-muted-foreground">Mulai Berlangganan</p>
-                  <p className="font-medium">{formatDate(currentSubscription.startDate)}</p>
+        ) : membership ? (
+          <div className="mb-8 rounded-2xl border border-border bg-card overflow-hidden">
+            {/* Header */}
+            <div className="flex items-center justify-between border-b border-border bg-muted/30 p-6">
+              <div className="flex items-center gap-4">
+                <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10">
+                  <Crown className="h-7 w-7 text-primary" />
                 </div>
-              </div>
-              <div className="flex items-center gap-4 rounded-lg border border-border bg-muted/20 p-4">
-                <Calendar className="h-5 w-5 text-muted-foreground" />
                 <div>
-                  <p className="text-xs text-muted-foreground">Berakhir</p>
-                  <p className="font-medium">{currentSubscription.endDate ? formatDate(currentSubscription.endDate) : "Selamanya"}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-4 rounded-lg border border-border bg-muted/20 p-4">
-                <Crown className="h-5 w-5 text-muted-foreground" />
-                <div>
-                  <p className="text-xs text-muted-foreground">Tipe Akses</p>
-                  <p className="font-medium">{currentSubscription.accessType}</p>
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-xl font-bold">{membership.name}</h2>
+                    <Badge variant="default" className="bg-green-500/20 text-green-500 hover:bg-green-500/20">
+                      Aktif
+                    </Badge>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    {formatPrice(membership.price)}
+                  </p>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* Actions */}
-          <div className="border-t border-border bg-muted/20 p-6">
+            {/* Details */}
+            <div className="p-6">
+              <div className="grid gap-6 sm:grid-cols-3">
+                <div className="flex items-center gap-4 rounded-lg border border-border bg-muted/20 p-4">
+                  <Calendar className="h-5 w-5 text-muted-foreground" />
+                  <div>
+                    <p className="text-xs text-muted-foreground">Mulai Berlangganan</p>
+                    <p className="font-medium">{formatDate(membership.start_date)}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4 rounded-lg border border-border bg-muted/20 p-4">
+                  <Calendar className="h-5 w-5 text-muted-foreground" />
+                  <div>
+                    <p className="text-xs text-muted-foreground">Berakhir</p>
+                    <p className="font-medium">{membership.end_date ? formatDate(membership.end_date) : "Selamanya"}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4 rounded-lg border border-border bg-muted/20 p-4">
+                  <Crown className="h-5 w-5 text-muted-foreground" />
+                  <div>
+                    <p className="text-xs text-muted-foreground">Tipe Akses</p>
+                    <p className="font-medium">{membership.access_type}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="border-t border-border bg-muted/20 p-6">
+              {membership.access_type === "Lifetime" ? (
+                <Button disabled className="opacity-50 cursor-not-allowed">
+                  <ArrowRight className="mr-2 h-4 w-4" />
+                  Upgrade Paket
+                </Button>
+              ) : (
+                <Button asChild>
+                  <Link href="/subscription/plans">
+                    <ArrowRight className="mr-2 h-4 w-4" />
+                    Upgrade Paket
+                  </Link>
+                </Button>
+              )}
+            </div>
+          </div>
+        ) : (
+          <div className="mb-8 rounded-2xl border border-dashed border-border bg-card p-12 text-center">
+            <Crown className="mx-auto mb-4 h-12 w-12 text-muted-foreground/50" />
+            <h3 className="mb-2 text-lg font-semibold">Belum ada subscription aktif</h3>
+            <p className="mb-4 text-sm text-muted-foreground">
+              Berlangganan paket untuk mendapatkan akses ke semua konten
+            </p>
             <Button asChild>
               <Link href="/subscription/plans">
                 <ArrowRight className="mr-2 h-4 w-4" />
-                Upgrade Paket
+                Lihat Paket
               </Link>
             </Button>
           </div>
-        </div>
+        )}
 
         {/* Billing History */}
         <div className="rounded-2xl border border-border bg-card">
