@@ -153,7 +153,7 @@ export default function CourseOverviewPage() {
 
                 {firstUncompletedLesson && (
                   <Link
-                    href={`/course/${course.detailCourse?.data.id}/lesson/${firstUncompletedLesson}`}
+                    href={`/course/${course.detailCourse?.data.slug}/lesson/${firstUncompletedLesson}`}
                   >
                     <Button
                       size="lg"
@@ -228,7 +228,7 @@ export default function CourseOverviewPage() {
                   {week.lessons.map((lesson) => (
                     <Link
                       key={lesson.id}
-                      href={`/course/${course.detailCourse?.data.id}/lesson/${lesson.id}`}
+                      href={`/course/${course.detailCourse?.data.slug}/lesson/${lesson.id}`}
                       className="flex items-center gap-4 border-b border-border px-5 py-4 transition-colors hover:bg-muted/30 last:border-b-0"
                     >
                       <div className="flex h-8 w-8 items-center justify-center">

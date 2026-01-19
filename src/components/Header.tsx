@@ -30,7 +30,7 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 
 const navItems = [
-  { label: 'Courses', href: '/' },
+  { label: 'Courses', href: '/course' },
   { label: 'Subscription', href: '/subscription' },
   { label: 'Certificate', href: '/certificate' },
   { label: 'Affiliate', href: '/affiliate' },
