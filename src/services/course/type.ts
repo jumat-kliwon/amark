@@ -13,7 +13,7 @@ export interface Course {
     id: number;
     name: string;
   };
-  has_access: Boolean;
+  has_access: boolean;
 }
 
 export interface CourseListResponse {

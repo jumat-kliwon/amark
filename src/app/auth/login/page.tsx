@@ -8,14 +8,17 @@ import { Label } from '@/components/ui/label';
 import { ChevronLeft, Eye, EyeOff } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useLogin } from '@/hooks/use-auth';
+import { useMembership } from '@/hooks/use-membership';
+import { Membership } from '@/services/order/type';
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [remember, setRemember] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
   const router = useRouter();
+  const membership = useMembership();
+  const lifetime = membership.membership.data.find((a) => a.access_type === 1);
   const { mutate, isPending } = useLogin();
 
   const onSubmit = () => {
@@ -98,7 +101,9 @@ export default function LoginPage() {
             Belum memiliki akun?{' '}
             <span
               className="text-white underline cursor-pointer"
-              onClick={() => router.push('/auth/register')}
+              onClick={() =>
+                router.push(`/auth/register?membership=${lifetime.id}`)
+              }
             >
               Register sekarang
             </span>

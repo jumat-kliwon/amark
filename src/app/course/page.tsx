@@ -16,20 +16,18 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
+import { useCourses } from '@/hooks/use-course';
 
-const ITEMS_PER_PAGE = 6;
-
-export default function HomePage() {
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
+export default function CoursePage() {
+  const course = useCourses();
   const [currentPage, setCurrentPage] = useState(1);
 
-  const filteredCourses = courses.filter((course) => {
-    const matchesCategory = selectedCategory
-      ? course.category === selectedCategory
+  const filteredCourses = courses.filter((item) => {
+    const matchesCategory = course.category
+      ? item.category === course.category
       : true;
-    const matchesSearch = searchQuery.trim()
-      ? course.title.toLowerCase().includes(searchQuery.toLowerCase().trim())
+    const matchesSearch = course.search.trim()
+      ? item.title.toLowerCase().includes(course.search.toLowerCase().trim())
       : true;
     return matchesCategory && matchesSearch;
   });
@@ -37,16 +35,16 @@ export default function HomePage() {
   // Reset to page 1 when filter/search changes
   useEffect(() => {
     setCurrentPage(1);
-  }, [selectedCategory, searchQuery]);
+  }, [course.category, course.search]);
 
-  const totalPages = Math.ceil(filteredCourses.length / ITEMS_PER_PAGE);
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const totalPages = Math.ceil(filteredCourses.length / course.limit);
+  const startIndex = (currentPage - 1) * course.limit;
   const paginatedCourses = filteredCourses.slice(
     startIndex,
-    startIndex + ITEMS_PER_PAGE,
+    startIndex + course.limit,
   );
 
-  const clearSearch = () => setSearchQuery('');
+  const clearSearch = () => course.setSearch('');
 
   const goToPage = (page: number) => {
     if (page >= 1 && page <= totalPages) {
@@ -89,8 +87,8 @@ export default function HomePage() {
 
       <main className="flex flex-col lg:flex-row gap-4 lg:gap-6 p-4 sm:p-6">
         <CategorySidebar
-          selectedCategory={selectedCategory}
-          onSelectCategory={setSelectedCategory}
+          selectedCategory={course.category}
+          onSelectCategory={course.setCategory}
         />
 
         <section className="flex-1">
@@ -100,17 +98,17 @@ export default function HomePage() {
             <Input
               type="text"
               placeholder="Cari kursus berdasarkan judul..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              value={course.search}
+              onChange={(e) => course.setSearch(e.target.value)}
               className="pl-10 pr-10"
               maxLength={100}
             />
-            {searchQuery && (
+            {course.search && (
               <Button
                 variant="ghost"
                 size="icon"
                 className="absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2"
-                onClick={clearSearch}
+                onClick={() => course.setSearch('')}
               >
                 <X className="h-4 w-4" />
               </Button>
@@ -121,42 +119,43 @@ export default function HomePage() {
           {filteredCourses.length > 0 && (
             <p className="mb-4 text-sm text-muted-foreground">
               Menampilkan {startIndex + 1}-
-              {Math.min(startIndex + ITEMS_PER_PAGE, filteredCourses.length)}{' '}
-              dari {filteredCourses.length} kursus
+              {Math.min(startIndex + course.limit, filteredCourses.length)} dari{' '}
+              {filteredCourses.length} kursus
             </p>
           )}
 
           <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3">
-            {paginatedCourses.map((course, index) => (
-              <CourseCard
-                key={course.id}
-                id={course.id}
-                number={course.number}
-                title={course.title}
-                description={course.description}
-                author={course.author}
-                thumbnail={course.thumbnail}
-                locked={course.locked}
-                className="animate-fade-in"
-                style={{ animationDelay: `${index * 100}ms` }}
-              />
-            ))}
+            {course.loadingCourses ? (
+              Array.from({ length: 6 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="h-[280px] bg-zinc-800 rounded-lg animate-pulse"
+                />
+              ))
+            ) : course.courses.data.length ? (
+              <>
+                {course.courses.data.map((course, index) => (
+                  <CourseCard
+                    key={course.id}
+                    id={course.slug}
+                    title={course.title}
+                    description={course.title}
+                    author={course.instructor.name}
+                    thumbnail={course.thumbnail}
+                    locked={course.has_access}
+                    className="animate-fade-in"
+                    style={{ animationDelay: `${index * 100}ms` }}
+                  />
+                ))}
+              </>
+            ) : (
+              <div className="h-[280px] rounded-lg col-span-1 sm:col-span-2 lg:col-span-3 flex items-center justify-center">
+                <p className="text-base sm:text-lg text-muted-foreground">
+                  Belum ada course pada pencarian Anda
+                </p>
+              </div>
+            )}
           </div>
-
-          {filteredCourses.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-16 sm:py-20 text-center px-4">
-              <p className="text-base sm:text-lg text-muted-foreground">
-                {searchQuery
-                  ? `Tidak ditemukan kursus dengan judul "${searchQuery}"`
-                  : 'Belum ada course di kategori ini'}
-              </p>
-              {searchQuery && (
-                <Button variant="link" onClick={clearSearch} className="mt-2">
-                  Hapus pencarian
-                </Button>
-              )}
-            </div>
-          )}
 
           {/* Pagination */}
           {totalPages > 1 && (

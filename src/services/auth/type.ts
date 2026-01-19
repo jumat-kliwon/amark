@@ -36,6 +36,7 @@ export interface RegisterPayload {
   username: string;
   terms: boolean;
   voucher_code?: string;
+  membership: string;
 }
 
 export interface RegisterResponse {
