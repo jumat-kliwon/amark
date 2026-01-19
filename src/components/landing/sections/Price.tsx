@@ -101,7 +101,7 @@ export function Price() {
                       : 'bg-white'
                   }`}
                   onClick={() =>
-                    router.push(`auth/register?membership=${item.id}`)
+                    router.push(`auth/register/${item.slug}`)
                   }
                   type="button"
                 >
