@@ -57,10 +57,11 @@ function HeaderLanding() {
           >
             Login
           </Button>
+
           <Button
             className="h-10 rounded-xl bg-gradient-to-r from-red-600 to-red-900 hover:bg-red-700 text-white text-base"
             onClick={() =>
-              router.push(`/auth/register?membership=${lifetime?.id}`)
+              router.push('/#join-now')
             }
           >
             Register
