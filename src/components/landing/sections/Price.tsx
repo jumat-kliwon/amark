@@ -4,12 +4,16 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Check } from 'lucide-react';
 
-import { useMembership } from '@/hooks/use-membership';
+import { useSettingsContext } from '@/contexts/SettingsContext';
 import { formatCurrency } from '@/lib/helpers';
 
 export function Price() {
-  const membership = useMembership();
+  const { settings } = useSettingsContext();
   const router = useRouter();
+
+  const defaultMembership = settings?.memberships?.find(
+    (item) => item.is_default,
+  );
 
   return (
     <section className="relative text-white mb-20" id="join-now">
@@ -42,19 +46,15 @@ export function Price() {
               </div>
             </div>
 
-            {membership.membership?.data ? (
+            {defaultMembership ? (
               <div className="text-right">
                 <span className="inline-block bg-red-600 text-white text-xs px-3 py-1 rounded-full mb-2">
                   DARI RP
-                  {formatCurrency(
-                    Number(membership.membership?.data[0]?.price ?? 0) * 10,
-                  )}
+                  {formatCurrency(Number(defaultMembership.price ?? 0) * 10)}
                 </span>
                 <div className="text-4xl md:text-5xl font-bold">
                   Rp
-                  {formatCurrency(
-                    Number(membership.membership?.data[0]?.price ?? 0),
-                  )}
+                  {formatCurrency(Number(defaultMembership.price ?? 0))}
                 </div>
               </div>
             ) : (
@@ -67,9 +67,9 @@ export function Price() {
           {/* Benefit */}
           <h3 className="mb-6 tracking-widest text-sm">BENEFIT</h3>
 
-          {membership.membership?.data ? (
+          {defaultMembership ? (
             <ul className="space-y-4 mb-12">
-              {membership.membership?.data[0]?.benefit.map((item, i) => {
+              {defaultMembership.benefit.map((item, i) => {
                 return (
                   <li key={i} className="flex gap-3">
                     <div className="bg-green-500 rounded-full flex items-center justify-center h-[20px] w-[20px]">
@@ -90,9 +90,9 @@ export function Price() {
           )}
 
           {/* CTA */}
-          {membership.membership?.data ? (
+          {settings?.memberships && settings.memberships.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {membership.membership.data.map((item, key) => (
+              {settings.memberships.map((item, key) => (
                 <button
                   key={item.id}
                   className={`rounded-xl text-black py-4 font-bold text-lg hover:opacity-90 transition ${
