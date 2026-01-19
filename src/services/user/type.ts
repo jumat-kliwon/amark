@@ -25,3 +25,15 @@ export interface UpdatePasswordResponse {
   message?: string;
   data?: any;
 }
+
+export interface UpdateProfileRequest {
+  name: string;
+  email: string;
+  phone_number?: string | null;
+  username?: string | null;
+}
+
+export interface UpdateProfileResponse {
+  message?: string;
+  data?: any;
+}
