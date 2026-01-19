@@ -7,9 +7,12 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { ChevronLeft, Eye, EyeOff } from 'lucide-react';
 import { useRouter, useParams } from 'next/navigation';
+import { useMutation } from '@tanstack/react-query';
 import { useRegister } from '@/hooks/use-auth';
 import { useSettingsContext } from '@/contexts/SettingsContext';
 import { formatCurrency } from '@/lib/helpers';
+import { OrderService } from '@/services/order';
+import { CheckCouponResponse } from '@/services/order/type';
 
 function RegisterContent() {
   const [showPassword, setShowPassword] = useState(false);
@@ -21,6 +24,10 @@ function RegisterContent() {
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [voucher, setVoucher] = useState('');
+  const [couponResult, setCouponResult] = useState<CheckCouponResponse | null>(
+    null,
+  );
+  const [couponMessage, setCouponMessage] = useState<string | null>(null);
 
   const router = useRouter();
   const params = useParams();
@@ -67,6 +74,33 @@ function RegisterContent() {
     });
   };
 
+  const { mutate: validateCoupon, isPending: isValidatingCoupon } = useMutation({
+    mutationFn: async () => {
+      if (!activeMembership) {
+        throw new Error('Membership tidak ditemukan');
+      }
+      const coupon = voucher.trim();
+      if (!coupon) {
+        throw new Error('Kode promo kosong');
+      }
+      return await OrderService.checkCoupon({
+        coupon,
+        membership_id: activeMembership.id,
+      });
+    },
+    onSuccess: (res) => {
+      setCouponResult(res);
+      setCouponMessage(res.message || 'Kupon valid');
+    },
+    onError: (error: any) => {
+      setCouponResult(null);
+      const errorMessage =
+        error?.response?.data?.message ||
+        'Kode promo tidak valid / tidak dapat digunakan';
+      setCouponMessage(errorMessage);
+    },
+  });
+
   if (!activeMembership) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#121212]">
@@ -96,9 +130,31 @@ function RegisterContent() {
               <p className="text-xs tracking-widest text-zinc-400 mb-2">
                 JOIN PROGRAM - {activeMembership.name} INI DENGAN HANYA:
               </p>
-              <p className="text-4xl font-bold">
-                Rp{formatCurrency(Number(activeMembership.price))}
-              </p>
+              <div className="flex items-baseline gap-3 flex-wrap">
+                <p className="text-lg line-through text-zinc-500">
+                  Rp
+                  {formatCurrency(
+                    Number(activeMembership.original_price ?? activeMembership.price),
+                  )}
+                </p>
+                {couponResult ? (
+                  <>
+                    <p className="text-lg line-through text-zinc-500">
+                      Rp
+                      {formatCurrency(Number(activeMembership.price))}
+                    </p>
+                    <p className="text-4xl font-bold text-red-500">
+                      Rp
+                      {formatCurrency(Number(couponResult.data.final_price))}
+                    </p>
+                  </>
+                ) : (
+                  <p className="text-4xl font-bold text-red-500">
+                    Rp
+                    {formatCurrency(Number(activeMembership.price))}
+                  </p>
+                )}
+              </div>
             </div>
             <p className="text-sm text-zinc-400 md:text-right uppercase">
               ({activeMembership.access_type_label})
@@ -199,8 +255,41 @@ function RegisterContent() {
                 className="bg-zinc-900 h-12 border-zinc-800 focus:ring-red-600 focus:ring-2"
                 placeholder="Masukkan Kode Promo"
                 value={voucher}
-                onChange={(e) => setVoucher(e.target.value)}
+                onChange={(e) => {
+                  setVoucher(e.target.value);
+                  // reset result and message if user edits code
+                  if (couponResult) setCouponResult(null);
+                  if (couponMessage) setCouponMessage(null);
+                }}
+                onBlur={() => {
+                  const code = voucher.trim();
+                  if (!code) {
+                    setCouponMessage(null);
+                    return;
+                  }
+                  validateCoupon();
+                }}
               />
+              {isValidatingCoupon && (
+                <p className="text-xs text-zinc-400">Memvalidasi kode promo...</p>
+              )}
+              {couponMessage && (
+                <p
+                  className={`text-xs ${
+                    couponResult
+                      ? 'text-green-400'
+                      : 'text-red-400'
+                  }`}
+                >
+                  {couponMessage}
+                  {couponResult && (
+                    <span className="block mt-1">
+                      Hemat Rp
+                      {formatCurrency(Number(couponResult.data.discount_amount))}
+                    </span>
+                  )}
+                </p>
+              )}
             </div>
 
             {/* Agreement */}
@@ -231,13 +320,40 @@ function RegisterContent() {
           </div>
 
           {/* Price Bottom */}
-          <div className="text-center mt-10">
-            <p className="text-sm line-through text-zinc-500">
-              Rp{formatCurrency(Number(activeMembership.price) * 10)}
+          <div className="text-center mt-10 p-4 bg-zinc-800/50 rounded-lg">
+            <p className="text-xs text-zinc-400 mb-2">Harga Normal</p>
+            <p className="text-lg line-through text-zinc-500 mb-2">
+              Rp
+              {formatCurrency(
+                Number(activeMembership.original_price ?? activeMembership.price),
+              )}
             </p>
-            <p className="text-3xl font-bold">
-              Rp{formatCurrency(Number(activeMembership.price))}
-            </p>
+            {couponResult ? (
+              <>
+                <p className="text-xs text-zinc-400 mb-1">Harga Promo</p>
+                <p className="text-lg line-through text-zinc-500 mb-2">
+                  Rp
+                  {formatCurrency(Number(activeMembership.price))}
+                </p>
+                <p className="text-xs text-green-400 mb-2">
+                  Diskon Tambahan Rp
+                  {formatCurrency(Number(couponResult.data.discount_amount))}
+                </p>
+                <p className="text-xs text-zinc-400 mb-1">Harga Setelah Kupon</p>
+                <p className="text-3xl font-bold text-red-500">
+                  Rp
+                  {formatCurrency(Number(couponResult.data.final_price))}
+                </p>
+              </>
+            ) : (
+              <>
+                <p className="text-xs text-zinc-400 mb-1">Harga Setelah Diskon</p>
+                <p className="text-3xl font-bold text-red-500">
+                  Rp
+                  {formatCurrency(Number(activeMembership.price))}
+                </p>
+              </>
+            )}
           </div>
         </div>
 

@@ -48,6 +48,7 @@ export interface Membership {
   slug: string;
   name: string;
   description: string;
+  original_price: string;
   price: string;
   benefit: string[];
   access_type: number;

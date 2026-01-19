@@ -50,7 +50,7 @@ export function Price() {
               <div className="text-right">
                 <span className="inline-block bg-red-600 text-white text-xs px-3 py-1 rounded-full mb-2">
                   DARI RP
-                  {formatCurrency(Number(defaultMembership.price ?? 0) * 10)}
+                  {formatCurrency(Number(defaultMembership.original_price ?? 0))}
                 </span>
                 <div className="text-4xl md:text-5xl font-bold">
                   Rp
