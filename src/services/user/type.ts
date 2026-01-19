@@ -14,3 +14,14 @@ export interface UserProfile {
     updated_at: string;
   }
 }
+
+export interface UpdatePasswordRequest {
+  current_password: string;
+  new_password: string;
+  new_password_confirmation: string;
+}
+
+export interface UpdatePasswordResponse {
+  message?: string;
+  data?: any;
+}
