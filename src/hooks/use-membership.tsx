@@ -51,6 +51,7 @@ export function useMembership() {
     onError: () => {
       toast.error('Kupon tidak dapat digunakan!');
       setCouponValid(false);
+      setCoupons(null);
     },
   });
 

@@ -1,15 +1,16 @@
 'use client';
 
-import { Suspense, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
-import { ChevronLeft, Eye, EyeOff } from 'lucide-react';
+import { ChevronLeft, Eye, EyeOff, X } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useRegister } from '@/hooks/use-auth';
 import { useMembership } from '@/hooks/use-membership';
 import { formatCurrency } from '@/lib/helpers';
+import { toast } from 'sonner';
 
 function RegisterContent() {
   const [showPassword, setShowPassword] = useState(false);
@@ -43,6 +44,25 @@ function RegisterContent() {
       voucher_code: voucher || undefined,
       membership: overview,
     });
+  };
+
+  useEffect(() => {
+    if (voucher.length <= 3) return;
+
+    const timeout = setTimeout(() => {
+      onCheckCoupon();
+    }, 500);
+
+    return () => clearTimeout(timeout);
+  }, [voucher]);
+
+  const onCheckCoupon = () => {
+    if (overview && voucher) {
+      membership.checkCoupon({
+        membership_id: Number(overview),
+        coupon: voucher,
+      });
+    }
   };
 
   return (
@@ -165,12 +185,37 @@ function RegisterContent() {
             {/* Promo */}
             <div className="space-y-2">
               <Label>Masukkan Kode Promo (Jika Ada)</Label>
-              <Input
-                className="bg-zinc-900 h-12 border-zinc-800 focus:ring-red-600 focus:ring-2"
-                placeholder="Masukkan Kode Promo"
-                value={voucher}
-                onChange={(e) => setVoucher(e.target.value)}
-              />
+              <div className="relative">
+                <Input
+                  className="bg-zinc-900 h-12 border-zinc-800 focus:ring-red-600 focus:ring-2"
+                  placeholder="Masukkan Kode Promo"
+                  value={voucher}
+                  onChange={(e) => setVoucher(e.target.value)}
+                />
+                {voucher.length > 0 && !membership.couponValid && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setVoucher('');
+                      membership.setCouponValid(true);
+                    }}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400"
+                  >
+                    <X size={18} />
+                  </button>
+                )}
+              </div>
+              {!membership.couponValid && (
+                <div className="text-sm text-red-500">
+                  Kupon tidak tersedia!
+                </div>
+              )}
+              {membership.coupons?.data?.discount_amount && (
+                <div className="text-green-500">
+                  Kupon dapat digunakan, dengan potongan Rp
+                  {formatCurrency(membership.coupons?.data?.discount_amount)}
+                </div>
+              )}
             </div>
 
             {/* Agreement */}
@@ -206,7 +251,13 @@ function RegisterContent() {
               Rp{formatCurrency(Number(activeMembership?.price) * 10)}
             </p>
             <p className="text-3xl font-bold">
-              Rp{formatCurrency(Number(activeMembership?.price))}
+              Rp
+              {formatCurrency(
+                Number(
+                  membership.coupons?.data?.final_price ??
+                    activeMembership?.price,
+                ),
+              )}
             </p>
           </div>
         </div>
