@@ -3,6 +3,33 @@ export interface OrderItem {
   name: string;
   price: number;
   quantity: number;
+  final_price: number;
+  membership_type: string;
+  membership_period: string | null;
+}
+
+export interface PaymentDetail {
+  snap_token?: string;
+  midtrans_order_id?: string;
+  snap_redirect_url?: string;
+}
+
+export interface CouponDetail {
+  id: number;
+  code: string;
+  is_active: boolean;
+  starts_at: string;
+  created_at: string;
+  created_by: number;
+  expires_at: string | null;
+  updated_at: string;
+  used_count: number;
+  final_price: number;
+  usage_limit: number | null;
+  discount_type: number;
+  discount_value: string;
+  original_price: number;
+  discount_amount: number;
 }
 
 export interface Order {
@@ -15,6 +42,11 @@ export interface Order {
   order_items: OrderItem[];
   created_at: string;
   updated_at: string;
+  method: string;
+  payment_detail: PaymentDetail | null;
+  paid_at: string | null;
+  payment_expires_at: string | null;
+  coupons: CouponDetail | CouponDetail[] | [];
 }
 
 export interface PaginationLinks {

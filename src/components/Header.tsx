@@ -28,6 +28,7 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
+import { useNotifications } from '@/hooks/use-notification';
 
 const navItems = [
   { label: 'Courses', href: '/' },
@@ -36,13 +37,12 @@ const navItems = [
   { label: 'Affiliate', href: '/affiliate' },
 ];
 
-const unreadNotifications = 3;
-
 const Header = () => {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [user, setUser] = useState<{ name?: string } | null>(null);
   const [loadingUser, setLoadingUser] = useState(true);
+  const { notifications } = useNotifications({ page: 1, limit: 100 });
 
   useEffect(() => {
     try {
@@ -61,6 +61,8 @@ const Header = () => {
 
   const userInitial =
     (user?.name && user.name.trim().charAt(0).toUpperCase()) || 'A';
+  
+  const unreadNotifications = notifications.filter((n) => !n.read_at).length;
 
   return (
     <header className="sticky top-0 z-50 flex h-14 sm:h-16 items-center justify-between border-b border-border bg-background px-4 sm:px-6">

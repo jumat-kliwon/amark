@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { UserService } from "@/services/user";
 
 export default function UpdatePasswordPage() {
   const { toast } = useToast();
@@ -22,60 +23,105 @@ export default function UpdatePasswordPage() {
     confirmPassword: "",
   });
 
+  const [errors, setErrors] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    // Clear error when user starts typing
+    if (errors[name as keyof typeof errors]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Validate inputs
-    if (!formData.currentPassword) {
-      toast({
-        title: "Error",
-        description: "Password saat ini harus diisi",
-        variant: "destructive",
-      });
-      setIsLoading(false);
-      return;
-    }
-
-    if (formData.newPassword.length < 8) {
-      toast({
-        title: "Error",
-        description: "Password baru minimal 8 karakter",
-        variant: "destructive",
-      });
-      setIsLoading(false);
-      return;
-    }
-
-    if (formData.newPassword !== formData.confirmPassword) {
-      toast({
-        title: "Error",
-        description: "Konfirmasi password tidak cocok",
-        variant: "destructive",
-      });
-      setIsLoading(false);
-      return;
-    }
-
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    toast({
-      title: "Password Diperbarui",
-      description: "Password Anda berhasil diubah.",
-    });
-    
-    setFormData({
+    // Reset errors
+    setErrors({
       currentPassword: "",
       newPassword: "",
       confirmPassword: "",
     });
-    setIsLoading(false);
+
+    let hasError = false;
+
+    // Validate inputs
+    if (!formData.currentPassword) {
+      setErrors((prev) => ({ ...prev, currentPassword: "Password saat ini harus diisi" }));
+      hasError = true;
+    }
+
+    if (formData.newPassword.length < 8) {
+      setErrors((prev) => ({ ...prev, newPassword: "Password baru minimal 8 karakter" }));
+      hasError = true;
+    }
+
+    if (formData.newPassword !== formData.confirmPassword) {
+      setErrors((prev) => ({ ...prev, confirmPassword: "Konfirmasi password tidak cocok" }));
+      hasError = true;
+    }
+
+    if (hasError) {
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      // Call API to update password
+      await UserService.updatePassword({
+        current_password: formData.currentPassword,
+        new_password: formData.newPassword,
+        new_password_confirmation: formData.confirmPassword,
+      });
+
+      toast({
+        title: "Password Diperbarui",
+        description: "Password Anda berhasil diubah.",
+      });
+      
+      // Reset form and errors
+      setFormData({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
+      setErrors({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
+    } catch (error: any) {
+      // Handle API error response
+      const responseData = error?.response?.data;
+      
+      // Handle field-specific errors from API
+      if (responseData?.errors) {
+        const apiErrors = responseData.errors;
+        setErrors({
+          currentPassword: apiErrors.current_password?.[0] || "",
+          newPassword: apiErrors.new_password?.[0] || "",
+          confirmPassword: apiErrors.new_password_confirmation?.[0] || "",
+        });
+      } else {
+        // Handle general error message
+        const errorMessage = 
+          responseData?.message || 
+          responseData?.error ||
+          error?.message ||
+          "Terjadi kesalahan saat mengubah password. Silakan coba lagi.";
+        
+        // Show general error on currentPassword field
+        setErrors((prev) => ({ ...prev, currentPassword: errorMessage }));
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -110,7 +156,7 @@ export default function UpdatePasswordPage() {
                   type={showCurrentPassword ? "text" : "password"}
                   value={formData.currentPassword}
                   onChange={handleChange}
-                  className="pl-10 pr-10"
+                  className={`pl-10 pr-10 ${errors.currentPassword ? "border-destructive" : ""}`}
                   placeholder="Masukkan password saat ini"
                 />
                 <button
@@ -125,6 +171,9 @@ export default function UpdatePasswordPage() {
                   )}
                 </button>
               </div>
+              {errors.currentPassword && (
+                <p className="text-sm text-destructive">{errors.currentPassword}</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -137,7 +186,7 @@ export default function UpdatePasswordPage() {
                   type={showNewPassword ? "text" : "password"}
                   value={formData.newPassword}
                   onChange={handleChange}
-                  className="pl-10 pr-10"
+                  className={`pl-10 pr-10 ${errors.newPassword ? "border-destructive" : ""}`}
                   placeholder="Masukkan password baru"
                 />
                 <button
@@ -152,9 +201,13 @@ export default function UpdatePasswordPage() {
                   )}
                 </button>
               </div>
-              <p className="text-xs text-muted-foreground">
-                Minimal 8 karakter dengan kombinasi huruf dan angka
-              </p>
+              {errors.newPassword ? (
+                <p className="text-sm text-destructive">{errors.newPassword}</p>
+              ) : (
+                <p className="text-xs text-muted-foreground">
+                  Minimal 8 karakter dengan kombinasi huruf dan angka
+                </p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -167,7 +220,7 @@ export default function UpdatePasswordPage() {
                   type={showConfirmPassword ? "text" : "password"}
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  className="pl-10 pr-10"
+                  className={`pl-10 pr-10 ${errors.confirmPassword ? "border-destructive" : ""}`}
                   placeholder="Konfirmasi password baru"
                 />
                 <button
@@ -182,6 +235,9 @@ export default function UpdatePasswordPage() {
                   )}
                 </button>
               </div>
+              {errors.confirmPassword && (
+                <p className="text-sm text-destructive">{errors.confirmPassword}</p>
+              )}
             </div>
 
             <div className="pt-4">

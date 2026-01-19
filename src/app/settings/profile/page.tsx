@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { User, Mail, Phone, ArrowLeft, Save, AtSign } from "lucide-react";
 import Header from "@/components/Header";
@@ -8,16 +8,65 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { UserService } from "@/services/user";
 
 export default function EditProfilePage() {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingProfile, setIsLoadingProfile] = useState(true);
   const [formData, setFormData] = useState({
-    name: "Budi",
-    email: "asditap@gmail.com",
-    phone_number: "082243629916",
-    username: "asditap"
+    name: "",
+    email: "",
+    phone_number: "",
+    username: ""
   });
+
+  const [errors, setErrors] = useState({
+    name: "",
+    email: "",
+    phone_number: "",
+    username: "",
+  });
+
+  // Load profile data on mount
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadProfile = async () => {
+      try {
+        setIsLoadingProfile(true);
+        const profile = await UserService.getProfile();
+        
+        // Only update state if component is still mounted
+        if (isMounted) {
+          setFormData({
+            name: profile.user.name || "",
+            email: profile.user.email || "",
+            phone_number: profile.user.phone_number || "",
+            username: profile.user.username || ""
+          });
+          setIsLoadingProfile(false);
+        }
+      } catch (error: any) {
+        // Only show error if component is still mounted
+        if (isMounted) {
+          toast({
+            title: "Error",
+            description: "Gagal memuat data profil. Silakan refresh halaman.",
+            variant: "destructive",
+          });
+          setIsLoadingProfile(false);
+        }
+      }
+    };
+
+    loadProfile();
+
+    // Cleanup function to prevent state updates after unmount
+    return () => {
+      isMounted = false;
+    };
+  }, []); // Empty dependency array - only run once on mount
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -25,39 +74,88 @@ export default function EditProfilePage() {
       ...prev,
       [name]: value
     }));
+    // Clear error when user starts typing
+    if (errors[name as keyof typeof errors]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
   };
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
+    // Reset errors
+    setErrors({
+      name: "",
+      email: "",
+      phone_number: "",
+      username: "",
+    });
+
+    let hasError = false;
+
     // Validate inputs
-    if (!formData.name.trim() || formData.name.length > 100) {
-      toast({
-        title: "Error",
-        description: "Nama harus diisi dan maksimal 100 karakter",
-        variant: "destructive"
-      });
-      setIsLoading(false);
-      return;
+    if (!formData.name.trim()) {
+      setErrors((prev) => ({ ...prev, name: "Nama harus diisi" }));
+      hasError = true;
+    } else if (formData.name.length > 100) {
+      setErrors((prev) => ({ ...prev, name: "Nama maksimal 100 karakter" }));
+      hasError = true;
     }
-    if (!formData.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      toast({
-        title: "Error",
-        description: "Email tidak valid",
-        variant: "destructive"
-      });
+
+    if (!formData.email.trim()) {
+      setErrors((prev) => ({ ...prev, email: "Email harus diisi" }));
+      hasError = true;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      setErrors((prev) => ({ ...prev, email: "Email tidak valid" }));
+      hasError = true;
+    }
+
+    if (hasError) {
       setIsLoading(false);
       return;
     }
 
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    toast({
-      title: "Profil Diperbarui",
-      description: "Data profil Anda berhasil disimpan."
-    });
-    setIsLoading(false);
+    try {
+      // Call API to update profile
+      await UserService.updateProfile({
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        phone_number: formData.phone_number.trim() || null,
+        username: formData.username.trim() || null,
+      });
+
+      toast({
+        title: "Profil Diperbarui",
+        description: "Data profil Anda berhasil disimpan."
+      });
+    } catch (error: any) {
+      // Handle API error response
+      const responseData = error?.response?.data;
+      
+      // Handle field-specific errors from API
+      if (responseData?.errors) {
+        const apiErrors = responseData.errors;
+        setErrors({
+          name: apiErrors.name?.[0] || "",
+          email: apiErrors.email?.[0] || "",
+          phone_number: apiErrors.phone_number?.[0] || "",
+          username: apiErrors.username?.[0] || "",
+        });
+      } else {
+        // Handle general error message
+        const errorMessage = 
+          responseData?.message || 
+          responseData?.error ||
+          error?.message ||
+          "Terjadi kesalahan saat mengubah profil. Silakan coba lagi.";
+        
+        // Show general error on name field
+        setErrors((prev) => ({ ...prev, name: errorMessage }));
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
   
   return (
@@ -78,49 +176,102 @@ export default function EditProfilePage() {
         </div>
 
         <div className="rounded-2xl border border-border bg-card p-8">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="name">Nama Lengkap</Label>
-              <div className="relative">
-                <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input id="name" name="name" value={formData.name} onChange={handleChange} className="pl-10" placeholder="Masukkan nama lengkap" maxLength={100} />
+          {isLoadingProfile ? (
+            <div className="text-center py-8 text-muted-foreground">Memuat data profil...</div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="name">Nama Lengkap</Label>
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  <Input 
+                    id="name" 
+                    name="name" 
+                    value={formData.name} 
+                    onChange={handleChange} 
+                    className={`pl-10 ${errors.name ? "border-destructive" : ""}`}
+                    placeholder="Masukkan nama lengkap" 
+                    maxLength={100} 
+                    disabled={isLoading}
+                  />
+                </div>
+                {errors.name && (
+                  <p className="text-sm text-destructive">{errors.name}</p>
+                )}
               </div>
-            </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input id="email" name="email" type="email" value={formData.email} onChange={handleChange} className="pl-10" placeholder="Masukkan email" maxLength={255} />
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  <Input 
+                    id="email" 
+                    name="email" 
+                    type="email" 
+                    value={formData.email} 
+                    onChange={handleChange} 
+                    className={`pl-10 ${errors.email ? "border-destructive" : ""}`}
+                    placeholder="Masukkan email" 
+                    maxLength={255}
+                    disabled={isLoading}
+                  />
+                </div>
+                {errors.email && (
+                  <p className="text-sm text-destructive">{errors.email}</p>
+                )}
               </div>
-            </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="phone_number">Nomor Telepon</Label>
-              <div className="relative">
-                <Phone className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input id="phone_number" name="phone_number" value={formData.phone_number} onChange={handleChange} className="pl-10" placeholder="Masukkan nomor telepon" maxLength={20} />
+              <div className="space-y-2">
+                <Label htmlFor="phone_number">Nomor Telepon</Label>
+                <div className="relative">
+                  <Phone className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  <Input 
+                    id="phone_number" 
+                    name="phone_number" 
+                    value={formData.phone_number} 
+                    onChange={handleChange} 
+                    className={`pl-10 ${errors.phone_number ? "border-destructive" : ""}`}
+                    placeholder="Masukkan nomor telepon" 
+                    maxLength={20}
+                    disabled={isLoading}
+                  />
+                </div>
+                {errors.phone_number && (
+                  <p className="text-sm text-destructive">{errors.phone_number}</p>
+                )}
               </div>
-            </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
-              <div className="relative">
-                <AtSign className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input id="username" name="username" value={formData.username} onChange={handleChange} className="pl-10" placeholder="Masukkan username" maxLength={50} />
+              <div className="space-y-2">
+                <Label htmlFor="username">Username</Label>
+                <div className="relative">
+                  <AtSign className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  <Input 
+                    id="username" 
+                    name="username" 
+                    value={formData.username} 
+                    onChange={handleChange} 
+                    className={`pl-10 ${errors.username ? "border-destructive" : ""}`}
+                    placeholder="Masukkan username" 
+                    maxLength={50}
+                    disabled={isLoading}
+                  />
+                </div>
+                {errors.username && (
+                  <p className="text-sm text-destructive">{errors.username}</p>
+                )}
               </div>
-            </div>
 
-            <div className="flex gap-4 pt-4">
-              <Button type="submit" disabled={isLoading}>
-                <Save className="mr-2 h-4 w-4" />
-                {isLoading ? "Menyimpan..." : "Simpan Perubahan"}
-              </Button>
-              <Button type="button" variant="outline" asChild>
-                <Link href="/settings/password">Ubah Password</Link>
-              </Button>
-            </div>
-          </form>
+              <div className="flex gap-4 pt-4">
+                <Button type="submit" disabled={isLoading || isLoadingProfile}>
+                  <Save className="mr-2 h-4 w-4" />
+                  {isLoading ? "Menyimpan..." : "Simpan Perubahan"}
+                </Button>
+                <Button type="button" variant="outline" asChild>
+                  <Link href="/settings/password">Ubah Password</Link>
+                </Button>
+              </div>
+            </form>
+          )}
         </div>
       </main>
     </div>
