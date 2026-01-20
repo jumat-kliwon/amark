@@ -31,7 +31,7 @@ import Image from 'next/image';
 import { useNotifications } from '@/hooks/use-notification';
 
 const navItems = [
-  { label: 'Courses', href: '/' },
+  { label: 'Courses', href: '/course' },
   { label: 'Subscription', href: '/subscription' },
   { label: 'Certificate', href: '/certificate' },
   { label: 'Affiliate', href: '/affiliate' },
