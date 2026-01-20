@@ -22,29 +22,23 @@ export default function CoursePage() {
   const course = useCourses();
   const [currentPage, setCurrentPage] = useState(1);
 
-  const filteredCourses = courses.filter((item) => {
-    const matchesCategory = course.category
-      ? item.category === course.category
-      : true;
-    const matchesSearch = course.search.trim()
-      ? item.title.toLowerCase().includes(course.search.toLowerCase().trim())
-      : true;
-    return matchesCategory && matchesSearch;
-  });
+  // const filteredCourses = courses.filter((item) => {
+  //   const matchesCategory = course.category
+  //     ? item.category === course.category
+  //     : true;
+  //   const matchesSearch = course.search.trim()
+  //     ? item.title.toLowerCase().includes(course.search.toLowerCase().trim())
+  //     : true;
+  //   return matchesCategory && matchesSearch;
+  // });
 
   // Reset to page 1 when filter/search changes
   useEffect(() => {
     setCurrentPage(1);
   }, [course.category, course.search]);
 
-  const totalPages = Math.ceil(filteredCourses.length / course.limit);
+  const totalPages = course.courses?.meta.to;
   const startIndex = (currentPage - 1) * course.limit;
-  const paginatedCourses = filteredCourses.slice(
-    startIndex,
-    startIndex + course.limit,
-  );
-
-  const clearSearch = () => course.setSearch('');
 
   const goToPage = (page: number) => {
     if (page >= 1 && page <= totalPages) {
@@ -116,13 +110,13 @@ export default function CoursePage() {
           </div>
 
           {/* Results info */}
-          {filteredCourses.length > 0 && (
+          {/* {filteredCourses.length > 0 && (
             <p className="mb-4 text-sm text-muted-foreground">
               Menampilkan {startIndex + 1}-
               {Math.min(startIndex + course.limit, filteredCourses.length)} dari{' '}
               {filteredCourses.length} kursus
             </p>
-          )}
+          )} */}
 
           <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3">
             {course.loadingCourses ? (
