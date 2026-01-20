@@ -13,8 +13,9 @@ export function useLesson() {
   const [openConfirm, setOpenConfirm] = useState(false);
 
   const { data: detailCourse, isLoading: loadingDetailCourse } = useQuery({
-    queryKey: ['detailCourse'],
+    queryKey: ['detailCourse', slug],
     queryFn: () => CourseService.getCourseDetail(slug ?? ''),
+    enabled: !!slug,
   });
 
   const { data: moduleList, isLoading: loadingModuleList } = useQuery({

@@ -20,35 +20,28 @@ import { useCourses } from '@/hooks/use-course';
 
 export default function CoursePage() {
   const course = useCourses();
-  const [currentPage, setCurrentPage] = useState(1);
 
-  const filteredCourses = courses.filter((item) => {
-    const matchesCategory = course.category
-      ? item.category === course.category
-      : true;
-    const matchesSearch = course.search.trim()
-      ? item.title.toLowerCase().includes(course.search.toLowerCase().trim())
-      : true;
-    return matchesCategory && matchesSearch;
-  });
+  // const filteredCourses = courses.filter((item) => {
+  //   const matchesCategory = course.category
+  //     ? item.category === course.category
+  //     : true;
+  //   const matchesSearch = course.search.trim()
+  //     ? item.title.toLowerCase().includes(course.search.toLowerCase().trim())
+  //     : true;
+  //   return matchesCategory && matchesSearch;
+  // });
 
   // Reset to page 1 when filter/search changes
   useEffect(() => {
-    setCurrentPage(1);
+    course.setPage(1);
   }, [course.category, course.search]);
 
-  const totalPages = Math.ceil(filteredCourses.length / course.limit);
-  const startIndex = (currentPage - 1) * course.limit;
-  const paginatedCourses = filteredCourses.slice(
-    startIndex,
-    startIndex + course.limit,
-  );
-
-  const clearSearch = () => course.setSearch('');
+  const totalPages = course.courses?.meta.to;
+  const startIndex = (course.page - 1) * course.limit;
 
   const goToPage = (page: number) => {
     if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
+      course.setPage(page);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
@@ -63,16 +56,16 @@ export default function CoursePage() {
         pages.push(i);
       }
     } else {
-      if (currentPage <= 3) {
+      if (course.page <= 3) {
         for (let i = 1; i <= Math.min(maxVisiblePages, totalPages); i++) {
           pages.push(i);
         }
-      } else if (currentPage >= totalPages - 2) {
+      } else if (course.page >= totalPages - 2) {
         for (let i = totalPages - maxVisiblePages + 1; i <= totalPages; i++) {
           pages.push(i);
         }
       } else {
-        for (let i = currentPage - 2; i <= currentPage + 2; i++) {
+        for (let i = course.page - 2; i <= course.page + 2; i++) {
           pages.push(i);
         }
       }
@@ -116,13 +109,13 @@ export default function CoursePage() {
           </div>
 
           {/* Results info */}
-          {filteredCourses.length > 0 && (
+          {/* {filteredCourses.length > 0 && (
             <p className="mb-4 text-sm text-muted-foreground">
               Menampilkan {startIndex + 1}-
               {Math.min(startIndex + course.limit, filteredCourses.length)} dari{' '}
               {filteredCourses.length} kursus
             </p>
-          )}
+          )} */}
 
           <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3">
             {course.loadingCourses ? (
@@ -163,9 +156,9 @@ export default function CoursePage() {
               <PaginationContent>
                 <PaginationItem>
                   <PaginationPrevious
-                    onClick={() => goToPage(currentPage - 1)}
+                    onClick={() => goToPage(course.page - 1)}
                     className={
-                      currentPage === 1
+                      course.page === 1
                         ? 'pointer-events-none opacity-50'
                         : 'cursor-pointer'
                     }
@@ -176,7 +169,7 @@ export default function CoursePage() {
                   <PaginationItem key={page}>
                     <PaginationLink
                       onClick={() => goToPage(page)}
-                      isActive={currentPage === page}
+                      isActive={course.page === page}
                       className="cursor-pointer"
                     >
                       {page}
@@ -186,9 +179,9 @@ export default function CoursePage() {
 
                 <PaginationItem>
                   <PaginationNext
-                    onClick={() => goToPage(currentPage + 1)}
+                    onClick={() => goToPage(course.page + 1)}
                     className={
-                      currentPage === totalPages
+                      course.page === totalPages
                         ? 'pointer-events-none opacity-50'
                         : 'cursor-pointer'
                     }

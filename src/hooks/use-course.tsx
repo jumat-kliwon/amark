@@ -6,7 +6,7 @@ import { useState } from 'react';
 
 export const useCourses = () => {
   const [page, setPage] = useState(0);
-  const [limit, setLimit] = useState(12);
+  const [limit, setLimit] = useState(6);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('');
 

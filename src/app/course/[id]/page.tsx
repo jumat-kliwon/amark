@@ -12,6 +12,7 @@ import {
   Circle,
   BookOpen,
   Trophy,
+  Loader2,
 } from 'lucide-react';
 import { courses } from '@/data/courses';
 import Header from '@/components/Header';
@@ -39,7 +40,7 @@ export default function CourseOverviewPage() {
         <div className="flex flex-1 items-center justify-center">
           <div className="text-center">
             <h1 className="text-2xl font-bold">Course not found</h1>
-            <Link href="/" className="mt-4 text-primary hover:underline">
+            <Link href="/course" className="mt-4 text-primary hover:underline">
               Back to courses
             </Link>
           </div>
@@ -52,6 +53,20 @@ export default function CourseOverviewPage() {
   const completedLessons = course.moduleList?.progress.completed_lessons;
   const firstUncompletedLesson = course.moduleList?.progress.completed_lessons;
 
+  if (course.loadingModuleList || course.loadingDetailCourse) {
+    return (
+      <div className="flex min-h-screen flex-col bg-background">
+        <Header />
+        <div className="flex flex-1 items-center justify-center">
+          <div className="flex flex-col items-center gap-4">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <p className="text-muted-foreground">Memuat detail course...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
@@ -61,7 +76,7 @@ export default function CourseOverviewPage() {
         {/* Content */}
         <div className="mx-auto max-w-6xl px-6 py-10">
           <Link
-            href="/"
+            href="/course"
             className="mb-8 inline-flex items-center gap-2 rounded-full bg-background/50 backdrop-blur-sm px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-background/70 transition-all"
           >
             <ArrowLeft className="h-4 w-4" />

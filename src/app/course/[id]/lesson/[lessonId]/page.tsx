@@ -130,7 +130,10 @@ export default function CourseDetailPage() {
         <div className="flex flex-1 items-center justify-center">
           <div className="text-center">
             <h1 className="text-2xl font-bold">Course not found</h1>
-            <Link href="/" className="mt-4 text-primary hover:underline">
+            <Link
+              href={`/course/${id}`}
+              className="mt-4 text-primary hover:underline"
+            >
               Back to courses
             </Link>
           </div>
@@ -234,11 +237,17 @@ export default function CourseDetailPage() {
               <div className="grid gap-8">
                 {/* Full Width Video Embed */}
                 <div className="relative aspect-video w-full overflow-hidden rounded-xl">
-                  <img
-                    src={course.thumbnail_url || course.thumbnail}
-                    alt={course.title}
-                    className="h-full w-full object-cover"
-                  />
+                  {currentLesson?.content && (
+                    <div className="mb-8">
+                      <div
+                        // className="prose prose-invert max-w-none"
+                        className="h-full w-full object-cover"
+                        dangerouslySetInnerHTML={{
+                          __html: currentLesson.content,
+                        }}
+                      />
+                    </div>
+                  )}
                   <div className="absolute inset-0 flex items-center justify-center bg-black/30">
                     <button className="flex h-20 w-20 items-center justify-center rounded-full bg-white/90 text-black transition-transform hover:scale-110">
                       <Play className="h-8 w-8 fill-current" />
@@ -286,12 +295,12 @@ export default function CourseDetailPage() {
                   )}
 
                   {/* Lesson Content */}
-                  {currentLesson?.content && (
+                  {currentLesson?.description && (
                     <div className="mb-8">
                       <div
                         className="prose prose-invert max-w-none"
                         dangerouslySetInnerHTML={{
-                          __html: currentLesson.content,
+                          __html: currentLesson?.description,
                         }}
                       />
                     </div>
