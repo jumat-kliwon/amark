@@ -36,42 +36,16 @@ export default function CoursePage() {
     course.setPage(1);
   }, [course.category, course.search]);
 
-  const totalPages = course.courses?.meta.to;
-  const startIndex = (course.page - 1) * course.limit;
+  // For simplePaginate, we don't have total pages, only prev/next links
+  const currentPage = course.courses?.meta.current_page || 1;
+  const hasPrevPage = course.courses?.links.prev !== null;
+  const hasNextPage = course.courses?.links.next !== null;
 
   const goToPage = (page: number) => {
-    if (page >= 1 && page <= totalPages) {
+    if (page >= 1) {
       course.setPage(page);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-  };
-
-  // Generate page numbers to display
-  const getPageNumbers = () => {
-    const pages: number[] = [];
-    const maxVisiblePages = 5;
-
-    if (totalPages <= maxVisiblePages) {
-      for (let i = 1; i <= totalPages; i++) {
-        pages.push(i);
-      }
-    } else {
-      if (course.page <= 3) {
-        for (let i = 1; i <= Math.min(maxVisiblePages, totalPages); i++) {
-          pages.push(i);
-        }
-      } else if (course.page >= totalPages - 2) {
-        for (let i = totalPages - maxVisiblePages + 1; i <= totalPages; i++) {
-          pages.push(i);
-        }
-      } else {
-        for (let i = course.page - 2; i <= course.page + 2; i++) {
-          pages.push(i);
-        }
-      }
-    }
-
-    return pages;
   };
 
   return (
@@ -132,7 +106,7 @@ export default function CoursePage() {
                     key={course.id}
                     id={course.slug}
                     title={course.title}
-                    description={course.title}
+                    description={course.short_description}
                     author={course.instructor.name}
                     thumbnail={course.thumbnail}
                     locked={!course.has_access}
@@ -151,37 +125,34 @@ export default function CoursePage() {
           </div>
 
           {/* Pagination */}
-          {totalPages > 1 && (
+          {(hasPrevPage || hasNextPage) && (
             <Pagination className="mt-8">
               <PaginationContent>
                 <PaginationItem>
                   <PaginationPrevious
-                    onClick={() => goToPage(course.page - 1)}
+                    onClick={() => goToPage(currentPage - 1)}
                     className={
-                      course.page === 1
+                      !hasPrevPage
                         ? 'pointer-events-none opacity-50'
                         : 'cursor-pointer'
                     }
                   />
                 </PaginationItem>
 
-                {getPageNumbers().map((page) => (
-                  <PaginationItem key={page}>
-                    <PaginationLink
-                      onClick={() => goToPage(page)}
-                      isActive={course.page === page}
-                      className="cursor-pointer"
-                    >
-                      {page}
-                    </PaginationLink>
-                  </PaginationItem>
-                ))}
+                <PaginationItem>
+                  <PaginationLink
+                    isActive={true}
+                    className="cursor-default"
+                  >
+                    {currentPage}
+                  </PaginationLink>
+                </PaginationItem>
 
                 <PaginationItem>
                   <PaginationNext
-                    onClick={() => goToPage(course.page + 1)}
+                    onClick={() => goToPage(currentPage + 1)}
                     className={
-                      course.page === totalPages
+                      !hasNextPage
                         ? 'pointer-events-none opacity-50'
                         : 'cursor-pointer'
                     }
