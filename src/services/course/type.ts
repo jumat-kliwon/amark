@@ -5,6 +5,7 @@ export interface Course {
   slug: string;
   thumbnail: string;
   status: string;
+  short_description?: string | null;
   category: {
     id: number;
     name: string;

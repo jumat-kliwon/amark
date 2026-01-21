@@ -143,11 +143,19 @@ const CourseCard = ({
 
           <div className="my-4 rounded-lg border border-border bg-muted/50 p-4">
             <div className="flex items-center gap-4">
-              <img
-                src={thumbnail}
-                alt={title}
-                className="h-16 w-24 rounded-md object-cover"
-              />
+              <div className="relative h-16 w-24 flex-shrink-0 overflow-hidden rounded-md">
+                <Image
+                  src={
+                    thumbnail
+                      ? `https://lms.acrehub.lol/storage/${thumbnail}`
+                      : '/images/course-placeholder.png'
+                  }
+                  alt={title}
+                  fill
+                  className="object-cover"
+                  unoptimized
+                />
+              </div>
               <div>
                 <h4 className="font-semibold">{title}</h4>
                 <p className="text-sm text-muted-foreground">{author}</p>
