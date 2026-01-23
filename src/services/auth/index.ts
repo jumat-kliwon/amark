@@ -1,5 +1,5 @@
 import api from '@/lib/axios';
-import { LoginPayload, LoginResponse, RegisterPayload, RegisterResponse } from './type';
+import { ForgotPayload, ForgotResponse, LoginPayload, LoginResponse, RegisterPayload, RegisterResponse } from './type';
 
 export const AuthService = {
   login: async (payload: LoginPayload): Promise<LoginResponse> => {
@@ -18,4 +18,10 @@ export const AuthService = {
     const { data } = await api.post('/auth/register', payload);
     return data;
   },
+
+  forgotPassword: async (payload: ForgotPayload): Promise<ForgotResponse> => {
+    const { data } = await api.post('/auth/forgot-password', payload);
+    return data;
+  },
+
 };

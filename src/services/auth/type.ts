@@ -26,6 +26,11 @@ export interface LoginResponse {
   token: string;
 }
 
+export interface ForgotResponse {
+  message: string;
+}
+
+
 
 export interface RegisterPayload {
   phone_number: string;
@@ -59,3 +64,6 @@ export interface RegisterResponse {
   };
 }
 
+export interface ForgotPayload {
+  email: string;
+}

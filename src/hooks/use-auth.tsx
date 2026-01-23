@@ -3,7 +3,11 @@
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { AuthService } from '@/services/auth';
-import type { LoginPayload, RegisterPayload } from '@/services/auth/type';
+import type {
+  ForgotPayload,
+  LoginPayload,
+  RegisterPayload,
+} from '@/services/auth/type';
 import { toast } from 'sonner';
 import type { AxiosError } from 'axios';
 
@@ -85,6 +89,25 @@ export const useRegister = () => {
     onError: (error: AxiosError<ErrorResponse>) => {
       const message =
         error.response?.data?.message || 'Registrasi gagal, silakan coba lagi';
+
+      toast.error(message);
+    },
+  });
+};
+
+export const useForgotPassword = () => {
+  const router = useRouter();
+
+  return useMutation({
+    mutationFn: (payload: ForgotPayload) => AuthService.forgotPassword(payload),
+
+    onSuccess: (data) => {
+      toast.success(data.message || 'Request reset password di kirim ke email');
+    },
+
+    onError: (error: AxiosError<ErrorResponse>) => {
+      const message =
+        error.response?.data?.message || 'Gagal request reset password';
 
       toast.error(message);
     },

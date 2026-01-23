@@ -19,7 +19,7 @@ export const OrderService = {
   },
 
   postOrder: async (dt: MembershipRequest): Promise<MembershipResponse> => {
-    const { data } = await axios.post(`/orders`, {dt});
+    const { data } = await axios.post(`/orders`, dt);
     return data;
   },
 

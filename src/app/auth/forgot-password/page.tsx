@@ -4,12 +4,18 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Eye, EyeOff } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useForgotPassword } from '@/hooks/use-auth';
 
 export default function ForgotPass() {
-  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
+  const [email, setEmail] = useState('');
+
+  const { mutate, isPending } = useForgotPassword();
+
+  const onSubmit = () => {
+    mutate({ email });
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#121212] text-white">
@@ -27,15 +33,18 @@ export default function ForgotPass() {
           <Input
             className="mt-2 h-12 rounded-xl bg-zinc-900 border-zinc-800 text-white placeholder:text-zinc-500 focus:ring-red-600 focus:ring-2"
             placeholder="mail@gmail.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </div>
 
         {/* Button */}
         <Button
           className="w-full h-12 rounded-xl bg-red-600 hover:bg-red-700 text-white text-base"
-          onClick={() => router.push('auth/reset-password')}
+          onClick={onSubmit}
+          disabled={isPending}
         >
-          SEND MAIL
+          {isPending ? 'Loading...' : 'SEND MAIL'}
         </Button>
 
         {/* Links */}

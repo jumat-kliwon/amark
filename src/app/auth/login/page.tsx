@@ -17,9 +17,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const router = useRouter();
   const { settings } = useSettingsContext();
-  const defaultMembership = settings?.memberships?.find(
-    (m) => m.is_default,
-  );
+  const defaultMembership = settings?.memberships?.find((m) => m.is_default);
   const { mutate, isPending } = useLogin();
 
   const onSubmit = () => {
@@ -33,9 +31,7 @@ export default function LoginPage() {
 
         {/* Email */}
         <div className="mb-5">
-          <Label className="text-sm text-muted-foreground">
-            Username atau Email
-          </Label>
+          <Label className="text-sm text-muted-foreground">Email</Label>
           <Input
             className="mt-2 h-12 rounded-xl bg-zinc-900 border-zinc-800 text-white focus:ring-red-600 focus:ring-2"
             placeholder="Enter your mail"

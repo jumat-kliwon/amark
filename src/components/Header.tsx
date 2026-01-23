@@ -29,6 +29,7 @@ import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useNotifications } from '@/hooks/use-notification';
+import { useLogout } from '@/hooks/use-auth';
 
 const navItems = [
   { label: 'Courses', href: '/course' },
@@ -43,6 +44,7 @@ const Header = () => {
   const [user, setUser] = useState<{ name?: string } | null>(null);
   const [loadingUser, setLoadingUser] = useState(true);
   const { notifications } = useNotifications({ page: 1, limit: 100 });
+  const logout = useLogout();
 
   useEffect(() => {
     try {
@@ -61,7 +63,7 @@ const Header = () => {
 
   const userInitial =
     (user?.name && user.name.trim().charAt(0).toUpperCase()) || 'A';
-  
+
   const unreadNotifications = notifications.filter((n) => !n.read_at).length;
 
   return (
@@ -202,7 +204,10 @@ const Header = () => {
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="flex items-center gap-2 text-destructive cursor-pointer">
+            <DropdownMenuItem
+              className="flex items-center gap-2 text-destructive cursor-pointer"
+              onClick={() => logout.mutate()}
+            >
               <LogOut className="h-4 w-4" />
               Keluar
             </DropdownMenuItem>
