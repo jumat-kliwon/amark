@@ -32,7 +32,7 @@ export function HeaderLanding() {
           </Button>
 
           <Button
-            className="h-10 rounded-xl bg-gradient-to-r from-red-600 to-red-900 hover:bg-red-700 text-white text-base"
+            className="h-10 rounded-xl bg-gradient-to-r from-blue-600 to-blue-900 hover:bg-blue-700 text-white text-base"
             onClick={() => router.push('/#join-now')}
           >
             Register
@@ -42,4 +42,3 @@ export function HeaderLanding() {
     </header>
   );
 }
-

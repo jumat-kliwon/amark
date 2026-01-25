@@ -21,7 +21,7 @@ export function FAQSection() {
     >
       <div className="relative max-w-4xl mx-auto px-4">
         <h2 className="text-center text-2xl md:text-3xl font-bold mb-12">
-          FREQUENTLY ASKED <span className="text-red-600">QUESTION</span>
+          FREQUENTLY ASKED <span className="text-blue-600">QUESTION</span>
         </h2>
 
         <div className="space-y-4">
@@ -44,7 +44,7 @@ export function FAQSection() {
                     {item.q}
                   </span>
 
-                  <span className="text-red-600">
+                  <span className="text-blue-600">
                     {isOpen ? <Minus size={22} /> : <Plus size={22} />}
                   </span>
                 </button>
@@ -67,4 +67,3 @@ export function FAQSection() {
     </section>
   );
 }
-

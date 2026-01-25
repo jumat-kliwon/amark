@@ -23,7 +23,7 @@ export function Testimoni() {
           />
         </div>
         <h2 className="text-center text-3xl md:text-4xl font-bold text-white mb-14 mt-4">
-          <div className="text-red-600 uppercase">100K Followers</div>
+          <div className="text-blue-600 uppercase">100K Followers</div>
           <div className="uppercase">Pertama</div>
         </h2>
       </div>
@@ -39,7 +39,7 @@ export function Testimoni() {
           />
         </div>
         <h2 className="text-right text-3xl md:text-4xl font-bold text-white mb-14 w-full md:max-w-4/5 mt-4 pr-0 md:pr-10">
-          <span className="text-red-600 uppercase">penghasilan alumni</span>
+          <span className="text-blue-600 uppercase">penghasilan alumni</span>
           <span className="uppercase">
             {' '}
             dari <br /> endorsement, Adsense, digital <br /> product dan digital
@@ -50,4 +50,3 @@ export function Testimoni() {
     </section>
   );
 }
-

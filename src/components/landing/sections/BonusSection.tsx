@@ -29,7 +29,7 @@ export function BonusSection() {
               >
                 {/* TEXT */}
                 <div className={clsx(reverse && 'md:order-2')}>
-                  <div className="text-red-600 text-6xl font-bold mb-6">
+                  <div className="text-blue-600 text-6xl font-bold mb-6">
                     {item.number}
                   </div>
 
@@ -78,4 +78,3 @@ export function BonusSection() {
     </section>
   );
 }
-

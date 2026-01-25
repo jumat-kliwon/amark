@@ -23,7 +23,7 @@ export function Price() {
 
       <div className="relative max-w-4xl mx-auto px-6">
         {/* Card */}
-        <div className="relative rounded-3xl border border-red-600/40 bg-gradient-to-b from-black to-neutral-900 p-10 md:p-14">
+        <div className="relative rounded-3xl border border-blue-600/40 bg-gradient-to-b from-black to-neutral-900 p-10 md:p-14">
           {/* Header */}
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-8 mb-10">
             <div>
@@ -48,9 +48,11 @@ export function Price() {
 
             {defaultMembership ? (
               <div className="text-right">
-                <span className="inline-block bg-red-600 text-white text-xs px-3 py-1 rounded-full mb-2">
+                <span className="inline-block bg-blue-600 text-white text-xs px-3 py-1 rounded-full mb-2">
                   DARI RP
-                  {formatCurrency(Number(defaultMembership.original_price ?? 0))}
+                  {formatCurrency(
+                    Number(defaultMembership.original_price ?? 0),
+                  )}
                 </span>
                 <div className="text-4xl md:text-5xl font-bold">
                   Rp
@@ -97,12 +99,10 @@ export function Price() {
                   key={item.id}
                   className={`rounded-xl text-black py-4 font-bold text-lg hover:opacity-90 transition ${
                     key % 2
-                      ? 'bg-gradient-to-r from-red-500 to-red-700 text-white'
+                      ? 'bg-gradient-to-r from-blue-500 to-blue-700 text-white'
                       : 'bg-white'
                   }`}
-                  onClick={() =>
-                    router.push(`auth/register/${item.slug}`)
-                  }
+                  onClick={() => router.push(`auth/register/${item.slug}`)}
                   type="button"
                 >
                   {item.name}
@@ -124,4 +124,3 @@ export function Price() {
     </section>
   );
 }
-

@@ -3,7 +3,9 @@
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { ArrowDownRight } from 'lucide-react';
-
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
 
@@ -49,7 +51,7 @@ export function Mentors() {
       </div>
       <div className="pb-10">
         <Button
-          className="h-10 w-[180px] rounded-xl bg-gradient-to-r from-red-600 to-red-900 hover:bg-red-700 text-white text-base"
+          className="h-10 w-[180px] rounded-xl bg-gradient-to-r from-blue-600 to-blue-900 hover:bg-blue-700 text-white text-base"
           onClick={() => router.push('/#join-now')}
         >
           Join Now <ArrowDownRight />
@@ -58,4 +60,3 @@ export function Mentors() {
     </div>
   );
 }
-

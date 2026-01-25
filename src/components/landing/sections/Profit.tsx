@@ -4,20 +4,13 @@ import { CheckCircle2, XCircle } from 'lucide-react';
 
 export function Profit() {
   return (
-    <section
-      className="w-full pb-8 pt-16 px-4"
-      style={{
-        backgroundImage: 'url("/images/bg-red.webp")',
-        backgroundPosition: 'top center',
-        backgroundRepeat: 'no-repeat',
-        backgroundSize: '1000px',
-      }}
-    >
+    <section className="w-full pb-8 pt-16 px-4">
       <div className="max-w-4xl mx-auto">
         {/* Title */}
         <h2 className="text-center text-2xl md:text-4xl font-bold text-white mb-10">
-          <div>Sebelum membeli, pastikan kelas</div>
-          <div className="text-red-600">ini cocok dengan kalian</div>
+          <div className="text-blue-600">
+            PASTIKAN KELAS INI COCOK UNTUK KAMU
+          </div>
         </h2>
 
         {/* Content */}
@@ -31,13 +24,10 @@ export function Profit() {
 
             <ul className="space-y-4">
               {[
-                'Mau dapet penghasilan tambahan diluar kantor',
-                'Mau switch karir full time bisnis digital/creator',
-                'Mau punya followers banyak',
-                'Expert dalam ilmu tertentu mau monetize',
-                'Followers banyak, monetize susah',
-                'Mau jualan produk digital yang laku keras',
-                'Mau punya banyak waktu untuk keluarga',
+                'Pemula dari 0 yang ingin mencari tambahan dari jualan online',
+                'Dropshiper yang baru mau memulai dan meminimalisir iklan boncos',
+                'Brand Owner produk fisik yang mau meningkatkan omset dengan budget iklan',
+                'Brand Owner yang stuck ingin berkembang dengan digital marketing',
               ].map((item, i) => (
                 <li
                   key={i}
@@ -61,13 +51,11 @@ export function Profit() {
 
             <ul className="space-y-4">
               {[
-                'Mau bikin konten entertainment',
-                'Mau bikin konten pamer aurat',
-                'Mau jual produk digital hit & run',
-                'Bikin konten atau jual produk ilegal',
-                'Mau belajar ngiklan jualan produk fisik',
-                'Mau dapet followers pakai jalur beli, FLKS',
-                'Mau tenar dan kaya mendadak',
+                'Content Creator yang beriklan untuk meningkatkan followers',
+                'Brand Owner produk ilegal atau hit and run',
+                'Brand / Produk Owner yang tidak mau meningkatkan omset dengan iklan',
+                'Orang yang ingin cepat kaya tanpa melalui PROSES',
+                'Malas membaca, malas melihat video dan belajar',
               ].map((item, i) => (
                 <li
                   key={i}
@@ -84,4 +72,3 @@ export function Profit() {
     </section>
   );
 }
-

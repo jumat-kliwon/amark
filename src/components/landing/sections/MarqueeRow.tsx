@@ -4,6 +4,9 @@ import Image from 'next/image';
 
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 
 import { marqueeRows } from '@/components/landing/data/marquee';
 
@@ -59,4 +62,3 @@ export function MarqueeRow() {
     </section>
   );
 }
-

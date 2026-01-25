@@ -7,8 +7,8 @@ import { HeaderLanding } from '@/components/landing/sections/HeaderLanding';
 import { Banners } from '@/components/landing/sections/Banners';
 import { Profit } from '@/components/landing/sections/Profit';
 import { Increase } from '@/components/landing/sections/Increase';
-import { Promote } from '@/components/landing/sections/Promote';
-import { Testimoni } from '@/components/landing/sections/Testimoni';
+// import { Promote } from '@/components/landing/sections/Promote';
+// import { Testimoni } from '@/components/landing/sections/Testimoni';
 import { Materi } from '@/components/landing/sections/Materi';
 import { Promote2 } from '@/components/landing/sections/Promote2';
 import { Mentors } from '@/components/landing/sections/Mentors';
@@ -23,7 +23,7 @@ import { Footer } from '@/components/landing/sections/Footer';
 // Main Home Component
 export default function Home() {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-black">
       {/* Navbar */}
       <HeaderLanding />
 
@@ -32,8 +32,8 @@ export default function Home() {
         <Banners />
         <Profit />
         <Increase />
-        <Promote />
-        <Testimoni />
+        {/* <Promote />
+        <Testimoni /> */}
         <Materi />
         <Promote2 />
         <Mentors />

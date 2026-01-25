@@ -13,7 +13,7 @@ export function Testi2() {
 
   return (
     <section className="relative text-white mb-20">
-      <div className="text-red-700 text-center text-xl font-bold w-full md:w-2/3 mx-auto mb-6 mt-10">
+      <div className="text-blue-700 text-center text-xl font-bold w-full md:w-2/3 mx-auto mb-6 mt-10">
         TESTIMONIAL
       </div>
       <h2 className="text-center text-4xl md:text-5xl font-bold mb-8 uppercase">
@@ -30,7 +30,7 @@ export function Testi2() {
           <div>
             <div className="flex items-center justify-center">
               <Button
-                className="h-10 w-[280px] rounded-xl bg-gradient-to-r from-red-600 to-red-900 hover:bg-red-700 text-white text-base"
+                className="h-10 w-[280px] rounded-xl bg-gradient-to-r from-blue-600 to-blue-900 hover:bg-blue-700 text-white text-base"
                 onClick={() => router.push('/auth/member')}
               >
                 TONTON TESTI
@@ -98,4 +98,3 @@ export function Testi2() {
     </section>
   );
 }
-

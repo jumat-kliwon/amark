@@ -6,6 +6,11 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
 
 type CaseStudyCarouselProps = {
   images: string[];
@@ -74,43 +79,40 @@ function CaseStudyCarousel({ images }: CaseStudyCarouselProps) {
 }
 
 export function Increase() {
+  const router = useRouter();
+
   return (
     <section className="w-full  py-8 px-4">
       <div className="max-w-6xl mx-auto">
         {/* Title */}
         <h2 className="text-center text-3xl md:text-4xl font-bold text-white mb-14">
-          <span className="text-red-600">
-            Hasil peningkatan followers dan pendapatan
-          </span>
-          <br />
-          alumni dari product digital. Kalian kapan nyusul?
+          <span className="text-blue-600">Jangan Percaya Kita, Lihat Saja</span>
+          Hasil Member VIP Akademi Marketer.
         </h2>
 
         <div className="space-y-10">
           <CaseStudyCarousel
-            images={[
-              '/images/increase1.webp',
-              '/images/increase2.webp',
-              '/images/increase3.webp',
-              '/images/increase4.webp',
-              '/images/increase5.webp',
-              '/images/increase6.webp',
-              '/images/increase7.webp',
-            ]}
+            images={['/images/increase1.webp', '/images/increase2.webp']}
           />
 
           <CaseStudyCarousel
             images={[
-              '/images/increase8.webp',
-              '/images/increase9.webp',
-              '/images/increase10.webp',
-              '/images/increase11.webp',
-              '/images/increase12.webp',
+              '/images/increase3.webp',
+              '/images/increase4.webp',
+              '/images/increase5.webp',
             ]}
           />
+        </div>
+
+        <div className="p-5 flex items-center justify-center">
+          <Button
+            className="h-10 w-[180px] rounded-xl bg-gradient-to-r from-blue-600 to-blue-900 hover:bg-blue-700 text-white text-base"
+            onClick={() => router.push('/#join-now')}
+          >
+            Join Now
+          </Button>
         </div>
       </div>
     </section>
   );
 }
-
