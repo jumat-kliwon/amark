@@ -9,6 +9,9 @@ const nextConfig = {
   // Note: Disabled for now due to compatibility with client components using hooks
   // cacheComponents: true,
   
+  // Enable standalone output for Docker
+  output: 'standalone',
+  
   images: {
     // Use remotePatterns instead of domains for better security
     remotePatterns: [],

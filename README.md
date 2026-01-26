@@ -38,29 +38,13 @@ Proyek ini dibangun dengan:
 
 ## Persyaratan
 
-- **Node.js 20.9.0+** (Next.js 16 memerlukan Node.js 20.9.0 atau lebih tinggi)
-- npm, yarn, pnpm, atau bun
+- **Bun 1.0+** (Recommended - lebih cepat dan efisien memori)
+- Atau **Node.js 20.9.0+** (Next.js 16 memerlukan Node.js 20.9.0 atau lebih tinggi)
 - TypeScript 5.1.0+ (sudah termasuk dalam dependencies)
 
 ## Instalasi dan Menjalankan Proyek
 
-### Menggunakan npm
-
-```sh
-# Clone repository
-git clone <YOUR_GIT_URL>
-
-# Masuk ke direktori proyek
-cd acre26
-
-# Install dependencies
-npm install --legacy-peer-deps
-
-# Jalankan development server
-npm run dev
-```
-
-### Menggunakan Bun
+### Menggunakan Bun (Recommended)
 
 ```sh
 # Clone repository
@@ -76,14 +60,30 @@ bun install
 bun run dev
 ```
 
+### Menggunakan npm (Alternatif)
+
+```sh
+# Clone repository
+git clone <YOUR_GIT_URL>
+
+# Masuk ke direktori proyek
+cd acre26
+
+# Install dependencies
+npm install --legacy-peer-deps
+
+# Jalankan development server
+npm run dev
+```
+
 Aplikasi akan berjalan di [http://localhost:3000](http://localhost:3000)
 
 ## Scripts yang Tersedia
 
-- `npm run dev` - Menjalankan development server dengan Turbopack (default)
-- `npm run build` - Build aplikasi untuk production dengan Turbopack
-- `npm run start` - Menjalankan production server
-- `npm run lint` - Menjalankan ESLint (Next.js 16 menggunakan ESLint 9)
+- `bun run dev` / `npm run dev` - Menjalankan development server dengan Turbopack (default)
+- `bun run build` / `npm run build` - Build aplikasi untuk production dengan Turbopack
+- `bun run start` / `npm run start` - Menjalankan production server
+- `bun run lint` / `npm run lint` - Menjalankan ESLint (Next.js 16 menggunakan ESLint 9)
 
 ### Catatan Build
 
@@ -113,10 +113,20 @@ src/
 
 Untuk deploy aplikasi ini, Anda dapat menggunakan:
 
+- **Docker** (Recommended - menggunakan Bun untuk build, lebih efisien memori)
 - **Vercel** (Recommended untuk Next.js 16)
 - **Netlify**
 - **AWS Amplify**
 - Platform lainnya yang mendukung Next.js 16
+
+### Deploy dengan Docker
+
+Proyek ini sudah dikonfigurasi dengan Docker menggunakan Bun untuk build process. Lihat [DOCKER.md](./DOCKER.md) untuk panduan lengkap.
+
+```sh
+# Build dan run dengan Docker Compose
+docker-compose up -d
+```
 
 ### Persyaratan Deployment
 
@@ -127,7 +137,9 @@ Pastikan platform deployment Anda mendukung:
 ### Deploy ke Vercel
 
 ```sh
-# Install Vercel CLI
+# Install Vercel CLI (dengan Bun atau npm)
+bun add -g vercel
+# atau
 npm i -g vercel
 
 # Deploy
