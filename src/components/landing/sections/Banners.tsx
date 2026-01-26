@@ -14,9 +14,9 @@ export function Banners() {
   return (
     <div className="text-center space-y-3 max-w-4xl pt-20 md:pt-32 px-3">
       <h1 className="text-4xl font-bold uppercase">
-        <span className="text-blue-600">STRATEGI META ADS</span> dari
-        <span className="text-blue-600">DROPSHIP</span> SAMPAI
-        <span className="text-blue-600">IKLAN BRAND SENDIRI</span> MESKIPUN
+        <span className="text-blue-600">STRATEGI META ADS</span> dari{' '}
+        <span className="text-blue-600">DROPSHIP</span> SAMPAI{' '}
+        <span className="text-blue-600">IKLAN BRAND SENDIRI</span> MESKIPUN{' '}
         <span className="text-blue-600">BUDGET DIBAWAH 500K</span> PER HARI!
       </h1>
 
