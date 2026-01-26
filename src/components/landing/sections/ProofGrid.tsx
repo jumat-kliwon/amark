@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 
-import { PROOF_COL_1, PROOF_COL_2, PROOF_COL_3 } from '@/components/landing/data/proof';
+import { PROOF_COL_1, PROOF_COL_2 } from '@/components/landing/data/proof';
 
 function Column({ images }: { images: string[] }) {
   return (
@@ -27,13 +27,11 @@ export function ProofGrid() {
   return (
     <section className="w-full py-20">
       <div className="max-w-4xl mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Column images={PROOF_COL_1} />
           <Column images={PROOF_COL_2} />
-          <Column images={PROOF_COL_3} />
         </div>
       </div>
     </section>
   );
 }
-

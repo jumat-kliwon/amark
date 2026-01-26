@@ -1,21 +1,12 @@
 export const PROOF_COL_1 = [
-  '/images/testimoni1.webp',
-  '/images/testimoni2.webp',
-  '/images/testimoni3.webp',
-  '/images/testimoni4.webp',
+  '/images/amark-testi1.webp',
+  '/images/amark-testi3.webp',
+  '/images/amark-testi5.webp',
 ];
 
 export const PROOF_COL_2 = [
-  '/images/testimoni5.webp',
-  '/images/testimoni6.webp',
-  '/images/testimoni7.webp',
-  '/images/testimoni8.webp',
-];
-
-export const PROOF_COL_3 = [
-  '/images/testimoni9.webp',
-  '/images/testimoni10.webp',
-  '/images/testimoni11.webp',
-  '/images/testimoni12.webp',
+  '/images/amark-testi2.webp',
+  '/images/amark-testi4.webp',
+  '/images/amark-testi6.webp',
 ];
 

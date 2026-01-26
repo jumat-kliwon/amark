@@ -10,14 +10,14 @@ import { Increase } from '@/components/landing/sections/Increase';
 // import { Promote } from '@/components/landing/sections/Promote';
 // import { Testimoni } from '@/components/landing/sections/Testimoni';
 import { Materi } from '@/components/landing/sections/Materi';
-import { Promote2 } from '@/components/landing/sections/Promote2';
-import { Mentors } from '@/components/landing/sections/Mentors';
+// import { Promote2 } from '@/components/landing/sections/Promote2';
+// import { Mentors } from '@/components/landing/sections/Mentors';
 import { BonusSection } from '@/components/landing/sections/BonusSection';
 import { Price } from '@/components/landing/sections/Price';
 import { Testi2 } from '@/components/landing/sections/Testi2';
-import { MarqueeRow } from '@/components/landing/sections/MarqueeRow';
+// import { MarqueeRow } from '@/components/landing/sections/MarqueeRow';
 import { ProofGrid } from '@/components/landing/sections/ProofGrid';
-import { FAQSection } from '@/components/landing/sections/FAQSection';
+// import { FAQSection } from '@/components/landing/sections/FAQSection';
 import { Footer } from '@/components/landing/sections/Footer';
 
 // Main Home Component
@@ -35,14 +35,14 @@ export default function Home() {
         {/* <Promote />
         <Testimoni /> */}
         <Materi />
-        <Promote2 />
-        <Mentors />
+        {/* <Promote2 />
+        <Mentors /> */}
         <BonusSection />
         <Price />
         <Testi2 />
-        <MarqueeRow />
+        {/* <MarqueeRow /> */}
         <ProofGrid />
-        <FAQSection />
+        {/* <FAQSection /> */}
       </div>
 
       <Footer />
