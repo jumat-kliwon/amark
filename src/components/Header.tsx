@@ -35,7 +35,7 @@ const navItems = [
   { label: 'Courses', href: '/course' },
   { label: 'Subscription', href: '/subscription' },
   { label: 'Certificate', href: '/certificate' },
-  { label: 'Affiliate', href: '/affiliate' },
+  // { label: 'Affiliate', href: '/affiliate' },
 ];
 
 const Header = () => {

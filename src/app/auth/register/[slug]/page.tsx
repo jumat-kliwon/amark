@@ -70,7 +70,7 @@ function RegisterContent() {
       username,
       terms: agree,
       voucher_code: voucher || undefined,
-      membership: String(activeMembership.id),
+      membership_id: String(activeMembership.id),
     });
   };
 

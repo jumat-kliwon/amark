@@ -200,10 +200,9 @@ export default function SubscriptionPlansPage() {
                       className={`w-full ${isPopular && !isPlanCurrent ? 'shadow-lg shadow-primary/25' : ''}`}
                       size="lg"
                       variant={isPlanCurrent ? "outline" : isPopular ? "default" : "outline"}
-                      disabled={isPlanCurrent}
-                      onClick={() => !isPlanCurrent && handleSelectPlan(plan)}
+                      onClick={() => handleSelectPlan(plan)}
                     >
-                      {isPlanCurrent ? "Paket Aktif" : "Pilih Paket"}
+                      {isPlanCurrent ? "Pesan Lagi" : "Pilih Paket"}
                     </Button>
                   </div>
                 );

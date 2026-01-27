@@ -80,10 +80,10 @@ export const useRegister = () => {
       toast.success(data.message || 'Registrasi berhasil');
 
       if (data.order?.payment_url) {
-        window.open(data.order.payment_url, '_blank', 'noopener,noreferrer');
+        window.location.href = data.order.payment_url;
+      } else {
+        router.push('/course');
       }
-
-      router.push('/course');
     },
 
     onError: (error: AxiosError<ErrorResponse>) => {
