@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
@@ -12,7 +12,6 @@ import {
   Search,
   CheckCircle2,
   Circle,
-  ChevronRight,
   MessageCircle,
   Loader2,
 } from 'lucide-react';
@@ -27,6 +26,7 @@ import {
 } from '@/components/ui/accordion';
 import { useToast } from '@/hooks/use-toast';
 import { useLesson } from '@/hooks/use-lesson';
+import { LessonCompletionModal } from '@/components/course/LessonCompletionModal';
 
 export default function CourseDetailPage() {
   const params = useParams();
@@ -34,6 +34,7 @@ export default function CourseDetailPage() {
   const id = params.id as string;
   const lessonId = params.lessonId as string;
   const { toast } = useToast();
+  const [showCompletionModal, setShowCompletionModal] = useState(false);
 
   // Use the useLesson hook
   const {
@@ -84,12 +85,7 @@ export default function CourseDetailPage() {
 
     markLessonDone(idLessons, {
       onSuccess: () => {
-        toast({
-          title: 'Lesson selesai! 🎉',
-          description: nextLesson
-            ? 'Lanjut ke materi berikutnya?'
-            : 'Anda telah menyelesaikan semua materi!',
-        });
+        setShowCompletionModal(true);
       },
       onError: () => {
         toast({
@@ -102,9 +98,15 @@ export default function CourseDetailPage() {
   };
 
   const handleContinue = () => {
+    setShowCompletionModal(false);
     if (nextLesson) {
       router.push(`/course/${id}/lesson/${nextLesson.id}`);
     }
+  };
+
+  const handleBackToCourse = () => {
+    setShowCompletionModal(false);
+    router.push(`/course/${id}`);
   };
 
   // Loading state
@@ -199,11 +201,6 @@ export default function CourseDetailPage() {
               {currentLesson && (
                 <div className="mb-4 flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    {isCurrentLessonCompleted ? (
-                      <CheckCircle2 className="h-6 w-6 text-green-500" />
-                    ) : (
-                      <Circle className="h-6 w-6 text-muted-foreground" />
-                    )}
                     <h1 className="text-2xl font-bold">
                       {currentLesson.title}
                     </h1>
@@ -465,6 +462,15 @@ export default function CourseDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Completion Modal */}
+      <LessonCompletionModal
+        isOpen={showCompletionModal}
+        onClose={() => setShowCompletionModal(false)}
+        onContinue={handleContinue}
+        onBackToCourse={handleBackToCourse}
+        hasNextLesson={!!nextLesson}
+      />
     </div>
   );
 }

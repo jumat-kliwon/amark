@@ -69,6 +69,7 @@ export interface CourseDetail {
   category: Category;
   instructor: Instructor;
   sections: Section[];
+  score?: number;
 }
 
 export interface Category {

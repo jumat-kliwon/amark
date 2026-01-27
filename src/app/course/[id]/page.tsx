@@ -13,6 +13,8 @@ import {
   BookOpen,
   Trophy,
   Loader2,
+  Layers,
+  Award,
 } from 'lucide-react';
 import { courses } from '@/data/courses';
 import Header from '@/components/Header';
@@ -49,7 +51,11 @@ export default function CourseOverviewPage() {
     );
   }
 
-  const totalLessons = course.moduleList?.progress.total_lessons;
+  // Calculate total lessons from sections
+  const totalLessons = course.detailCourse?.data.sections?.reduce(
+    (acc, section) => acc + (section.lessons?.length || 0),
+    0
+  ) || 0;
   const completedLessons = course.moduleList?.progress.completed_lessons;
   const firstUncompletedLesson = course.moduleList?.progress.completed_lessons;
 
@@ -126,22 +132,19 @@ export default function CourseOverviewPage() {
                 <div className="flex items-center gap-2 rounded-lg bg-card/50 backdrop-blur-sm px-4 py-3 border border-border/50">
                   <Star className="h-5 w-5 fill-yellow-500 text-yellow-500" />
                   <div>
-                    <span className="font-bold">2</span>
-                    <span className="text-xs text-muted-foreground ml-1">
-                      ({course.detailCourse?.data.id.toLocaleString()})
-                    </span>
+                    <span className="font-bold">{course.detailCourse?.data.score || 0}</span>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 rounded-lg bg-card/50 backdrop-blur-sm px-4 py-3 border border-border/50">
-                  <Users className="h-5 w-5 text-primary" />
+                  <Layers className="h-5 w-5 text-primary" />
                   <span className="text-sm">
-                    {course.detailCourse?.data.id.toLocaleString()} peserta
+                    {course.detailCourse?.data.sections?.length || 0} bagian
                   </span>
                 </div>
                 <div className="flex items-center gap-2 rounded-lg bg-card/50 backdrop-blur-sm px-4 py-3 border border-border/50">
-                  <Clock className="h-5 w-5 text-primary" />
+                  <Award className="h-5 w-5 text-primary" />
                   <span className="text-sm">
-                    {course.detailCourse?.data.id}
+                    {course.detailCourse?.data.is_featured ? 'Featured' : course.detailCourse?.data.category.name || '-'}
                   </span>
                 </div>
                 <div className="flex items-center gap-2 rounded-lg bg-card/50 backdrop-blur-sm px-4 py-3 border border-border/50">
