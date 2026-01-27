@@ -28,9 +28,13 @@ COPY --from=deps /app/node_modules ./node_modules
 # Copy only necessary files for build (optimized layer caching)
 COPY . .
 
+# Accept build arguments for environment variables
+ARG NEXT_PUBLIC_API_URL
+
 # Set build-time environment variables
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
 
 # Optimize memory usage for build
 # Set Node.js memory limit to prevent OOM while allowing efficient builds

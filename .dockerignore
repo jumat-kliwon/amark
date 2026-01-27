@@ -24,11 +24,12 @@ __tests__
 __mocks__
 
 # Environment files
+# Note: .env.production is NOT ignored because it's generated in CI/CD and needed for build
 .env*.local
 .env
 .env.development
 .env.test
-.env.production
+# .env.production - intentionally NOT ignored (generated in CI/CD)
 
 # Debug logs
 *.log
