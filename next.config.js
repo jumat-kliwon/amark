@@ -9,6 +9,15 @@ const nextConfig = {
   // Note: Disabled for now due to compatibility with client components using hooks
   // cacheComponents: true,
   
+  // Enable standalone output for Docker
+  output: 'standalone',
+  
+  // Optimize build for lower memory usage
+  experimental: {
+    // Reduce memory usage during build
+    optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
+  },
+  
   images: {
     // Use remotePatterns instead of domains for better security
     remotePatterns: [],
