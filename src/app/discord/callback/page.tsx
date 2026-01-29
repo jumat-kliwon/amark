@@ -1,11 +1,19 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { CheckCircle } from 'lucide-react';
 
 export default function DiscordCallbackPage() {
+  return (
+    <Suspense fallback={<Loading />}>
+      <CallbackContent />
+    </Suspense>
+  );
+}
+
+function CallbackContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const code = searchParams.get('code');
@@ -24,7 +32,7 @@ export default function DiscordCallbackPage() {
 
     const timeout = setTimeout(() => {
       router.push('/course');
-    }, 10000);
+    }, 5000);
 
     return () => {
       clearInterval(interval);
@@ -60,6 +68,14 @@ export default function DiscordCallbackPage() {
           detik…
         </p>
       </div>
+    </div>
+  );
+}
+
+function Loading() {
+  return (
+    <div className="flex min-h-screen items-center justify-center">
+      <p className="text-sm text-muted-foreground">Memuat halaman…</p>
     </div>
   );
 }
