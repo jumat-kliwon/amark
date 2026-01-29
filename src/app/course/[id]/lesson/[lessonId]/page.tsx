@@ -245,20 +245,20 @@ export default function CourseDetailPage() {
                       />
                     </div>
                   )}
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                  {/* <div className="absolute inset-0 flex items-center justify-center bg-black/30">
                     <button className="flex h-20 w-20 items-center justify-center rounded-full bg-white/90 text-black transition-transform hover:scale-110">
                       <Play className="h-8 w-8 fill-current" />
                     </button>
-                  </div>
+                  </div> */}
                   {/* Subtitle overlay */}
-                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
+                  {/* <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
                     <div className="rounded-md bg-black/80 px-4 py-2 text-sm text-white">
                       {currentLesson?.title ||
                         course.short_description ||
                         course.description?.slice(0, 60) ||
                         ''}
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>

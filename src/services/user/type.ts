@@ -12,6 +12,8 @@ export interface UserProfile {
     force_password_reset: boolean;
     created_at: string;
     updated_at: string;
+    discord_id: string;
+    discord_username: string;
   }
 }
 
@@ -62,4 +64,8 @@ export interface UpdateProfileRequest {
 export interface UpdateProfileResponse {
   message?: string;
   data?: any;
+}
+
+export interface DiscordResponse {
+  url: string;
 }

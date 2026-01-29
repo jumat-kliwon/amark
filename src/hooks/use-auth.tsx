@@ -24,10 +24,13 @@ export const useLogin = () => {
     onSuccess: (data) => {
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
-
       toast.success('Login berhasil');
 
-      router.push('/course');
+      if (data.user.force_password_reset) {
+        router.push('/settings/password');
+      } else {
+        router.push('/course');
+      }
     },
 
     onError: (error: AxiosError<ErrorResponse>) => {

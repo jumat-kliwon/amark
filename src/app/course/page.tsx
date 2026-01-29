@@ -17,9 +17,11 @@ import {
   PaginationPrevious,
 } from '@/components/ui/pagination';
 import { useCourses } from '@/hooks/use-course';
+import { useDiscord } from '@/hooks/use-discord';
 
 export default function CoursePage() {
   const course = useCourses();
+  const discord = useDiscord();
 
   // const filteredCourses = courses.filter((item) => {
   //   const matchesCategory = course.category
@@ -56,6 +58,7 @@ export default function CoursePage() {
         <CategorySidebar
           selectedCategory={course.category}
           onSelectCategory={course.setCategory}
+          discordUrl={discord.data}
         />
 
         <section className="flex-1">
@@ -140,10 +143,7 @@ export default function CoursePage() {
                 </PaginationItem>
 
                 <PaginationItem>
-                  <PaginationLink
-                    isActive={true}
-                    className="cursor-default"
-                  >
+                  <PaginationLink isActive={true} className="cursor-default">
                     {currentPage}
                   </PaginationLink>
                 </PaginationItem>
