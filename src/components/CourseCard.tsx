@@ -111,9 +111,14 @@ const CourseCard = ({
               </h3>
               {locked && <Lock className="h-4 w-4 text-muted-foreground" />}
             </div>
-            <p className="mb-3 line-clamp-2 text-sm text-muted-foreground">
-              {description}
-            </p>
+            <div className="min-h-[60px]">
+              {description ? (
+                <p
+                  className="mb-3 line-clamp-2 text-sm text-muted-foreground"
+                  dangerouslySetInnerHTML={{ __html: description }}
+                />
+              ) : null}
+            </div>
             <div className="flex items-center gap-2">
               <div className="flex h-6 w-6 items-center justify-center rounded-full bg-foreground">
                 <span className="text-xs font-bold text-background">A</span>

@@ -1,5 +1,5 @@
 import api from '@/lib/axios';
-import type { UserProfile, UserWithMembership, UpdatePasswordRequest, UpdatePasswordResponse, UpdateProfileRequest, UpdateProfileResponse } from './type';
+import type { UserProfile, UserWithMembership, UpdatePasswordRequest, UpdatePasswordResponse, UpdateProfileRequest, UpdateProfileResponse, DiscordResponse } from './type';
 
 export const UserService = {
   getProfile: async (): Promise<UserProfile> => {
@@ -16,6 +16,10 @@ export const UserService = {
   },
   updateProfile: async (payload: UpdateProfileRequest): Promise<UpdateProfileResponse> => {
     const { data } = await api.put('/user', payload);
+    return data;
+  },
+  getDiscord: async (): Promise<DiscordResponse> => {
+    const { data } = await api.get('/discord/connect');
     return data;
   },
 };

@@ -37,6 +37,7 @@ api.interceptors.response.use(
 
         // optional: clear auth data
         localStorage.removeItem('token');
+        localStorage.removeItem('user');
 
         // delay biar toast kebaca
         setTimeout(() => {

@@ -1,3 +1,6 @@
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+
 export function formatCurrency(value: number, locale: string = "id-ID"): string {
   if (isNaN(value)) return "0";
 
@@ -72,4 +75,17 @@ export function formatTimeAgo(isoString: string | null): string {
 
   const diffInYears = Math.floor(diffInDays / 365);
   return `${diffInYears} ${diffInYears === 1 ? 'tahun' : 'tahun'} lalu`;
+}
+
+export async function captureCertificate() {
+  const element = document.getElementById('certificate');
+  if (!element) return null;
+
+  const canvas = await html2canvas(element, {
+    scale: 2,
+    useCORS: true,
+    backgroundColor: '#ffffff',
+  });
+
+  return canvas;
 }
