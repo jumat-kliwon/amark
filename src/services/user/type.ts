@@ -14,6 +14,7 @@ export interface UserProfile {
     updated_at: string;
     discord_id: string;
     discord_username: string;
+    discord_connected: boolean;
   }
 }
 
@@ -68,4 +69,16 @@ export interface UpdateProfileResponse {
 
 export interface DiscordResponse {
   url: string;
+}
+
+export interface DiscordCallbackResponse {
+  message: string;
+  discord_user: {
+    id?: string;
+    username?: string;
+  }
+}
+
+export interface DiscordDisconnectResponse {
+  message: string;
 }

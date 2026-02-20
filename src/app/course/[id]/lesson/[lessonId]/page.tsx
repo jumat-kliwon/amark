@@ -184,6 +184,113 @@ export default function CourseDetailPage() {
       <Header />
 
       <div className="flex flex-1">
+        {/* Left Sidebar - Course Content */}
+        <div className="hidden w-96 flex-shrink-0 border-r border-border lg:block">
+          <div className="sticky top-16 h-[calc(100vh-4rem)] overflow-auto">
+            {/* Header */}
+            <div className="flex items-center justify-between border-b border-border p-4">
+              <div className="flex items-center gap-4">
+                <span className="font-semibold">Konten kursus</span>
+                <span className="text-sm text-muted-foreground">
+                  ✨ AI Assistant
+                </span>
+              </div>
+            </div>
+
+            {/* Progress */}
+            <div className="border-b border-border p-4">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-muted-foreground">Progress</span>
+                <span className="font-medium">
+                  {progress.completed_lessons} / {allLessons.length} selesai
+                </span>
+              </div>
+              <div className="mt-2 h-2 overflow-hidden rounded-full bg-muted">
+                <div
+                  className="h-full bg-primary transition-all duration-300"
+                  style={{
+                    width: `${
+                      (progress.completed_lessons / allLessons.length) * 100
+                    }%`,
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* Chapter List */}
+            <div className="p-2">
+              <Accordion
+                type="multiple"
+                defaultValue={modules.map((m) => m.id.toString())}
+                className="w-full"
+              >
+                {modules.map((module) => {
+                  const completedCount = module.lessons.filter(
+                    (l) => l.is_completed,
+                  ).length;
+                  return (
+                    <AccordionItem
+                      key={module.id}
+                      value={module.id.toString()}
+                      className="border-0"
+                    >
+                      <AccordionTrigger className="px-3 py-4 hover:bg-card hover:no-underline rounded-lg">
+                        <div className="flex-1 text-left">
+                          <h4 className="text-sm font-medium leading-tight">
+                            {module.title}
+                          </h4>
+                          <p className="mt-1 text-xs text-muted-foreground">
+                            {completedCount} / {module.lessons.length} lessons
+                          </p>
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent className="pb-2 pl-3">
+                        <div className="space-y-1">
+                          {module.lessons.map((lesson) => {
+                            const isCompleted = lesson.is_completed;
+                            const isActive = lesson.id === idLessons;
+
+                            return (
+                              <Link
+                                key={lesson.id}
+                                href={`/course/${id}/lesson/${lesson.id}`}
+                                className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors ${
+                                  isActive
+                                    ? 'bg-primary text-primary-foreground'
+                                    : 'hover:bg-card'
+                                }`}
+                              >
+                                {isCompleted ? (
+                                  <CheckCircle2
+                                    className={`h-4 w-4 ${
+                                      isActive ? '' : 'text-green-500'
+                                    }`}
+                                  />
+                                ) : (
+                                  <Play className="h-4 w-4" />
+                                )}
+                                <span
+                                  className={
+                                    isCompleted && !isActive
+                                      ? 'text-muted-foreground'
+                                      : ''
+                                  }
+                                >
+                                  {lesson.title}
+                                </span>
+                              </Link>
+                            );
+                          })}
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  );
+                })}
+              </Accordion>
+            </div>
+          </div>
+        </div>
+
         {/* Main Content */}
         <div className="flex-1 overflow-auto">
           {/* Video Hero Section */}
@@ -351,113 +458,6 @@ export default function CourseDetailPage() {
                   </div>
                 </TabsContent>
               </Tabs>
-            </div>
-          </div>
-        </div>
-
-        {/* Right Sidebar - Course Content */}
-        <div className="hidden w-96 flex-shrink-0 border-l border-border lg:block">
-          <div className="sticky top-16 h-[calc(100vh-4rem)] overflow-auto">
-            {/* Header */}
-            <div className="flex items-center justify-between border-b border-border p-4">
-              <div className="flex items-center gap-4">
-                <span className="font-semibold">Konten kursus</span>
-                <span className="text-sm text-muted-foreground">
-                  ✨ AI Assistant
-                </span>
-              </div>
-            </div>
-
-            {/* Progress */}
-            <div className="border-b border-border p-4">
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Progress</span>
-                <span className="font-medium">
-                  {progress.completed_lessons} / {allLessons.length} selesai
-                </span>
-              </div>
-              <div className="mt-2 h-2 overflow-hidden rounded-full bg-muted">
-                <div
-                  className="h-full bg-primary transition-all duration-300"
-                  style={{
-                    width: `${
-                      (progress.completed_lessons / allLessons.length) * 100
-                    }%`,
-                  }}
-                />
-              </div>
-            </div>
-
-            {/* Chapter List */}
-            <div className="p-2">
-              <Accordion
-                type="multiple"
-                defaultValue={modules.map((m) => m.id.toString())}
-                className="w-full"
-              >
-                {modules.map((module) => {
-                  const completedCount = module.lessons.filter(
-                    (l) => l.is_completed,
-                  ).length;
-                  return (
-                    <AccordionItem
-                      key={module.id}
-                      value={module.id.toString()}
-                      className="border-0"
-                    >
-                      <AccordionTrigger className="px-3 py-4 hover:bg-card hover:no-underline rounded-lg">
-                        <div className="flex-1 text-left">
-                          <h4 className="text-sm font-medium leading-tight">
-                            {module.title}
-                          </h4>
-                          <p className="mt-1 text-xs text-muted-foreground">
-                            {completedCount} / {module.lessons.length} lessons
-                          </p>
-                        </div>
-                      </AccordionTrigger>
-                      <AccordionContent className="pb-2 pl-3">
-                        <div className="space-y-1">
-                          {module.lessons.map((lesson) => {
-                            const isCompleted = lesson.is_completed;
-                            const isActive = lesson.id === idLessons;
-
-                            return (
-                              <Link
-                                key={lesson.id}
-                                href={`/course/${id}/lesson/${lesson.id}`}
-                                className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors ${
-                                  isActive
-                                    ? 'bg-primary text-primary-foreground'
-                                    : 'hover:bg-card'
-                                }`}
-                              >
-                                {isCompleted ? (
-                                  <CheckCircle2
-                                    className={`h-4 w-4 ${
-                                      isActive ? '' : 'text-green-500'
-                                    }`}
-                                  />
-                                ) : (
-                                  <Play className="h-4 w-4" />
-                                )}
-                                <span
-                                  className={
-                                    isCompleted && !isActive
-                                      ? 'text-muted-foreground'
-                                      : ''
-                                  }
-                                >
-                                  {lesson.title}
-                                </span>
-                              </Link>
-                            );
-                          })}
-                        </div>
-                      </AccordionContent>
-                    </AccordionItem>
-                  );
-                })}
-              </Accordion>
             </div>
           </div>
         </div>

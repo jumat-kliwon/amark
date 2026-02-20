@@ -17,3 +17,17 @@ export const useOrders = (page: number = 1) => {
     error,
   };
 };
+
+export const useOrder = (id: number | string | null) => {
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['order', id],
+    queryFn: () => OrderService.getOrderById(id!),
+    enabled: !!id,
+  });
+
+  return {
+    order: data?.data ?? null,
+    isLoading,
+    error,
+  };
+};

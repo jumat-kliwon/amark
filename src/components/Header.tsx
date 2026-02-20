@@ -33,7 +33,9 @@ import { useLogout } from '@/hooks/use-auth';
 
 const navItems = [
   { label: 'Courses', href: '/course' },
+  { label: 'Catalog', href: '/catalog' },
   { label: 'Subscription', href: '/subscription' },
+  { label: 'Riwayat Pesanan', href: '/orders' },
   { label: 'Certificate', href: '/certificate' },
   // { label: 'Affiliate', href: '/affiliate' },
 ];

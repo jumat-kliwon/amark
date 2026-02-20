@@ -32,6 +32,8 @@ export interface ForgotResponse {
 
 
 
+import type { ShippingAddress, ShippingOption } from '@/services/order/type';
+
 export interface RegisterPayload {
   phone_number: string;
   name: string;
@@ -41,7 +43,12 @@ export interface RegisterPayload {
   username: string;
   terms: boolean;
   voucher_code?: string;
-  membership_id: string;
+  product_id?: string;
+  bundle_product_id?: string;
+  recipient_name?: string;
+  recipient_phone?: string;
+  shipping_address?: ShippingAddress;
+  shipping_option?: ShippingOption;
 }
 
 export interface RegisterResponse {

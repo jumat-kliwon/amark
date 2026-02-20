@@ -4,6 +4,7 @@ import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { CheckCircle } from 'lucide-react';
+import { useDiscord } from '@/hooks/use-discord';
 
 export default function DiscordCallbackPage() {
   return (
@@ -17,28 +18,27 @@ function CallbackContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const code = searchParams.get('code');
+  const discord = useDiscord(code);
 
   const [countdown, setCountdown] = useState(5);
+  const discordUserId = discord.callbackData?.discord_user?.id;
 
   useEffect(() => {
-    if (!code) {
-      router.replace('/course');
-      return;
-    }
+    if (!discordUserId) return;
 
     const interval = setInterval(() => {
-      setCountdown((prev) => prev - 1);
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          router.push('/course');
+          return 0;
+        }
+        return prev - 1;
+      });
     }, 1000);
 
-    const timeout = setTimeout(() => {
-      router.push('/course');
-    }, 5000);
-
-    return () => {
-      clearInterval(interval);
-      clearTimeout(timeout);
-    };
-  }, [router, code]);
+    return () => clearInterval(interval);
+  }, [discordUserId, router]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -62,11 +62,13 @@ function CallbackContent() {
           Kembali ke Halaman Kursus
         </Link>
 
-        <p className="mt-4 text-xs text-muted-foreground">
-          Anda akan diarahkan otomatis dalam{' '}
-          <span className="font-semibold text-foreground">{countdown}</span>{' '}
-          detik…
-        </p>
+        {discordUserId && (
+          <p className="mt-4 text-xs text-muted-foreground">
+            Anda akan diarahkan otomatis dalam{' '}
+            <span className="font-semibold text-foreground">{countdown}</span>{' '}
+            detik…
+          </p>
+        )}
       </div>
     </div>
   );
