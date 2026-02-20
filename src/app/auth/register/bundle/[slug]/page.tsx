@@ -9,52 +9,48 @@ import { Textarea } from '@/components/ui/textarea';
 import { ChevronLeft, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useRouter, useParams } from 'next/navigation';
 import { useMutation } from '@tanstack/react-query';
-import { useRegister } from '@/hooks/use-auth';
-import { useCatalogDetail } from '@/hooks/use-catalog';
+import { useRegisterBundle } from '@/hooks/use-auth';
+import { useBundleDetail } from '@/hooks/use-bundle';
+import { useBundleCalculateShipping } from '@/hooks/use-bundle-order';
 import {
   useProvinces,
   useDistricts,
   useSubdistricts,
 } from '@/hooks/use-address';
 import { useDebounce } from '@/hooks/use-debounce';
-import { useCalculateShipping } from '@/hooks/use-catalog-order';
 import { formatCurrency } from '@/lib/helpers';
 import { formatPrice } from '@/lib/subscription-utils';
-import { OrderService } from '@/services/order';
+import { BundleService } from '@/services/bundle';
 import { CheckCouponResponse } from '@/services/order/type';
 import type { ShippingOptionItem } from '@/services/order/type';
 import { AddressSearchSelect } from '@/components/AddressSearchSelect';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import type { CatalogDetail } from '@/services/catalog/type';
 
-const productTypeLabels: Record<string, string> = {
-  physical: 'Fisik',
-  digital: 'Digital',
-  webinar: 'Webinar',
+const bundleTypeLabels: Record<string, string> = {
+  starter: 'Starter',
+  premium: 'Premium',
+  ultimate: 'Ultimate',
 };
 
-/** Normalized product for register form */
-type RegisterProduct = {
+type RegisterBundle = {
   id: number;
-  product_id: number;
   name: string;
   price: string;
   original_price: string | null;
-  access_type_label: string;
+  bundle_type: string | null;
 };
 
-function toRegisterProduct(c: CatalogDetail): RegisterProduct {
+function toRegisterBundle(b: { id: number; name: string; price: string; original_price: string | null; bundle_type: string | null }): RegisterBundle {
   return {
-    id: c.id,
-    product_id: c.id,
-    name: c.name,
-    price: c.price,
-    original_price: c.original_price,
-    access_type_label: productTypeLabels[c.product_type] ?? c.product_type,
+    id: b.id,
+    name: b.name,
+    price: b.price,
+    original_price: b.original_price,
+    bundle_type: b.bundle_type,
   };
 }
 
-function RegisterContent() {
+function RegisterBundleContent() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [agree, setAgree] = useState(false);
@@ -64,12 +60,9 @@ function RegisterContent() {
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [voucher, setVoucher] = useState('');
-  const [couponResult, setCouponResult] = useState<CheckCouponResponse | null>(
-    null,
-  );
+  const [couponResult, setCouponResult] = useState<CheckCouponResponse | null>(null);
   const [couponMessage, setCouponMessage] = useState<string | null>(null);
 
-  // Shipping (hanya ketika requires_shipping)
   const [provinceId, setProvinceId] = useState<number | null>(null);
   const [districtId, setDistrictId] = useState<number | null>(null);
   const [subdistrictId, setSubdistrictId] = useState<number | null>(null);
@@ -80,19 +73,22 @@ function RegisterContent() {
   const [recipientPhone, setRecipientPhone] = useState('');
   const [address, setAddress] = useState('');
   const [postalCode, setPostalCode] = useState('');
-  const [selectedShipping, setSelectedShipping] =
-    useState<ShippingOptionItem | null>(null);
+  const [selectedShipping, setSelectedShipping] = useState<ShippingOptionItem | null>(null);
 
   const router = useRouter();
   const params = useParams();
-  const { mutate, isPending } = useRegister();
+  const { mutate, isPending } = useRegisterBundle();
   const slug = params?.slug as string;
 
-  // Akses detail product dari API /catalogs/{slug}
-  const { catalog, loadingCatalog } = useCatalogDetail(slug);
+  const { bundle, loadingBundle } = useBundleDetail(slug);
+  const activeBundle = bundle?.data ? toRegisterBundle(bundle.data) : null;
+  const requiresShipping = bundle?.data?.requires_shipping === true;
 
-  const activeProduct = catalog?.data ? toRegisterProduct(catalog.data) : null;
-  const requiresShipping = catalog?.data?.requires_shipping === true;
+  const {
+    calculateShippingAsync,
+    loadingCalculateShipping,
+    shippingOptions,
+  } = useBundleCalculateShipping(slug);
 
   const debouncedProvinceSearch = useDebounce(provinceSearch, 300);
   const debouncedDistrictSearch = useDebounce(districtSearch, 300);
@@ -103,12 +99,6 @@ function RegisterContent() {
     useDistricts(provinceId, debouncedDistrictSearch);
   const { subdistricts: subdistrictsData, isLoadingSubdistricts: loadingSubdistricts } =
     useSubdistricts(districtId, debouncedSubdistrictSearch);
-
-  const {
-    calculateShippingAsync,
-    loadingCalculateShipping,
-    shippingOptions,
-  } = useCalculateShipping();
 
   const handleProvinceChange = (id: number) => {
     setProvinceId(id);
@@ -150,28 +140,21 @@ function RegisterContent() {
   const debouncedAddressPayloadStr = useDebounce(addressPayloadStr, 500);
 
   useEffect(() => {
-    if (!requiresShipping || !debouncedAddressPayloadStr || !catalog?.data?.id) return;
+    if (!requiresShipping || !debouncedAddressPayloadStr || !slug) return;
     const payload = JSON.parse(debouncedAddressPayloadStr);
     setSelectedShipping(null);
     calculateShippingAsync({
-      product_id: catalog.data.id,
-      quantity: 1,
       shipping_address: {
-        address: payload.address,
-        province_id: payload.province_id,
-        district_id: payload.district_id,
-        sub_district_id: payload.sub_district_id,
-        postal_code: payload.postal_code,
+        ...payload,
+        postal_code: typeof payload.postal_code === 'string' ? parseInt(payload.postal_code, 10) || payload.postal_code : payload.postal_code,
       },
-      recipient_name: payload.recipient_name || undefined,
-      recipient_phone: payload.recipient_phone || undefined,
     });
-  }, [requiresShipping, debouncedAddressPayloadStr, catalog?.data?.id]);
+  }, [requiresShipping, debouncedAddressPayloadStr, slug]);
 
   const isShippingComplete = !requiresShipping || (isAddressComplete && selectedShipping);
 
   const onSubmit = () => {
-    if (!activeProduct) return;
+    if (!activeBundle) return;
     if (requiresShipping && (!provinceId || !districtId || !subdistrictId || !address.trim() || !postalCode.trim() || !selectedShipping)) return;
 
     const payload: Parameters<typeof mutate>[0] = {
@@ -183,7 +166,7 @@ function RegisterContent() {
       username,
       terms: agree,
       voucher_code: voucher || undefined,
-      product_id: String(activeProduct.product_id),
+      bundle_product_id: String(activeBundle.id),
       recipient_name: recipientName.trim() || undefined,
       recipient_phone: recipientPhone.trim() || undefined,
     };
@@ -207,37 +190,31 @@ function RegisterContent() {
 
   const { mutate: validateCoupon, isPending: isValidatingCoupon } = useMutation({
     mutationFn: async () => {
-      if (!activeProduct) {
-        throw new Error('Produk tidak ditemukan');
-      }
+      if (!activeBundle) throw new Error('Bundle tidak ditemukan');
       const coupon = voucher.trim();
-      if (!coupon) {
-        throw new Error('Kode promo kosong');
-      }
-      return await OrderService.checkCoupon({
+      if (!coupon) throw new Error('Kode promo kosong');
+      return await BundleService.validateCoupon({
+        bundle_product_id: String(activeBundle.id),
         coupon,
-        product_id: activeProduct.product_id,
       });
     },
     onSuccess: (res) => {
       setCouponResult(res);
       setCouponMessage(res.message || 'Kupon valid');
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
       setCouponResult(null);
-      const errorMessage =
-        error?.response?.data?.message ||
-        'Kode promo tidak valid / tidak dapat digunakan';
-      setCouponMessage(errorMessage);
+      const err = error as { response?: { data?: { message?: string } } };
+      setCouponMessage(err?.response?.data?.message || 'Kode promo tidak valid');
     },
   });
 
-  if (!activeProduct && !loadingCatalog) {
+  if (!activeBundle && !loadingBundle) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-[#121212] gap-4">
-        <p className="text-muted-foreground">Produk tidak ditemukan</p>
-        <Button variant="secondary" onClick={() => router.push('/auth/register')}>
-          Daftar dengan paket default
+        <p className="text-muted-foreground">Bundle tidak ditemukan</p>
+        <Button variant="secondary" onClick={() => router.push('/bundles')}>
+          Kembali ke Daftar Bundle
         </Button>
         <Button variant="outline" onClick={() => router.push('/')}>
           Kembali ke Home
@@ -246,7 +223,7 @@ function RegisterContent() {
     );
   }
 
-  if (!activeProduct) {
+  if (!activeBundle) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#121212]">
         <div className="h-16 w-16 rounded-full bg-zinc-800 animate-pulse" />
@@ -257,70 +234,55 @@ function RegisterContent() {
   return (
     <div className="min-h-screen bg-[#121212] text-white flex flex-col space-y-8 items-center justify-center py-16">
       <div className="w-full max-w-3xl px-6">
-        {/* Header */}
         <h1 className="text-4xl font-bold text-center mb-2">
-          Dapatkan <span className="font-extrabold">Akses</span>
+          Daftar <span className="font-extrabold">Bundle</span>
         </h1>
-        <h2 className="text-4xl font-bold text-center mb-6">
-          Akademi Creator Pro
-        </h2>
+        <h2 className="text-4xl font-bold text-center mb-6">{activeBundle.name}</h2>
 
         <div className="border-b border-zinc-700 mb-8" />
 
-        {/* Card */}
         <div className="rounded-2xl border border-zinc-800 bg-gradient-to-b from-zinc-900 to-zinc-950 p-8">
-          {/* Price */}
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
             <div>
               <p className="text-xs tracking-widest text-zinc-400 mb-2">
-                DAPATKAN {activeProduct.name.toUpperCase()} DENGAN HANYA:
+                DAPATKAN {activeBundle.name.toUpperCase()} DENGAN HANYA:
               </p>
               <div className="flex items-baseline gap-3 flex-wrap">
                 <p className="text-lg line-through text-zinc-500">
-                  Rp
-                  {formatCurrency(
-                    Number(activeProduct.original_price ?? activeProduct.price),
-                  )}
+                  Rp{formatCurrency(Number(activeBundle.original_price ?? activeBundle.price))}
                 </p>
                 {couponResult ? (
                   <>
                     <p className="text-lg line-through text-zinc-500">
-                      Rp
-                      {formatCurrency(Number(activeProduct.price))}
+                      Rp{formatCurrency(Number(activeBundle.price))}
                     </p>
                     <p className="text-4xl font-bold text-red-500">
-                      Rp
-                      {formatCurrency(Number(couponResult.data.final_price))}
+                      Rp{formatCurrency(Number(couponResult.data.final_price))}
                     </p>
                   </>
                 ) : (
                   <p className="text-4xl font-bold text-red-500">
-                    Rp
-                    {formatCurrency(Number(activeProduct.price))}
+                    Rp{formatCurrency(Number(activeBundle.price))}
                   </p>
                 )}
               </div>
             </div>
-            <p className="text-sm text-zinc-400 md:text-right uppercase">
-              ({activeProduct.access_type_label})
-            </p>
+            {activeBundle.bundle_type && (
+              <p className="text-sm text-zinc-400 md:text-right uppercase">
+                ({bundleTypeLabels[activeBundle.bundle_type] ?? activeBundle.bundle_type})
+              </p>
+            )}
           </div>
 
           <div className="border-b border-dashed border-zinc-700 mb-8" />
 
-          {/* Form */}
           <div className="space-y-5">
-            {/* Phone */}
             <div className="space-y-2">
               <Label>Phone*</Label>
               <div className="flex gap-2">
+                <Input className="w-20 bg-zinc-900 h-12 border-zinc-800" value="+62" disabled />
                 <Input
-                  className="w-20 bg-zinc-900 h-12 border-zinc-800 focus:ring-red-600 focus:ring-2"
-                  value="+62"
-                  disabled
-                />
-                <Input
-                  className="flex-1 bg-zinc-900 h-12 border-zinc-800 focus:ring-red-600 focus:ring-2"
+                  className="flex-1 bg-zinc-900 h-12 border-zinc-800"
                   placeholder="812-345-678"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
@@ -328,36 +290,33 @@ function RegisterContent() {
               </div>
             </div>
 
-            {/* Username */}
             <div className="space-y-2">
               <Label>Username*</Label>
               <Input
-                className="bg-zinc-900 h-12 border-zinc-800 focus:ring-red-600 focus:ring-2"
+                className="bg-zinc-900 h-12 border-zinc-800"
                 placeholder="Masukkan Username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
               />
             </div>
 
-            {/* Email */}
             <div className="space-y-2">
               <Label>Email*</Label>
               <Input
                 type="email"
-                className="bg-zinc-900 h-12 border-zinc-800 focus:ring-red-600 focus:ring-2"
+                className="bg-zinc-900 h-12 border-zinc-800"
                 placeholder="yourmail@gmail.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
 
-            {/* Password */}
             <div className="space-y-2">
               <Label>Password*</Label>
               <div className="relative">
                 <Input
                   type={showPassword ? 'text' : 'password'}
-                  className="bg-zinc-900 h-12 border-zinc-800 pr-12 focus:ring-red-600 focus:ring-2"
+                  className="bg-zinc-900 h-12 border-zinc-800 pr-12"
                   placeholder="Masukan Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -372,13 +331,12 @@ function RegisterContent() {
               </div>
             </div>
 
-            {/* Confirm Password */}
             <div className="space-y-2">
               <Label>Password Confirmation*</Label>
               <div className="relative">
                 <Input
                   type={showConfirm ? 'text' : 'password'}
-                  className="bg-zinc-900 h-12 border-zinc-800 pr-12 focus:ring-red-600 focus:ring-2"
+                  className="bg-zinc-900 h-12 border-zinc-800 pr-12"
                   placeholder="Masukkan Password Kembali"
                   value={confirm}
                   onChange={(e) => setConfirm(e.target.value)}
@@ -393,16 +351,14 @@ function RegisterContent() {
               </div>
             </div>
 
-            {/* Promo */}
             <div className="space-y-2">
-              <Label>Masukkan Kode Promo (Jika Ada)</Label>
+              <Label>Kode Promo (Jika Ada)</Label>
               <Input
-                className="bg-zinc-900 h-12 border-zinc-800 focus:ring-red-600 focus:ring-2"
+                className="bg-zinc-900 h-12 border-zinc-800"
                 placeholder="Masukkan Kode Promo"
                 value={voucher}
                 onChange={(e) => {
                   setVoucher(e.target.value);
-                  // reset result and message if user edits code
                   if (couponResult) setCouponResult(null);
                   if (couponMessage) setCouponMessage(null);
                 }}
@@ -419,25 +375,17 @@ function RegisterContent() {
                 <p className="text-xs text-zinc-400">Memvalidasi kode promo...</p>
               )}
               {couponMessage && (
-                <p
-                  className={`text-xs ${
-                    couponResult
-                      ? 'text-green-400'
-                      : 'text-red-400'
-                  }`}
-                >
+                <p className={`text-xs ${couponResult ? 'text-green-400' : 'text-red-400'}`}>
                   {couponMessage}
                   {couponResult && (
                     <span className="block mt-1">
-                      Hemat Rp
-                      {formatCurrency(Number(couponResult.data.discount_amount))}
+                      Hemat Rp{formatCurrency(Number(couponResult.data.discount_amount))}
                     </span>
                   )}
                 </p>
               )}
             </div>
 
-            {/* Shipping - hanya jika requires_shipping */}
             {requiresShipping && (
               <>
                 <div className="border-t border-zinc-700 pt-6 mt-6">
@@ -534,7 +482,6 @@ function RegisterContent() {
                   </div>
                 </div>
 
-                {/* Daftar pengiriman - tampil setelah data shipping diterima */}
                 {isAddressComplete && (
                   <div className="border-t border-zinc-700 pt-6 mt-6">
                     <p className="text-sm font-medium mb-4">Pilih Pengiriman</p>
@@ -552,8 +499,7 @@ function RegisterContent() {
                         }
                         onValueChange={(value) => {
                           const opt = shippingOptions.find(
-                            (o) =>
-                              `${o.courier_name}-${o.courier_service_name}` === value
+                            (o) => `${o.courier_name}-${o.courier_service_name}` === value
                           );
                           setSelectedShipping(opt ?? null);
                         }}
@@ -564,33 +510,31 @@ function RegisterContent() {
                             selectedShipping?.courier_name === opt.courier_name &&
                             selectedShipping?.courier_service_name === opt.courier_service_name;
                           return (
-                          <div
-                            key={`${opt.courier_name}-${opt.courier_service_name}`}
-                            className={`flex items-center space-x-3 rounded-lg border p-4 transition-colors cursor-pointer ${
-                              isSelected
-                                ? 'border-red-600 bg-red-950/30'
-                                : 'border-zinc-800 hover:bg-zinc-800/50'
-                            }`}
-                          >
-                            <RadioGroupItem
-                              value={`${opt.courier_name}-${opt.courier_service_name}`}
-                              id={`ship-${opt.courier_name}-${opt.courier_service_name}`}
-                              className="border-zinc-600"
-                            />
-                            <Label
-                              htmlFor={`ship-${opt.courier_name}-${opt.courier_service_name}`}
-                              className="flex-1 cursor-pointer flex items-center justify-between gap-2"
+                            <div
+                              key={`${opt.courier_name}-${opt.courier_service_name}`}
+                              className={`flex items-center space-x-3 rounded-lg border p-4 cursor-pointer ${
+                                isSelected ? 'border-red-600 bg-red-950/30' : 'border-zinc-800 hover:bg-zinc-800/50'
+                              }`}
                             >
-                              <span className="font-medium">
-                                {opt.label ?? `${opt.courier_name} - ${opt.courier_service_name}`}
-                              </span>
-                              {(opt.price != null || opt.shipping_fee != null) && (
-                                <span className="text-red-500 font-semibold shrink-0">
-                                  {formatPrice(String(opt.price ?? opt.shipping_fee ?? 0))}
+                              <RadioGroupItem
+                                value={`${opt.courier_name}-${opt.courier_service_name}`}
+                                id={`bundle-ship-${opt.courier_name}-${opt.courier_service_name}`}
+                                className="border-zinc-600"
+                              />
+                              <Label
+                                htmlFor={`bundle-ship-${opt.courier_name}-${opt.courier_service_name}`}
+                                className="flex-1 cursor-pointer flex items-center justify-between gap-2"
+                              >
+                                <span className="font-medium">
+                                  {opt.label ?? `${opt.courier_name} - ${opt.courier_service_name}`}
                                 </span>
-                              )}
-                            </Label>
-                          </div>
+                                {(opt.price != null || opt.shipping_fee != null) && (
+                                  <span className="text-red-500 font-semibold shrink-0">
+                                    {formatPrice(String(opt.price ?? opt.shipping_fee ?? 0))}
+                                  </span>
+                                )}
+                              </Label>
+                            </div>
                           );
                         })}
                       </RadioGroup>
@@ -604,65 +548,51 @@ function RegisterContent() {
               </>
             )}
 
-            {/* Agreement */}
             <div className="flex items-start gap-2 text-sm">
               <Checkbox
-                id="agree"
+                id="agree-bundle"
                 checked={agree}
                 onCheckedChange={(v) => setAgree(Boolean(v))}
-                className="border-red-600 data-[state=checked]:bg-red-600 data-[state=checked]:border-red-600 data-[state=checked]:text-white"
+                className="border-red-600 data-[state=checked]:bg-red-600 data-[state=checked]:border-red-600"
               />
-              <Label htmlFor="agree" className="leading-relaxed">
-                Dengan mendaftar, saya menerima{' '}
-                <span className="text-red-500 underline">
-                  terms & privacy policy
-                </span>{' '}
-                di akademi creator
+              <Label htmlFor="agree-bundle" className="leading-relaxed">
+                Dengan mendaftar, saya menerima terms & privacy policy
               </Label>
             </div>
 
-            {/* Button */}
             <Button
               disabled={!agree || isPending || !isShippingComplete}
               className="w-full h-12 rounded-xl bg-red-600 hover:bg-red-700 text-white text-base"
               onClick={onSubmit}
             >
-              REGISTER NOW
+              DAFTAR BUNDLE
             </Button>
           </div>
 
-          {/* Price Bottom */}
           <div className="text-center mt-10 p-4 bg-zinc-800/50 rounded-lg">
             <p className="text-xs text-zinc-400 mb-2">Harga Normal</p>
             <p className="text-lg line-through text-zinc-500 mb-2">
-              Rp
-              {formatCurrency(
-                Number(activeProduct.original_price ?? activeProduct.price),
-              )}
+              Rp{formatCurrency(Number(activeBundle.original_price ?? activeBundle.price))}
             </p>
             {couponResult ? (
               <>
                 <p className="text-xs text-zinc-400 mb-1">Harga Promo</p>
                 <p className="text-lg line-through text-zinc-500 mb-2">
-                  Rp
-                  {formatCurrency(Number(activeProduct.price))}
+                  Rp{formatCurrency(Number(activeBundle.price))}
                 </p>
                 <p className="text-xs text-green-400 mb-2">
-                  Diskon Tambahan Rp
-                  {formatCurrency(Number(couponResult.data.discount_amount))}
+                  Diskon Rp{formatCurrency(Number(couponResult.data.discount_amount))}
                 </p>
                 <p className="text-xs text-zinc-400 mb-1">Harga Setelah Kupon</p>
                 <p className="text-3xl font-bold text-red-500">
-                  Rp
-                  {formatCurrency(Number(couponResult.data.final_price))}
+                  Rp{formatCurrency(Number(couponResult.data.final_price))}
                 </p>
               </>
             ) : (
               <>
                 <p className="text-xs text-zinc-400 mb-1">Harga Setelah Diskon</p>
                 <p className="text-3xl font-bold text-red-500">
-                  Rp
-                  {formatCurrency(Number(activeProduct.price))}
+                  Rp{formatCurrency(Number(activeBundle.price))}
                 </p>
               </>
             )}
@@ -679,19 +609,15 @@ function RegisterContent() {
           </span>
         </p>
       </div>
-      <Button
-        variant="secondary"
-        className="flex items-center gap-5"
-        onClick={() => router.push('/')}
-      >
+      <Button variant="secondary" className="flex items-center gap-5" onClick={() => router.push('/bundles')}>
         <ChevronLeft />
-        Back to Home
+        Kembali ke Bundle
       </Button>
     </div>
   );
 }
 
-export default function RegisterPage() {
+export default function RegisterBundlePage() {
   return (
     <Suspense
       fallback={
@@ -700,7 +626,7 @@ export default function RegisterPage() {
         </div>
       }
     >
-      <RegisterContent />
+      <RegisterBundleContent />
     </Suspense>
   );
 }

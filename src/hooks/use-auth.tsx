@@ -25,10 +25,14 @@ export const useLogin = () => {
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
       toast.success('Login berhasil');
+      const userData = data.user;
 
-      if (data.user.force_password_reset) {
+      if (userData?.force_password_reset) {
         router.push('/settings/password');
       } else {
+        if (userData?.is_banned) {
+          router.push('/info');
+        }
         router.push('/course');
       }
     },
@@ -75,6 +79,34 @@ export const useRegister = () => {
 
   return useMutation({
     mutationFn: (payload: RegisterPayload) => AuthService.register(payload),
+
+    onSuccess: (data) => {
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+
+      toast.success(data.message || 'Registrasi berhasil');
+
+      if (data.order?.payment_url) {
+        window.location.href = data.order.payment_url;
+      } else {
+        router.push('/course');
+      }
+    },
+
+    onError: (error: AxiosError<ErrorResponse>) => {
+      const message =
+        error.response?.data?.message || 'Registrasi gagal, silakan coba lagi';
+
+      toast.error(message);
+    },
+  });
+};
+
+export const useRegisterBundle = () => {
+  const router = useRouter();
+
+  return useMutation({
+    mutationFn: (payload: RegisterPayload) => AuthService.registerBundle(payload),
 
     onSuccess: (data) => {
       localStorage.setItem('token', data.token);

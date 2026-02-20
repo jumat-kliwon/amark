@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import Link from "next/link";
-import Header from "@/components/Header";
-import { Check, ArrowLeft, Tag, Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { useState } from 'react';
+import Link from 'next/link';
+import Header from '@/components/Header';
+import { Check, ArrowLeft, Tag, Loader2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   Dialog,
   DialogContent,
@@ -13,16 +13,15 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "@/components/ui/dialog";
-import { useMembership } from "@/hooks/use-membership";
-import { useUserWithMembership } from "@/hooks/use-user";
-import { formatPrice } from "@/lib/subscription-utils";
-import type { Membership } from "@/services/order/type";
+} from '@/components/ui/dialog';
+import { useMembership } from '@/hooks/use-membership';
+import { useUserWithMembership } from '@/hooks/use-user';
+import { formatPrice } from '@/lib/subscription-utils';
+import type { Membership } from '@/services/order/type';
 
 export default function SubscriptionPlansPage() {
   const [selectedPlan, setSelectedPlan] = useState<Membership | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [couponCode, setCouponCode] = useState("");
+  const [couponCode, setCouponCode] = useState('');
 
   const {
     membership,
@@ -34,14 +33,16 @@ export default function SubscriptionPlansPage() {
     coupons,
     setCoupons,
     newOrder,
-    loadingNewOrder
+    loadingNewOrder,
+    isModalOpen,
+    setIsModalOpen,
   } = useMembership();
 
   const { membership: currentMembership } = useUserWithMembership();
 
   const handleSelectPlan = (plan: Membership) => {
     setSelectedPlan(plan);
-    setCouponCode("");
+    setCouponCode('');
     setCouponValid(true);
     setCoupons(null);
     setIsModalOpen(true);
@@ -54,7 +55,7 @@ export default function SubscriptionPlansPage() {
     }
     if (selectedPlan) {
       checkCoupon({
-        membership_id: selectedPlan.id,
+        product_id: selectedPlan.product_id ?? selectedPlan.id,
         coupon: couponCode,
       });
     }
@@ -63,10 +64,9 @@ export default function SubscriptionPlansPage() {
   const handleConfirmOrder = () => {
     if (selectedPlan) {
       newOrder({
-        membership_id: selectedPlan.id,
+        product_id: selectedPlan.product_id ?? selectedPlan.id,
         coupon: couponCode,
       });
-      setIsModalOpen(false);
     }
   };
 
@@ -81,10 +81,10 @@ export default function SubscriptionPlansPage() {
     }
     // Default features based on access type
     return [
-      "Akses penuh ke semua materi",
-      "Sertifikat digital",
-      "Forum komunitas",
-      "Update materi berkala",
+      'Akses penuh ke semua materi',
+      'Sertifikat digital',
+      'Forum komunitas',
+      'Update materi berkala',
     ];
   };
 
@@ -104,14 +104,17 @@ export default function SubscriptionPlansPage() {
         <div className="mb-12 text-center">
           <h1 className="mb-4 text-4xl font-bold">Pilih Paket yang Tepat</h1>
           <p className="text-lg text-muted-foreground">
-            Tingkatkan skill Anda dengan akses penuh ke semua materi pembelajaran
+            Tingkatkan skill Anda dengan akses penuh ke semua materi
+            pembelajaran
           </p>
         </div>
 
         {loadingMembership ? (
           <div className="flex items-center justify-center py-12">
             <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-            <p className="ml-3 text-muted-foreground">Memuat paket membership...</p>
+            <p className="ml-3 text-muted-foreground">
+              Memuat paket membership...
+            </p>
           </div>
         ) : membership?.data && membership.data.length > 0 ? (
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
@@ -124,12 +127,13 @@ export default function SubscriptionPlansPage() {
                 return (
                   <div
                     key={plan.id}
-                    className={`relative rounded-2xl border-2 p-8 transition-all duration-300 ${isPopular
-                        ? "border-primary bg-gradient-to-br from-primary/5 via-card to-card shadow-xl scale-105"
+                    className={`relative rounded-2xl border-2 p-8 transition-all duration-300 ${
+                      isPopular
+                        ? 'border-primary bg-gradient-to-br from-primary/5 via-card to-card shadow-xl scale-105'
                         : isPlanCurrent
-                          ? "border-green-500 bg-gradient-to-br from-green-500/5 to-card shadow-lg"
-                          : "border-border bg-card hover:border-primary/50 hover:shadow-lg"
-                      }`}
+                        ? 'border-green-500 bg-gradient-to-br from-green-500/5 to-card shadow-lg'
+                        : 'border-border bg-card hover:border-primary/50 hover:shadow-lg'
+                    }`}
                   >
                     {/* Badge */}
                     {isPopular && !isPlanCurrent && (
@@ -155,54 +159,94 @@ export default function SubscriptionPlansPage() {
 
                     {/* Plan Header */}
                     <div className="mb-6 pt-2">
-                      <h3 className="mb-3 text-2xl font-bold tracking-tight">{plan.name}</h3>
+                      <h3 className="mb-3 text-2xl font-bold tracking-tight">
+                        {plan.name}
+                      </h3>
                       <div
                         className="text-sm text-muted-foreground line-clamp-2 min-h-[40px]"
-                        dangerouslySetInnerHTML={{ __html: plan.description || "Paket membership terbaik untuk Anda" }}
+                        dangerouslySetInnerHTML={{
+                          __html:
+                            plan.description ||
+                            'Paket membership terbaik untuk Anda',
+                        }}
                       />
                     </div>
 
                     {/* Price */}
                     <div className="mb-8 pb-6 border-b border-border">
                       <div className="flex items-baseline gap-2">
-                        <span className={`text-4xl font-bold tracking-tight ${isPopular ? 'text-primary' : ''}`}>
+                        <span
+                          className={`text-4xl font-bold tracking-tight ${
+                            isPopular ? 'text-primary' : ''
+                          }`}
+                        >
                           {formatPrice(plan.price)}
                         </span>
                       </div>
                       <p className="mt-2 text-sm text-muted-foreground">
-                        {plan.access_type_label === "Lifetime"
-                          ? "Akses selamanya"
-                          : `Akses selama ${plan.duration} hari`
-                        }
+                        {plan.access_type_label === 'Lifetime'
+                          ? 'Akses selamanya'
+                          : `Akses selama ${plan.duration} hari`}
                       </p>
                     </div>
 
                     {/* Features */}
                     <ul className="mb-8 space-y-3">
                       {getPlanFeatures(plan).map((feature, idx) => (
-                        <li key={idx} className="flex items-start gap-3 text-sm">
-                          <div className={`mt-0.5 rounded-full p-0.5 ${isPopular ? 'bg-primary/10' : 'bg-muted'}`}>
-                            <Check className={`h-3.5 w-3.5 ${isPopular ? 'text-primary' : 'text-foreground'}`} />
+                        <li
+                          key={idx}
+                          className="flex items-start gap-3 text-sm"
+                        >
+                          <div
+                            className={`mt-0.5 rounded-full p-0.5 ${
+                              isPopular ? 'bg-primary/10' : 'bg-muted'
+                            }`}
+                          >
+                            <Check
+                              className={`h-3.5 w-3.5 ${
+                                isPopular ? 'text-primary' : 'text-foreground'
+                              }`}
+                            />
                           </div>
                           <span className="flex-1">{feature}</span>
                         </li>
                       ))}
                       <li className="flex items-start gap-3 text-sm font-medium">
-                        <div className={`mt-0.5 rounded-full p-0.5 ${isPopular ? 'bg-primary/10' : 'bg-muted'}`}>
-                          <Check className={`h-3.5 w-3.5 ${isPopular ? 'text-primary' : 'text-foreground'}`} />
+                        <div
+                          className={`mt-0.5 rounded-full p-0.5 ${
+                            isPopular ? 'bg-primary/10' : 'bg-muted'
+                          }`}
+                        >
+                          <Check
+                            className={`h-3.5 w-3.5 ${
+                              isPopular ? 'text-primary' : 'text-foreground'
+                            }`}
+                          />
                         </div>
-                        <span className="flex-1">Akses {plan.access_type_label}</span>
+                        <span className="flex-1">
+                          Akses {plan.access_type_label}
+                        </span>
                       </li>
                     </ul>
 
                     {/* CTA Button */}
                     <Button
-                      className={`w-full ${isPopular && !isPlanCurrent ? 'shadow-lg shadow-primary/25' : ''}`}
+                      className={`w-full ${
+                        isPopular && !isPlanCurrent
+                          ? 'shadow-lg shadow-primary/25'
+                          : ''
+                      }`}
                       size="lg"
-                      variant={isPlanCurrent ? "outline" : isPopular ? "default" : "outline"}
+                      variant={
+                        isPlanCurrent
+                          ? 'outline'
+                          : isPopular
+                          ? 'default'
+                          : 'outline'
+                      }
                       onClick={() => handleSelectPlan(plan)}
                     >
-                      {isPlanCurrent ? "Pesan Lagi" : "Pilih Paket"}
+                      {isPlanCurrent ? 'Pesan Lagi' : 'Pilih Paket'}
                     </Button>
                   </div>
                 );
@@ -210,14 +254,16 @@ export default function SubscriptionPlansPage() {
           </div>
         ) : (
           <div className="text-center py-12">
-            <p className="text-muted-foreground">Tidak ada paket membership yang tersedia saat ini.</p>
+            <p className="text-muted-foreground">
+              Tidak ada paket membership yang tersedia saat ini.
+            </p>
           </div>
         )}
 
         {/* FAQ or Additional Info */}
         <div className="mt-16 text-center">
           <p className="text-muted-foreground">
-            Punya pertanyaan? {" "}
+            Punya pertanyaan?{' '}
             <Link href="/affiliate" className="text-primary hover:underline">
               Hubungi tim support kami
             </Link>
@@ -247,13 +293,17 @@ export default function SubscriptionPlansPage() {
                 </div>
                 <div
                   className="text-sm text-muted-foreground"
-                  dangerouslySetInnerHTML={{ __html: selectedPlan.description || "" }}
+                  dangerouslySetInnerHTML={{
+                    __html: selectedPlan.description || '',
+                  }}
                 />
               </div>
 
               {/* Coupon Input */}
               <div className="space-y-2">
-                <label className="text-sm font-medium">Kode Kupon (Opsional)</label>
+                <label className="text-sm font-medium">
+                  Kode Kupon (Opsional)
+                </label>
                 <div className="flex gap-2">
                   <div className="relative flex-1">
                     <Tag className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -278,16 +328,19 @@ export default function SubscriptionPlansPage() {
                     {loadingCheckCoupon ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
                     ) : (
-                      "Terapkan"
+                      'Terapkan'
                     )}
                   </Button>
                 </div>
                 {!couponValid && !coupons && couponCode && (
-                  <p className="text-sm text-destructive">Kode kupon tidak valid</p>
+                  <p className="text-sm text-destructive">
+                    Kode kupon tidak valid
+                  </p>
                 )}
                 {coupons && couponValid && (
                   <p className="text-sm text-green-500">
-                    Kupon berhasil diterapkan! Diskon {formatPrice(String(coupons.data.discount_amount))}
+                    Kupon berhasil diterapkan! Diskon{' '}
+                    {formatPrice(String(coupons.data.discount_amount))}
                   </p>
                 )}
               </div>
@@ -301,7 +354,9 @@ export default function SubscriptionPlansPage() {
                 {coupons && couponValid && (
                   <div className="flex justify-between text-sm text-green-500">
                     <span>Diskon</span>
-                    <span>- {formatPrice(String(coupons.data.discount_amount))}</span>
+                    <span>
+                      - {formatPrice(String(coupons.data.discount_amount))}
+                    </span>
                   </div>
                 )}
                 <div className="flex justify-between font-semibold text-lg border-t pt-2">
@@ -309,8 +364,7 @@ export default function SubscriptionPlansPage() {
                   <span className="text-primary">
                     {coupons && couponValid
                       ? formatPrice(String(coupons.data.final_price))
-                      : formatPrice(selectedPlan.price)
-                    }
+                      : formatPrice(selectedPlan.price)}
                   </span>
                 </div>
               </div>
@@ -325,17 +379,14 @@ export default function SubscriptionPlansPage() {
             >
               Batal
             </Button>
-            <Button
-              onClick={handleConfirmOrder}
-              disabled={loadingNewOrder}
-            >
+            <Button onClick={handleConfirmOrder} disabled={loadingNewOrder}>
               {loadingNewOrder ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Memproses...
                 </>
               ) : (
-                "Lanjutkan Pembayaran"
+                'Lanjutkan Pembayaran'
               )}
             </Button>
           </DialogFooter>
@@ -344,4 +395,3 @@ export default function SubscriptionPlansPage() {
     </div>
   );
 }
-

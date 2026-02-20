@@ -2,7 +2,12 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { OrderService } from '@/services/order';
-import { CheckCouponResponse, MembershipRequest } from '@/services/order/type';
+import {
+  CheckCouponResponse,
+  MembershipDtResponse,
+  MembershipRequest,
+  MembershipResponse,
+} from '@/services/order/type';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -12,6 +17,7 @@ export function useMembership() {
   const router = useRouter();
   const [couponValid, setCouponValid] = useState(true);
   const [coupons, setCoupons] = useState<CheckCouponResponse | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { data: membership, isLoading: loadingMembership } = useQuery({
     queryKey: ['membership'],
@@ -21,16 +27,19 @@ export function useMembership() {
   const { mutate: newOrder, isPending: loadingNewOrder } = useMutation({
     mutationFn: (dt: MembershipRequest) =>
       OrderService.postOrder({
-        membership_id: dt.membership_id,
+        product_id: dt.product_id,
         coupon: dt.coupon,
       }),
 
-    onSuccess: () => {
+    onSuccess: (data: MembershipDtResponse) => {
       toast.success('Pesanan berhasil dibuat!');
-      router.push('/member/subscription');
+      if (data.data.payment_url) {
+        window.location.href = data.data.payment_url;
+      }
       queryClient.invalidateQueries({
         queryKey: ['membership'],
       });
+      setIsModalOpen(false);
     },
     onError: () => {
       toast.error('Pesanan gagal dibuat!');
@@ -40,7 +49,7 @@ export function useMembership() {
   const { mutate: checkCoupon, isPending: loadingCheckCoupon } = useMutation({
     mutationFn: (dt: MembershipRequest) =>
       OrderService.checkCoupon({
-        membership_id: dt.membership_id,
+        product_id: dt.product_id,
         coupon: dt.coupon,
       }),
     onSuccess: (res: CheckCouponResponse) => {
@@ -66,5 +75,7 @@ export function useMembership() {
     setCouponValid,
     coupons,
     setCoupons,
+    isModalOpen,
+    setIsModalOpen,
   };
 }

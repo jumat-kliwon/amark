@@ -19,6 +19,13 @@ export const AuthService = {
     return data;
   },
 
+  registerBundle: async (
+    payload: RegisterPayload
+  ): Promise<RegisterResponse> => {
+    const { data } = await api.post('/auth/register/bundle', payload);
+    return data;
+  },
+
   forgotPassword: async (payload: ForgotPayload): Promise<ForgotResponse> => {
     const { data } = await api.post('/auth/forgot-password', payload);
     return data;

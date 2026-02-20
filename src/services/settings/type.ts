@@ -45,6 +45,7 @@ export interface SiteSettings {
 
 export interface Membership {
   id: number;
+  product_id?: number;
   slug: string;
   name: string;
   description: string;
