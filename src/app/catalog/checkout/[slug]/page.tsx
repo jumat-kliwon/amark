@@ -17,6 +17,7 @@ import {
   useProvinces,
   useDistricts,
   useSubdistricts,
+  useVillages,
 } from '@/hooks/use-address';
 import { useDebounce } from '@/hooks/use-debounce';
 import {
@@ -35,9 +36,11 @@ export default function CatalogCheckoutPage() {
   const [provinceId, setProvinceId] = useState<number | null>(null);
   const [districtId, setDistrictId] = useState<number | null>(null);
   const [subdistrictId, setSubdistrictId] = useState<number | null>(null);
+  const [villageId, setVillageId] = useState<number | null>(null);
   const [provinceSearch, setProvinceSearch] = useState('');
   const [districtSearch, setDistrictSearch] = useState('');
   const [subdistrictSearch, setSubdistrictSearch] = useState('');
+  const [villageSearch, setVillageSearch] = useState('');
   const [recipientName, setRecipientName] = useState('');
   const [recipientPhone, setRecipientPhone] = useState('');
   const [couponCode, setCouponCode] = useState('');
@@ -49,18 +52,22 @@ export default function CatalogCheckoutPage() {
   const debouncedProvinceSearch = useDebounce(provinceSearch, 300);
   const debouncedDistrictSearch = useDebounce(districtSearch, 300);
   const debouncedSubdistrictSearch = useDebounce(subdistrictSearch, 300);
+  const debouncedVillageSearch = useDebounce(villageSearch, 300);
 
-  const { provinces, isLoadingProvinces } = useProvinces(debouncedProvinceSearch);
+  const { provinces, isLoadingProvinces } = useProvinces(
+    debouncedProvinceSearch,
+  );
   const { districts: districtsData, isLoadingDistricts: loadingDistricts } =
     useDistricts(provinceId, debouncedDistrictSearch);
-  const { subdistricts: subdistrictsData, isLoadingSubdistricts: loadingSubdistricts } =
-    useSubdistricts(districtId, debouncedSubdistrictSearch);
-
   const {
-    calculateShippingAsync,
-    loadingCalculateShipping,
-    shippingOptions,
-  } = useCalculateShipping();
+    subdistricts: subdistrictsData,
+    isLoadingSubdistricts: loadingSubdistricts,
+  } = useSubdistricts(districtId, debouncedSubdistrictSearch);
+  const { villages: villagesData, isLoadingVillages: loadingVillages } =
+    useVillages(subdistrictId, debouncedVillageSearch);
+
+  const { calculateShippingAsync, loadingCalculateShipping, shippingOptions } =
+    useCalculateShipping();
   const { postCatalogOrder, loadingPostOrder } = useCatalogOrder();
 
   const handleProvinceChange = (id: number) => {
@@ -78,13 +85,20 @@ export default function CatalogCheckoutPage() {
 
   const handleSubdistrictChange = (id: number) => {
     setSubdistrictId(id);
+    setVillageId(null);
     setSubdistrictSearch('');
+  };
+
+  const handleVillageChange = (id: number) => {
+    setVillageId(id);
+    setVillageSearch('');
   };
 
   const isAddressComplete =
     provinceId &&
     districtId &&
     subdistrictId &&
+    villageId &&
     address.trim() &&
     postalCode.trim();
 
@@ -94,6 +108,7 @@ export default function CatalogCheckoutPage() {
         province_id: provinceId!,
         district_id: districtId!,
         sub_district_id: subdistrictId!,
+        village_id: villageId!,
         postal_code: postalCode.trim(),
       }
     : null;
@@ -114,14 +129,26 @@ export default function CatalogCheckoutPage() {
       recipient_phone: recipientPhone.trim() || undefined,
       shipping_address: shippingAddress,
     });
-  }, [debouncedAddressPayloadStr, catalog?.data?.id, catalog?.data?.requires_shipping]);
+  }, [
+    debouncedAddressPayloadStr,
+    catalog?.data?.id,
+    catalog?.data?.requires_shipping,
+  ]);
 
   const handlePlaceOrder = () => {
     if (!catalog?.data?.id) return;
 
     const requiresShipping = catalog.data.requires_shipping !== false;
     if (requiresShipping) {
-      if (!selectedShipping || !provinceId || !districtId || !subdistrictId || !address.trim() || !postalCode.trim()) {
+      if (
+        !selectedShipping ||
+        !provinceId ||
+        !districtId ||
+        !subdistrictId ||
+        !villageId ||
+        !address.trim() ||
+        !postalCode.trim()
+      ) {
         return;
       }
       postCatalogOrder({
@@ -134,6 +161,7 @@ export default function CatalogCheckoutPage() {
           province_id: provinceId,
           district_id: districtId,
           sub_district_id: subdistrictId,
+          village_id: villageId,
           postal_code: postalCode.trim(),
         },
         shipping_option: {
@@ -243,7 +271,9 @@ export default function CatalogCheckoutPage() {
                   <Input
                     placeholder="Masukkan kode kupon"
                     value={couponCode}
-                    onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                    onChange={(e) =>
+                      setCouponCode(e.target.value.toUpperCase())
+                    }
                     className="flex-1"
                   />
                 </div>
@@ -269,7 +299,9 @@ export default function CatalogCheckoutPage() {
           {requiresShipping && (
             <Card>
               <CardContent className="pt-6">
-                <h2 className="mb-4 text-lg font-semibold">Alamat Pengiriman</h2>
+                <h2 className="mb-4 text-lg font-semibold">
+                  Alamat Pengiriman
+                </h2>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div>
                     <Label className="text-sm">Nama Penerima</Label>
@@ -335,6 +367,21 @@ export default function CatalogCheckoutPage() {
                     />
                   </div>
                   <div>
+                    <Label className="text-sm">Desa / Kelurahan</Label>
+                    <AddressSearchSelect
+                      options={villagesData}
+                      isLoading={loadingVillages}
+                      value={villageId}
+                      onValueChange={handleVillageChange}
+                      search={villageSearch}
+                      onSearchChange={setVillageSearch}
+                      placeholder="Pilih desa / kelurahan"
+                      searchPlaceholder="Cari desa / kelurahan..."
+                      emptyText="Tidak ada desa / kelurahan ditemukan"
+                      disabled={!subdistrictId}
+                    />
+                  </div>
+                  <div>
                     <Label className="text-sm">Kode Pos</Label>
                     <Input
                       placeholder="40132"
@@ -362,7 +409,9 @@ export default function CatalogCheckoutPage() {
 
                 {shippingOptions.length > 0 && (
                   <div className="mt-4 border-t border-border pt-4">
-                    <Label className="mb-2 block text-sm">Pilih Pengiriman</Label>
+                    <Label className="mb-2 block text-sm">
+                      Pilih Pengiriman
+                    </Label>
                     <RadioGroup
                       value={
                         selectedShipping
@@ -372,7 +421,8 @@ export default function CatalogCheckoutPage() {
                       onValueChange={(value) => {
                         const opt = shippingOptions.find(
                           (o) =>
-                            `${o.courier_name}-${o.courier_service_name}` === value
+                            `${o.courier_name}-${o.courier_service_name}` ===
+                            value,
                         );
                         setSelectedShipping(opt ?? null);
                       }}
@@ -392,11 +442,15 @@ export default function CatalogCheckoutPage() {
                             className="flex flex-1 cursor-pointer items-center justify-between gap-2"
                           >
                             <span className="text-sm font-medium">
-                              {opt.label ?? `${opt.courier_name} - ${opt.courier_service_name}`}
+                              {opt.label ??
+                                `${opt.courier_name} - ${opt.courier_service_name}`}
                             </span>
-                            {(opt.price != null || opt.shipping_fee != null) && (
+                            {(opt.price != null ||
+                              opt.shipping_fee != null) && (
                               <span className="text-sm font-medium text-primary">
-                                {formatPrice(String(opt.price ?? opt.shipping_fee ?? 0))}
+                                {formatPrice(
+                                  String(opt.price ?? opt.shipping_fee ?? 0),
+                                )}
                               </span>
                             )}
                           </Label>
@@ -411,7 +465,9 @@ export default function CatalogCheckoutPage() {
 
           <Button
             onClick={handlePlaceOrder}
-            disabled={(requiresShipping && !selectedShipping) || loadingPostOrder}
+            disabled={
+              (requiresShipping && !selectedShipping) || loadingPostOrder
+            }
             className="w-full"
           >
             {loadingPostOrder ? (

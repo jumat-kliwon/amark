@@ -234,6 +234,7 @@ export interface ShippingAddress {
   province_id: number;
   district_id: number;
   sub_district_id: number;
+  village_id: number;
   postal_code: string;
 }
 

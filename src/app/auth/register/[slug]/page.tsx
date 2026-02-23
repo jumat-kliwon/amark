@@ -15,6 +15,7 @@ import {
   useProvinces,
   useDistricts,
   useSubdistricts,
+  useVillages,
 } from '@/hooks/use-address';
 import { useDebounce } from '@/hooks/use-debounce';
 import { useCalculateShipping } from '@/hooks/use-catalog-order';
@@ -73,9 +74,11 @@ function RegisterContent() {
   const [provinceId, setProvinceId] = useState<number | null>(null);
   const [districtId, setDistrictId] = useState<number | null>(null);
   const [subdistrictId, setSubdistrictId] = useState<number | null>(null);
+  const [villageId, setVillageId] = useState<number | null>(null);
   const [provinceSearch, setProvinceSearch] = useState('');
   const [districtSearch, setDistrictSearch] = useState('');
   const [subdistrictSearch, setSubdistrictSearch] = useState('');
+  const [villageSearch, setVillageSearch] = useState('');
   const [recipientName, setRecipientName] = useState('');
   const [recipientPhone, setRecipientPhone] = useState('');
   const [address, setAddress] = useState('');
@@ -97,18 +100,22 @@ function RegisterContent() {
   const debouncedProvinceSearch = useDebounce(provinceSearch, 300);
   const debouncedDistrictSearch = useDebounce(districtSearch, 300);
   const debouncedSubdistrictSearch = useDebounce(subdistrictSearch, 300);
+  const debouncedVillageSearch = useDebounce(villageSearch, 300);
 
-  const { provinces, isLoadingProvinces } = useProvinces(debouncedProvinceSearch);
+  const { provinces, isLoadingProvinces } = useProvinces(
+    debouncedProvinceSearch,
+  );
   const { districts: districtsData, isLoadingDistricts: loadingDistricts } =
     useDistricts(provinceId, debouncedDistrictSearch);
-  const { subdistricts: subdistrictsData, isLoadingSubdistricts: loadingSubdistricts } =
-    useSubdistricts(districtId, debouncedSubdistrictSearch);
-
   const {
-    calculateShippingAsync,
-    loadingCalculateShipping,
-    shippingOptions,
-  } = useCalculateShipping();
+    subdistricts: subdistrictsData,
+    isLoadingSubdistricts: loadingSubdistricts,
+  } = useSubdistricts(districtId, debouncedSubdistrictSearch);
+  const { villages: villagesData, isLoadingVillages: loadingVillages } =
+    useVillages(subdistrictId, debouncedVillageSearch);
+
+  const { calculateShippingAsync, loadingCalculateShipping, shippingOptions } =
+    useCalculateShipping();
 
   const handleProvinceChange = (id: number) => {
     setProvinceId(id);
@@ -125,13 +132,20 @@ function RegisterContent() {
 
   const handleSubdistrictChange = (id: number) => {
     setSubdistrictId(id);
+    setVillageId(null);
     setSubdistrictSearch('');
+  };
+
+  const handleVillageChange = (id: number) => {
+    setVillageId(id);
+    setVillageSearch('');
   };
 
   const isAddressComplete =
     provinceId &&
     districtId &&
     subdistrictId &&
+    villageId &&
     address.trim() &&
     postalCode.trim();
 
@@ -143,14 +157,18 @@ function RegisterContent() {
         province_id: provinceId!,
         district_id: districtId!,
         sub_district_id: subdistrictId!,
+        village_id: villageId!,
         postal_code: postalCode.trim(),
       }
     : null;
-  const addressPayloadStr = addressPayload ? JSON.stringify(addressPayload) : null;
+  const addressPayloadStr = addressPayload
+    ? JSON.stringify(addressPayload)
+    : null;
   const debouncedAddressPayloadStr = useDebounce(addressPayloadStr, 500);
 
   useEffect(() => {
-    if (!requiresShipping || !debouncedAddressPayloadStr || !catalog?.data?.id) return;
+    if (!requiresShipping || !debouncedAddressPayloadStr || !catalog?.data?.id)
+      return;
     const payload = JSON.parse(debouncedAddressPayloadStr);
     setSelectedShipping(null);
     calculateShippingAsync({
@@ -161,6 +179,7 @@ function RegisterContent() {
         province_id: payload.province_id,
         district_id: payload.district_id,
         sub_district_id: payload.sub_district_id,
+        village_id: payload.village_id,
         postal_code: payload.postal_code,
       },
       recipient_name: payload.recipient_name || undefined,
@@ -168,11 +187,22 @@ function RegisterContent() {
     });
   }, [requiresShipping, debouncedAddressPayloadStr, catalog?.data?.id]);
 
-  const isShippingComplete = !requiresShipping || (isAddressComplete && selectedShipping);
+  const isShippingComplete =
+    !requiresShipping || (isAddressComplete && selectedShipping);
 
   const onSubmit = () => {
     if (!activeProduct) return;
-    if (requiresShipping && (!provinceId || !districtId || !subdistrictId || !address.trim() || !postalCode.trim() || !selectedShipping)) return;
+    if (
+      requiresShipping &&
+      (!provinceId ||
+        !districtId ||
+        !subdistrictId ||
+        !villageId ||
+        !address.trim() ||
+        !postalCode.trim() ||
+        !selectedShipping)
+    )
+      return;
 
     const payload: Parameters<typeof mutate>[0] = {
       phone_number: `+62${phone}`,
@@ -194,6 +224,7 @@ function RegisterContent() {
         province_id: provinceId!,
         district_id: districtId!,
         sub_district_id: subdistrictId!,
+        village_id: villageId!,
         postal_code: postalCode.trim(),
       };
       payload.shipping_option = {
@@ -205,38 +236,43 @@ function RegisterContent() {
     mutate(payload);
   };
 
-  const { mutate: validateCoupon, isPending: isValidatingCoupon } = useMutation({
-    mutationFn: async () => {
-      if (!activeProduct) {
-        throw new Error('Produk tidak ditemukan');
-      }
-      const coupon = voucher.trim();
-      if (!coupon) {
-        throw new Error('Kode promo kosong');
-      }
-      return await OrderService.checkCoupon({
-        coupon,
-        product_id: activeProduct.product_id,
-      });
+  const { mutate: validateCoupon, isPending: isValidatingCoupon } = useMutation(
+    {
+      mutationFn: async () => {
+        if (!activeProduct) {
+          throw new Error('Produk tidak ditemukan');
+        }
+        const coupon = voucher.trim();
+        if (!coupon) {
+          throw new Error('Kode promo kosong');
+        }
+        return await OrderService.checkCoupon({
+          coupon,
+          product_id: activeProduct.product_id,
+        });
+      },
+      onSuccess: (res) => {
+        setCouponResult(res);
+        setCouponMessage(res.message || 'Kupon valid');
+      },
+      onError: (error: any) => {
+        setCouponResult(null);
+        const errorMessage =
+          error?.response?.data?.message ||
+          'Kode promo tidak valid / tidak dapat digunakan';
+        setCouponMessage(errorMessage);
+      },
     },
-    onSuccess: (res) => {
-      setCouponResult(res);
-      setCouponMessage(res.message || 'Kupon valid');
-    },
-    onError: (error: any) => {
-      setCouponResult(null);
-      const errorMessage =
-        error?.response?.data?.message ||
-        'Kode promo tidak valid / tidak dapat digunakan';
-      setCouponMessage(errorMessage);
-    },
-  });
+  );
 
   if (!activeProduct && !loadingCatalog) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-[#121212] gap-4">
         <p className="text-muted-foreground">Produk tidak ditemukan</p>
-        <Button variant="secondary" onClick={() => router.push('/auth/register')}>
+        <Button
+          variant="secondary"
+          onClick={() => router.push('/auth/register')}
+        >
           Daftar dengan paket default
         </Button>
         <Button variant="outline" onClick={() => router.push('/')}>
@@ -416,21 +452,23 @@ function RegisterContent() {
                 }}
               />
               {isValidatingCoupon && (
-                <p className="text-xs text-zinc-400">Memvalidasi kode promo...</p>
+                <p className="text-xs text-zinc-400">
+                  Memvalidasi kode promo...
+                </p>
               )}
               {couponMessage && (
                 <p
                   className={`text-xs ${
-                    couponResult
-                      ? 'text-green-400'
-                      : 'text-red-400'
+                    couponResult ? 'text-green-400' : 'text-red-400'
                   }`}
                 >
                   {couponMessage}
                   {couponResult && (
                     <span className="block mt-1">
                       Hemat Rp
-                      {formatCurrency(Number(couponResult.data.discount_amount))}
+                      {formatCurrency(
+                        Number(couponResult.data.discount_amount),
+                      )}
                     </span>
                   )}
                 </p>
@@ -507,6 +545,21 @@ function RegisterContent() {
                       />
                     </div>
                     <div>
+                      <Label className="text-sm">Desa / Kelurahan</Label>
+                      <AddressSearchSelect
+                        options={villagesData}
+                        isLoading={loadingVillages}
+                        value={villageId}
+                        onValueChange={handleVillageChange}
+                        search={villageSearch}
+                        onSearchChange={setVillageSearch}
+                        placeholder="Pilih desa / kelurahan"
+                        searchPlaceholder="Cari desa / kelurahan..."
+                        emptyText="Tidak ada desa / kelurahan ditemukan"
+                        disabled={!subdistrictId}
+                      />
+                    </div>
+                    <div>
                       <Label className="text-sm">Kode Pos</Label>
                       <Input
                         placeholder="40132"
@@ -553,7 +606,8 @@ function RegisterContent() {
                         onValueChange={(value) => {
                           const opt = shippingOptions.find(
                             (o) =>
-                              `${o.courier_name}-${o.courier_service_name}` === value
+                              `${o.courier_name}-${o.courier_service_name}` ===
+                              value,
                           );
                           setSelectedShipping(opt ?? null);
                         }}
@@ -561,36 +615,44 @@ function RegisterContent() {
                       >
                         {shippingOptions.map((opt) => {
                           const isSelected =
-                            selectedShipping?.courier_name === opt.courier_name &&
-                            selectedShipping?.courier_service_name === opt.courier_service_name;
+                            selectedShipping?.courier_name ===
+                              opt.courier_name &&
+                            selectedShipping?.courier_service_name ===
+                              opt.courier_service_name;
                           return (
-                          <div
-                            key={`${opt.courier_name}-${opt.courier_service_name}`}
-                            className={`flex items-center space-x-3 rounded-lg border p-4 transition-colors cursor-pointer ${
-                              isSelected
-                                ? 'border-red-600 bg-red-950/30'
-                                : 'border-zinc-800 hover:bg-zinc-800/50'
-                            }`}
-                          >
-                            <RadioGroupItem
-                              value={`${opt.courier_name}-${opt.courier_service_name}`}
-                              id={`ship-${opt.courier_name}-${opt.courier_service_name}`}
-                              className="border-zinc-600"
-                            />
-                            <Label
-                              htmlFor={`ship-${opt.courier_name}-${opt.courier_service_name}`}
-                              className="flex-1 cursor-pointer flex items-center justify-between gap-2"
+                            <div
+                              key={`${opt.courier_name}-${opt.courier_service_name}`}
+                              className={`flex items-center space-x-3 rounded-lg border p-4 transition-colors cursor-pointer ${
+                                isSelected
+                                  ? 'border-red-600 bg-red-950/30'
+                                  : 'border-zinc-800 hover:bg-zinc-800/50'
+                              }`}
                             >
-                              <span className="font-medium">
-                                {opt.label ?? `${opt.courier_name} - ${opt.courier_service_name}`}
-                              </span>
-                              {(opt.price != null || opt.shipping_fee != null) && (
-                                <span className="text-red-500 font-semibold shrink-0">
-                                  {formatPrice(String(opt.price ?? opt.shipping_fee ?? 0))}
+                              <RadioGroupItem
+                                value={`${opt.courier_name}-${opt.courier_service_name}`}
+                                id={`ship-${opt.courier_name}-${opt.courier_service_name}`}
+                                className="border-zinc-600"
+                              />
+                              <Label
+                                htmlFor={`ship-${opt.courier_name}-${opt.courier_service_name}`}
+                                className="flex-1 cursor-pointer flex items-center justify-between gap-2"
+                              >
+                                <span className="font-medium">
+                                  {opt.label ??
+                                    `${opt.courier_name} - ${opt.courier_service_name}`}
                                 </span>
-                              )}
-                            </Label>
-                          </div>
+                                {(opt.price != null ||
+                                  opt.shipping_fee != null) && (
+                                  <span className="text-red-500 font-semibold shrink-0">
+                                    {formatPrice(
+                                      String(
+                                        opt.price ?? opt.shipping_fee ?? 0,
+                                      ),
+                                    )}
+                                  </span>
+                                )}
+                              </Label>
+                            </div>
                           );
                         })}
                       </RadioGroup>
@@ -651,7 +713,9 @@ function RegisterContent() {
                   Diskon Tambahan Rp
                   {formatCurrency(Number(couponResult.data.discount_amount))}
                 </p>
-                <p className="text-xs text-zinc-400 mb-1">Harga Setelah Kupon</p>
+                <p className="text-xs text-zinc-400 mb-1">
+                  Harga Setelah Kupon
+                </p>
                 <p className="text-3xl font-bold text-red-500">
                   Rp
                   {formatCurrency(Number(couponResult.data.final_price))}
@@ -659,7 +723,9 @@ function RegisterContent() {
               </>
             ) : (
               <>
-                <p className="text-xs text-zinc-400 mb-1">Harga Setelah Diskon</p>
+                <p className="text-xs text-zinc-400 mb-1">
+                  Harga Setelah Diskon
+                </p>
                 <p className="text-3xl font-bold text-red-500">
                   Rp
                   {formatCurrency(Number(activeProduct.price))}
