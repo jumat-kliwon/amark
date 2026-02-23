@@ -26,3 +26,13 @@ export interface DistrictResponse {
 export interface SubdistrictResponse {
   data: Subdistrict[];
 }
+
+export interface Village {
+  id: number;
+  name: string;
+  district_id?: number;
+}
+
+export interface VillageResponse {
+  data: Village[];
+}

@@ -16,6 +16,7 @@ import {
   useProvinces,
   useDistricts,
   useSubdistricts,
+  useVillages,
 } from '@/hooks/use-address';
 import { useDebounce } from '@/hooks/use-debounce';
 import { formatCurrency } from '@/lib/helpers';
@@ -40,7 +41,13 @@ type RegisterBundle = {
   bundle_type: string | null;
 };
 
-function toRegisterBundle(b: { id: number; name: string; price: string; original_price: string | null; bundle_type: string | null }): RegisterBundle {
+function toRegisterBundle(b: {
+  id: number;
+  name: string;
+  price: string;
+  original_price: string | null;
+  bundle_type: string | null;
+}): RegisterBundle {
   return {
     id: b.id,
     name: b.name,
@@ -60,20 +67,25 @@ function RegisterBundleContent() {
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [voucher, setVoucher] = useState('');
-  const [couponResult, setCouponResult] = useState<CheckCouponResponse | null>(null);
+  const [couponResult, setCouponResult] = useState<CheckCouponResponse | null>(
+    null,
+  );
   const [couponMessage, setCouponMessage] = useState<string | null>(null);
 
   const [provinceId, setProvinceId] = useState<number | null>(null);
   const [districtId, setDistrictId] = useState<number | null>(null);
   const [subdistrictId, setSubdistrictId] = useState<number | null>(null);
+  const [villageId, setVillageId] = useState<number | null>(null);
   const [provinceSearch, setProvinceSearch] = useState('');
   const [districtSearch, setDistrictSearch] = useState('');
   const [subdistrictSearch, setSubdistrictSearch] = useState('');
+  const [villageSearch, setVillageSearch] = useState('');
   const [recipientName, setRecipientName] = useState('');
   const [recipientPhone, setRecipientPhone] = useState('');
   const [address, setAddress] = useState('');
   const [postalCode, setPostalCode] = useState('');
-  const [selectedShipping, setSelectedShipping] = useState<ShippingOptionItem | null>(null);
+  const [selectedShipping, setSelectedShipping] =
+    useState<ShippingOptionItem | null>(null);
 
   const router = useRouter();
   const params = useParams();
@@ -84,44 +96,57 @@ function RegisterBundleContent() {
   const activeBundle = bundle?.data ? toRegisterBundle(bundle.data) : null;
   const requiresShipping = bundle?.data?.requires_shipping === true;
 
-  const {
-    calculateShippingAsync,
-    loadingCalculateShipping,
-    shippingOptions,
-  } = useBundleCalculateShipping(slug);
+  const { calculateShippingAsync, loadingCalculateShipping, shippingOptions } =
+    useBundleCalculateShipping(slug);
 
   const debouncedProvinceSearch = useDebounce(provinceSearch, 300);
   const debouncedDistrictSearch = useDebounce(districtSearch, 300);
   const debouncedSubdistrictSearch = useDebounce(subdistrictSearch, 300);
+  const debouncedVillageSearch = useDebounce(villageSearch, 300);
 
-  const { provinces, isLoadingProvinces } = useProvinces(debouncedProvinceSearch);
+  const { provinces, isLoadingProvinces } = useProvinces(
+    debouncedProvinceSearch,
+  );
   const { districts: districtsData, isLoadingDistricts: loadingDistricts } =
     useDistricts(provinceId, debouncedDistrictSearch);
-  const { subdistricts: subdistrictsData, isLoadingSubdistricts: loadingSubdistricts } =
-    useSubdistricts(districtId, debouncedSubdistrictSearch);
+  const {
+    subdistricts: subdistrictsData,
+    isLoadingSubdistricts: loadingSubdistricts,
+  } = useSubdistricts(districtId, debouncedSubdistrictSearch);
+  const { villages: villagesData, isLoadingVillages: loadingVillages } =
+    useVillages(subdistrictId, debouncedVillageSearch);
 
   const handleProvinceChange = (id: number) => {
     setProvinceId(id);
     setDistrictId(null);
     setSubdistrictId(null);
+    setVillageId(null);
     setProvinceSearch('');
   };
 
   const handleDistrictChange = (id: number) => {
     setDistrictId(id);
     setSubdistrictId(null);
+    setVillageId(null);
     setDistrictSearch('');
   };
 
   const handleSubdistrictChange = (id: number) => {
     setSubdistrictId(id);
+    setVillageId(null);
     setSubdistrictSearch('');
+  };
+
+  const handleVillageChange = (id: number) => {
+    setVillageId(id);
+    setVillageSearch('');
   };
 
   const isAddressComplete =
     provinceId &&
     districtId &&
     subdistrictId &&
+    villageId &&
     address.trim() &&
     postalCode.trim();
 
@@ -133,10 +158,13 @@ function RegisterBundleContent() {
         province_id: provinceId!,
         district_id: districtId!,
         sub_district_id: subdistrictId!,
+        village_id: villageId!,
         postal_code: postalCode.trim(),
       }
     : null;
-  const addressPayloadStr = addressPayload ? JSON.stringify(addressPayload) : null;
+  const addressPayloadStr = addressPayload
+    ? JSON.stringify(addressPayload)
+    : null;
   const debouncedAddressPayloadStr = useDebounce(addressPayloadStr, 500);
 
   useEffect(() => {
@@ -146,16 +174,30 @@ function RegisterBundleContent() {
     calculateShippingAsync({
       shipping_address: {
         ...payload,
-        postal_code: typeof payload.postal_code === 'string' ? parseInt(payload.postal_code, 10) || payload.postal_code : payload.postal_code,
+        postal_code:
+          typeof payload.postal_code === 'string'
+            ? parseInt(payload.postal_code, 10) || payload.postal_code
+            : payload.postal_code,
       },
     });
   }, [requiresShipping, debouncedAddressPayloadStr, slug]);
 
-  const isShippingComplete = !requiresShipping || (isAddressComplete && selectedShipping);
+  const isShippingComplete =
+    !requiresShipping || (isAddressComplete && selectedShipping);
 
   const onSubmit = () => {
     if (!activeBundle) return;
-    if (requiresShipping && (!provinceId || !districtId || !subdistrictId || !address.trim() || !postalCode.trim() || !selectedShipping)) return;
+    if (
+      requiresShipping &&
+      (!provinceId ||
+        !districtId ||
+        !subdistrictId ||
+        !villageId ||
+        !address.trim() ||
+        !postalCode.trim() ||
+        !selectedShipping)
+    )
+      return;
 
     const payload: Parameters<typeof mutate>[0] = {
       phone_number: `+62${phone}`,
@@ -177,6 +219,7 @@ function RegisterBundleContent() {
         province_id: provinceId!,
         district_id: districtId!,
         sub_district_id: subdistrictId!,
+        village_id: villageId!,
         postal_code: postalCode.trim(),
       };
       payload.shipping_option = {
@@ -188,26 +231,30 @@ function RegisterBundleContent() {
     mutate(payload);
   };
 
-  const { mutate: validateCoupon, isPending: isValidatingCoupon } = useMutation({
-    mutationFn: async () => {
-      if (!activeBundle) throw new Error('Bundle tidak ditemukan');
-      const coupon = voucher.trim();
-      if (!coupon) throw new Error('Kode promo kosong');
-      return await BundleService.validateCoupon({
-        bundle_product_id: String(activeBundle.id),
-        coupon,
-      });
+  const { mutate: validateCoupon, isPending: isValidatingCoupon } = useMutation(
+    {
+      mutationFn: async () => {
+        if (!activeBundle) throw new Error('Bundle tidak ditemukan');
+        const coupon = voucher.trim();
+        if (!coupon) throw new Error('Kode promo kosong');
+        return await BundleService.validateCoupon({
+          bundle_product_id: String(activeBundle.id),
+          coupon,
+        });
+      },
+      onSuccess: (res) => {
+        setCouponResult(res);
+        setCouponMessage(res.message || 'Kupon valid');
+      },
+      onError: (error: unknown) => {
+        setCouponResult(null);
+        const err = error as { response?: { data?: { message?: string } } };
+        setCouponMessage(
+          err?.response?.data?.message || 'Kode promo tidak valid',
+        );
+      },
     },
-    onSuccess: (res) => {
-      setCouponResult(res);
-      setCouponMessage(res.message || 'Kupon valid');
-    },
-    onError: (error: unknown) => {
-      setCouponResult(null);
-      const err = error as { response?: { data?: { message?: string } } };
-      setCouponMessage(err?.response?.data?.message || 'Kode promo tidak valid');
-    },
-  });
+  );
 
   if (!activeBundle && !loadingBundle) {
     return (
@@ -237,7 +284,9 @@ function RegisterBundleContent() {
         <h1 className="text-4xl font-bold text-center mb-2">
           Daftar <span className="font-extrabold">Bundle</span>
         </h1>
-        <h2 className="text-4xl font-bold text-center mb-6">{activeBundle.name}</h2>
+        <h2 className="text-4xl font-bold text-center mb-6">
+          {activeBundle.name}
+        </h2>
 
         <div className="border-b border-zinc-700 mb-8" />
 
@@ -249,7 +298,10 @@ function RegisterBundleContent() {
               </p>
               <div className="flex items-baseline gap-3 flex-wrap">
                 <p className="text-lg line-through text-zinc-500">
-                  Rp{formatCurrency(Number(activeBundle.original_price ?? activeBundle.price))}
+                  Rp
+                  {formatCurrency(
+                    Number(activeBundle.original_price ?? activeBundle.price),
+                  )}
                 </p>
                 {couponResult ? (
                   <>
@@ -269,7 +321,10 @@ function RegisterBundleContent() {
             </div>
             {activeBundle.bundle_type && (
               <p className="text-sm text-zinc-400 md:text-right uppercase">
-                ({bundleTypeLabels[activeBundle.bundle_type] ?? activeBundle.bundle_type})
+                (
+                {bundleTypeLabels[activeBundle.bundle_type] ??
+                  activeBundle.bundle_type}
+                )
               </p>
             )}
           </div>
@@ -280,7 +335,11 @@ function RegisterBundleContent() {
             <div className="space-y-2">
               <Label>Phone*</Label>
               <div className="flex gap-2">
-                <Input className="w-20 bg-zinc-900 h-12 border-zinc-800" value="+62" disabled />
+                <Input
+                  className="w-20 bg-zinc-900 h-12 border-zinc-800"
+                  value="+62"
+                  disabled
+                />
                 <Input
                   className="flex-1 bg-zinc-900 h-12 border-zinc-800"
                   placeholder="812-345-678"
@@ -372,14 +431,21 @@ function RegisterBundleContent() {
                 }}
               />
               {isValidatingCoupon && (
-                <p className="text-xs text-zinc-400">Memvalidasi kode promo...</p>
+                <p className="text-xs text-zinc-400">
+                  Memvalidasi kode promo...
+                </p>
               )}
               {couponMessage && (
-                <p className={`text-xs ${couponResult ? 'text-green-400' : 'text-red-400'}`}>
+                <p
+                  className={`text-xs ${couponResult ? 'text-green-400' : 'text-red-400'}`}
+                >
                   {couponMessage}
                   {couponResult && (
                     <span className="block mt-1">
-                      Hemat Rp{formatCurrency(Number(couponResult.data.discount_amount))}
+                      Hemat Rp
+                      {formatCurrency(
+                        Number(couponResult.data.discount_amount),
+                      )}
                     </span>
                   )}
                 </p>
@@ -455,6 +521,21 @@ function RegisterBundleContent() {
                       />
                     </div>
                     <div>
+                      <Label className="text-sm">Desa / Kelurahan</Label>
+                      <AddressSearchSelect
+                        options={villagesData}
+                        isLoading={loadingVillages}
+                        value={villageId}
+                        onValueChange={handleVillageChange}
+                        search={villageSearch}
+                        onSearchChange={setVillageSearch}
+                        placeholder="Pilih desa / kelurahan"
+                        searchPlaceholder="Cari desa / kelurahan..."
+                        emptyText="Tidak ada desa / kelurahan ditemukan"
+                        disabled={!subdistrictId}
+                      />
+                    </div>
+                    <div>
                       <Label className="text-sm">Kode Pos</Label>
                       <Input
                         placeholder="40132"
@@ -499,7 +580,9 @@ function RegisterBundleContent() {
                         }
                         onValueChange={(value) => {
                           const opt = shippingOptions.find(
-                            (o) => `${o.courier_name}-${o.courier_service_name}` === value
+                            (o) =>
+                              `${o.courier_name}-${o.courier_service_name}` ===
+                              value,
                           );
                           setSelectedShipping(opt ?? null);
                         }}
@@ -507,13 +590,17 @@ function RegisterBundleContent() {
                       >
                         {shippingOptions.map((opt) => {
                           const isSelected =
-                            selectedShipping?.courier_name === opt.courier_name &&
-                            selectedShipping?.courier_service_name === opt.courier_service_name;
+                            selectedShipping?.courier_name ===
+                              opt.courier_name &&
+                            selectedShipping?.courier_service_name ===
+                              opt.courier_service_name;
                           return (
                             <div
                               key={`${opt.courier_name}-${opt.courier_service_name}`}
                               className={`flex items-center space-x-3 rounded-lg border p-4 cursor-pointer ${
-                                isSelected ? 'border-red-600 bg-red-950/30' : 'border-zinc-800 hover:bg-zinc-800/50'
+                                isSelected
+                                  ? 'border-red-600 bg-red-950/30'
+                                  : 'border-zinc-800 hover:bg-zinc-800/50'
                               }`}
                             >
                               <RadioGroupItem
@@ -526,11 +613,17 @@ function RegisterBundleContent() {
                                 className="flex-1 cursor-pointer flex items-center justify-between gap-2"
                               >
                                 <span className="font-medium">
-                                  {opt.label ?? `${opt.courier_name} - ${opt.courier_service_name}`}
+                                  {opt.label ??
+                                    `${opt.courier_name} - ${opt.courier_service_name}`}
                                 </span>
-                                {(opt.price != null || opt.shipping_fee != null) && (
+                                {(opt.price != null ||
+                                  opt.shipping_fee != null) && (
                                   <span className="text-red-500 font-semibold shrink-0">
-                                    {formatPrice(String(opt.price ?? opt.shipping_fee ?? 0))}
+                                    {formatPrice(
+                                      String(
+                                        opt.price ?? opt.shipping_fee ?? 0,
+                                      ),
+                                    )}
                                   </span>
                                 )}
                               </Label>
@@ -572,7 +665,10 @@ function RegisterBundleContent() {
           <div className="text-center mt-10 p-4 bg-zinc-800/50 rounded-lg">
             <p className="text-xs text-zinc-400 mb-2">Harga Normal</p>
             <p className="text-lg line-through text-zinc-500 mb-2">
-              Rp{formatCurrency(Number(activeBundle.original_price ?? activeBundle.price))}
+              Rp
+              {formatCurrency(
+                Number(activeBundle.original_price ?? activeBundle.price),
+              )}
             </p>
             {couponResult ? (
               <>
@@ -581,16 +677,21 @@ function RegisterBundleContent() {
                   Rp{formatCurrency(Number(activeBundle.price))}
                 </p>
                 <p className="text-xs text-green-400 mb-2">
-                  Diskon Rp{formatCurrency(Number(couponResult.data.discount_amount))}
+                  Diskon Rp
+                  {formatCurrency(Number(couponResult.data.discount_amount))}
                 </p>
-                <p className="text-xs text-zinc-400 mb-1">Harga Setelah Kupon</p>
+                <p className="text-xs text-zinc-400 mb-1">
+                  Harga Setelah Kupon
+                </p>
                 <p className="text-3xl font-bold text-red-500">
                   Rp{formatCurrency(Number(couponResult.data.final_price))}
                 </p>
               </>
             ) : (
               <>
-                <p className="text-xs text-zinc-400 mb-1">Harga Setelah Diskon</p>
+                <p className="text-xs text-zinc-400 mb-1">
+                  Harga Setelah Diskon
+                </p>
                 <p className="text-3xl font-bold text-red-500">
                   Rp{formatCurrency(Number(activeBundle.price))}
                 </p>
@@ -609,7 +710,11 @@ function RegisterBundleContent() {
           </span>
         </p>
       </div>
-      <Button variant="secondary" className="flex items-center gap-5" onClick={() => router.push('/bundles')}>
+      <Button
+        variant="secondary"
+        className="flex items-center gap-5"
+        onClick={() => router.push('/bundles')}
+      >
         <ChevronLeft />
         Kembali ke Bundle
       </Button>

@@ -6,8 +6,7 @@ import { AddressService } from '@/services/address';
 export const useProvinces = (search?: string) => {
   const { data, isLoading } = useQuery({
     queryKey: ['provinces', search ?? ''],
-    queryFn: () =>
-      AddressService.getProvinces(search?.trim() || undefined),
+    queryFn: () => AddressService.getProvinces(search?.trim() || undefined),
   });
 
   return {
@@ -16,10 +15,7 @@ export const useProvinces = (search?: string) => {
   };
 };
 
-export const useDistricts = (
-  provinceId: number | null,
-  search?: string
-) => {
+export const useDistricts = (provinceId: number | null, search?: string) => {
   const { data, isLoading } = useQuery({
     queryKey: ['districts', provinceId, search ?? ''],
     queryFn: () =>
@@ -54,5 +50,24 @@ export const useSubdistricts = (cityId: number | null, search?: string) => {
   return {
     subdistricts: data?.data ?? [],
     isLoadingSubdistricts: isLoading,
+  };
+};
+
+export const useVillages = (districtId: number | null, search?: string) => {
+  const { data, isLoading } = useQuery({
+    queryKey: ['villages', districtId, search ?? ''],
+    queryFn: () =>
+      districtId
+        ? AddressService.getVillages({
+            districtId,
+            search: search?.trim() || undefined,
+          })
+        : { data: [] },
+    enabled: !!districtId,
+  });
+
+  return {
+    villages: data?.data ?? [],
+    isLoadingVillages: isLoading,
   };
 };
