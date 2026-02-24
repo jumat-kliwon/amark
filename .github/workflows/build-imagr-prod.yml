@@ -17,6 +17,20 @@ jobs:
       packages: write
 
     steps:
+      - name: Print pipeline context
+        run: |
+          echo "=============================================="
+          echo "📋 Production build pipeline"
+          echo "=============================================="
+          echo "Branch: ${{ github.ref_name }}"
+          echo "Commit: ${{ github.sha }}"
+          echo "Repo: ${{ github.repository }}"
+          echo "Triggered by: ${{ github.actor }}"
+          echo "Registry: ${{ env.REGISTRY }}"
+          echo "Image name: ${{ env.IMAGE_NAME }}/app:latest"
+          echo "NEXT_PUBLIC_API_URL_PROD variable set: ${{ vars.NEXT_PUBLIC_API_URL_PROD != '' && 'yes' || 'no' }}"
+          echo "=============================================="
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -37,36 +51,21 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/app:production-latest
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/app:${{ github.sha }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/app:latest
           build-args: |
             NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL_PROD }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           platforms: linux/amd64
 
-      - name: Print image name
+      - name: Print build result
         if: success()
         run: |
-          echo "✅ Build successful for production!"
-          echo "Image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/app:production-latest"
+          echo "=============================================="
+          echo "✅ Production build successful"
+          echo "=============================================="
+          echo "Image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/app:latest"
+          echo "Pull: docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/app:latest"
+          echo "=============================================="
 
-#  deploy:
-#    runs-on: ubuntu-latest
-#    needs: build-and-push
-#    if: success()
-#    steps:
-#      - name: Deploy
-#        uses: appleboy/ssh-action@v1.0.0
-#        with:
-#          host: ${{ secrets.SERVER_HOST }}
-#          username: ${{ secrets.SERVER_USERNAME }}
-#          key: ${{ secrets.SSH_PRIVATE_KEY }}
-#          debug: true
-#          port: 22
-#          script: |
-#            cd /home/asdita/acre-lms
-#            git pull origin staging
-#            export GHCR_USERNAME="${{ secrets.GHCR_USERNAME }}"
-#            export GHCR_PAT="${{ secrets.GHCR_PAT }}"
-#            ./deployment.sh
+
