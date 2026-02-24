@@ -191,9 +191,7 @@ export default function CourseDetailPage() {
             <div className="flex items-center justify-between border-b border-border p-4">
               <div className="flex items-center gap-4">
                 <span className="font-semibold">Konten kursus</span>
-                <span className="text-sm text-muted-foreground">
-                  ✨ AI Assistant
-                </span>
+            
               </div>
             </div>
 
