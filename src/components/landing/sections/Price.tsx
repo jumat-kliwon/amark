@@ -84,7 +84,7 @@ export function Price() {
         {/* CTA Button */}
         <div className="space-y-2 mt-auto">
           <button
-            className="w-full rounded-xl py-4 font-bold text-base transition bg-brand-blue text-white hover:bg-brand-blue/90"
+            className="w-full rounded-xl py-4 font-bold text-base transition bg-primary text-primary-foreground hover:bg-primary/90"
             onClick={() => router.push(`/auth/register/${item.slug}`)}
             type="button"
             aria-label={isRecommended ? 'Daftar Bootcamp Sekarang' : `Beli paket ${item.name}`}

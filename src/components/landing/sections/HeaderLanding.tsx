@@ -241,13 +241,14 @@ export function HeaderLanding() {
           ) : (
             <div className="flex items-center gap-3">
               <Button
-                className="h-10 rounded-xl text-base bg-zinc-800 hover:bg-zinc-900"
+                variant="outline"
+                className="h-10 rounded-xl text-base border-border hover:bg-accent"
                 onClick={() => router.push('/auth/login')}
               >
                 Login
               </Button>
               <Button
-                className="h-10 rounded-xl bg-gradient-to-r from-red-600 to-red-900 hover:bg-red-700 text-white text-base"
+                className="h-10 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground text-base"
                 onClick={() => router.push('/#join-now')}
               >
                 Register

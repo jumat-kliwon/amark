@@ -31,7 +31,7 @@ export default function ForgotPass() {
             Enter your mail address
           </Label>
           <Input
-            className="mt-2 h-12 rounded-xl bg-zinc-900 border-zinc-800 text-white placeholder:text-zinc-500 focus:ring-red-600 focus:ring-2"
+            className="mt-2 h-12 rounded-xl bg-zinc-900 border-zinc-800 text-white placeholder:text-zinc-500 focus:ring-primary focus:ring-2"
             placeholder="mail@gmail.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -40,7 +40,7 @@ export default function ForgotPass() {
 
         {/* Button */}
         <Button
-          className="w-full h-12 rounded-xl bg-red-600 hover:bg-red-700 text-white text-base"
+          className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground text-base"
           onClick={onSubmit}
           disabled={isPending}
         >

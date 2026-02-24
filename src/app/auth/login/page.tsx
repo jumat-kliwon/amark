@@ -33,7 +33,7 @@ export default function LoginPage() {
         <div className="mb-5">
           <Label className="text-sm text-muted-foreground">Email</Label>
           <Input
-            className="mt-2 h-12 rounded-xl bg-zinc-900 border-zinc-800 text-white focus:ring-red-600 focus:ring-2"
+            className="mt-2 h-12 rounded-xl bg-zinc-900 border-zinc-800 text-white focus:ring-primary focus:ring-2"
             placeholder="Enter your mail"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -46,7 +46,7 @@ export default function LoginPage() {
           <div className="relative mt-2">
             <Input
               type={showPassword ? 'text' : 'password'}
-              className="h-12 rounded-xl bg-zinc-900 border-zinc-800 pr-12 text-white focus:ring-red-600 focus:ring-2"
+              className="h-12 rounded-xl bg-zinc-900 border-zinc-800 pr-12 text-white focus:ring-primary focus:ring-2"
               placeholder="••••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -67,7 +67,7 @@ export default function LoginPage() {
             id="remember"
             checked={remember}
             onCheckedChange={(v) => setRemember(Boolean(v))}
-            className="border-red-600 data-[state=checked]:bg-red-600 data-[state=checked]:border-red-600 data-[state=checked]:text-white"
+            className="border-primary data-[state=checked]:bg-primary data-[state=checked]:border-primary data-[state=checked]:text-primary-foreground"
           />
           <Label htmlFor="remember" className="text-sm">
             Remember Me
@@ -76,7 +76,7 @@ export default function LoginPage() {
 
         {/* Button */}
         <Button
-          className="w-full h-12 rounded-xl bg-red-600 hover:bg-red-700 text-white text-base"
+          className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground text-base"
           onClick={onSubmit}
           disabled={isPending}
         >

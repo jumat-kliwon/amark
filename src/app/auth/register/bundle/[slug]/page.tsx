@@ -308,12 +308,12 @@ function RegisterBundleContent() {
                     <p className="text-lg line-through text-zinc-500">
                       Rp{formatCurrency(Number(activeBundle.price))}
                     </p>
-                    <p className="text-4xl font-bold text-red-500">
+                    <p className="text-4xl font-bold text-primary">
                       Rp{formatCurrency(Number(couponResult.data.final_price))}
                     </p>
                   </>
                 ) : (
-                  <p className="text-4xl font-bold text-red-500">
+                  <p className="text-4xl font-bold text-primary">
                     Rp{formatCurrency(Number(activeBundle.price))}
                   </p>
                 )}
@@ -599,7 +599,7 @@ function RegisterBundleContent() {
                               key={`${opt.courier_name}-${opt.courier_service_name}`}
                               className={`flex items-center space-x-3 rounded-lg border p-4 cursor-pointer ${
                                 isSelected
-                                  ? 'border-red-600 bg-red-950/30'
+                                  ? 'border-primary bg-primary/10'
                                   : 'border-zinc-800 hover:bg-zinc-800/50'
                               }`}
                             >
@@ -618,7 +618,7 @@ function RegisterBundleContent() {
                                 </span>
                                 {(opt.price != null ||
                                   opt.shipping_fee != null) && (
-                                  <span className="text-red-500 font-semibold shrink-0">
+                                  <span className="text-primary font-semibold shrink-0">
                                     {formatPrice(
                                       String(
                                         opt.price ?? opt.shipping_fee ?? 0,
@@ -646,7 +646,7 @@ function RegisterBundleContent() {
                 id="agree-bundle"
                 checked={agree}
                 onCheckedChange={(v) => setAgree(Boolean(v))}
-                className="border-red-600 data-[state=checked]:bg-red-600 data-[state=checked]:border-red-600"
+                className="border-primary data-[state=checked]:bg-primary data-[state=checked]:border-primary data-[state=checked]:text-primary-foreground"
               />
               <Label htmlFor="agree-bundle" className="leading-relaxed">
                 Dengan mendaftar, saya menerima terms & privacy policy
@@ -655,7 +655,7 @@ function RegisterBundleContent() {
 
             <Button
               disabled={!agree || isPending || !isShippingComplete}
-              className="w-full h-12 rounded-xl bg-red-600 hover:bg-red-700 text-white text-base"
+              className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground text-base"
               onClick={onSubmit}
             >
               DAFTAR BUNDLE
@@ -683,7 +683,7 @@ function RegisterBundleContent() {
                 <p className="text-xs text-zinc-400 mb-1">
                   Harga Setelah Kupon
                 </p>
-                <p className="text-3xl font-bold text-red-500">
+                <p className="text-3xl font-bold text-primary">
                   Rp{formatCurrency(Number(couponResult.data.final_price))}
                 </p>
               </>
@@ -692,7 +692,7 @@ function RegisterBundleContent() {
                 <p className="text-xs text-zinc-400 mb-1">
                   Harga Setelah Diskon
                 </p>
-                <p className="text-3xl font-bold text-red-500">
+                <p className="text-3xl font-bold text-primary">
                   Rp{formatCurrency(Number(activeBundle.price))}
                 </p>
               </>
@@ -703,7 +703,7 @@ function RegisterBundleContent() {
         <p className="text-center my-5">
           Sudah punya akun?{' '}
           <span
-            className="text-red-500 underline cursor-pointer"
+            className="text-primary underline cursor-pointer"
             onClick={() => router.push('/auth/login')}
           >
             Login

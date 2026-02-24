@@ -24,7 +24,7 @@ export default function ResetPasswordPage() {
           <div className="relative mt-2">
             <Input
               type={showPassword ? 'text' : 'password'}
-              className="h-12 rounded-xl bg-zinc-900 border-zinc-800 pr-12 text-white focus:ring-red-600 focus:ring-2"
+              className="h-12 rounded-xl bg-zinc-900 border-zinc-800 pr-12 text-white focus:ring-primary focus:ring-2"
               placeholder="••••••••••"
             />
             <button
@@ -45,7 +45,7 @@ export default function ResetPasswordPage() {
           <div className="relative mt-2">
             <Input
               type={showPasswordConfirm ? 'text' : 'password'}
-              className="h-12 rounded-xl bg-zinc-900 border-zinc-800 pr-12 text-white focus:ring-red-600 focus:ring-2"
+              className="h-12 rounded-xl bg-zinc-900 border-zinc-800 pr-12 text-white focus:ring-primary focus:ring-2"
               placeholder="••••••••••"
             />
             <button
@@ -60,7 +60,7 @@ export default function ResetPasswordPage() {
 
         {/* Button */}
         <Button
-          className="w-full h-12 rounded-xl bg-red-600 hover:bg-red-700 text-white text-base"
+          className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground text-base"
           onClick={() => router.push('/member/dashboard')}
         >
           SUBMIT

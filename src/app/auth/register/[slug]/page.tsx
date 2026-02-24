@@ -324,13 +324,13 @@ function RegisterContent() {
                       Rp
                       {formatCurrency(Number(activeProduct.price))}
                     </p>
-                    <p className="text-4xl font-bold text-red-500">
+                    <p className="text-4xl font-bold text-primary">
                       Rp
                       {formatCurrency(Number(couponResult.data.final_price))}
                     </p>
                   </>
                 ) : (
-                  <p className="text-4xl font-bold text-red-500">
+                  <p className="text-4xl font-bold text-primary">
                     Rp
                     {formatCurrency(Number(activeProduct.price))}
                   </p>
@@ -351,12 +351,12 @@ function RegisterContent() {
               <Label>Phone*</Label>
               <div className="flex gap-2">
                 <Input
-                  className="w-20 bg-zinc-900 h-12 border-zinc-800 focus:ring-red-600 focus:ring-2"
+                  className="w-20 bg-zinc-900 h-12 border-zinc-800 focus:ring-primary focus:ring-2"
                   value="+62"
                   disabled
                 />
                 <Input
-                  className="flex-1 bg-zinc-900 h-12 border-zinc-800 focus:ring-red-600 focus:ring-2"
+                  className="flex-1 bg-zinc-900 h-12 border-zinc-800 focus:ring-primary focus:ring-2"
                   placeholder="812-345-678"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
@@ -368,7 +368,7 @@ function RegisterContent() {
             <div className="space-y-2">
               <Label>Username*</Label>
               <Input
-                className="bg-zinc-900 h-12 border-zinc-800 focus:ring-red-600 focus:ring-2"
+                className="bg-zinc-900 h-12 border-zinc-800 focus:ring-primary focus:ring-2"
                 placeholder="Masukkan Username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
@@ -380,7 +380,7 @@ function RegisterContent() {
               <Label>Email*</Label>
               <Input
                 type="email"
-                className="bg-zinc-900 h-12 border-zinc-800 focus:ring-red-600 focus:ring-2"
+                className="bg-zinc-900 h-12 border-zinc-800 focus:ring-primary focus:ring-2"
                 placeholder="yourmail@gmail.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -393,7 +393,7 @@ function RegisterContent() {
               <div className="relative">
                 <Input
                   type={showPassword ? 'text' : 'password'}
-                  className="bg-zinc-900 h-12 border-zinc-800 pr-12 focus:ring-red-600 focus:ring-2"
+                  className="bg-zinc-900 h-12 border-zinc-800 pr-12 focus:ring-primary focus:ring-2"
                   placeholder="Masukan Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -414,7 +414,7 @@ function RegisterContent() {
               <div className="relative">
                 <Input
                   type={showConfirm ? 'text' : 'password'}
-                  className="bg-zinc-900 h-12 border-zinc-800 pr-12 focus:ring-red-600 focus:ring-2"
+                  className="bg-zinc-900 h-12 border-zinc-800 pr-12 focus:ring-primary focus:ring-2"
                   placeholder="Masukkan Password Kembali"
                   value={confirm}
                   onChange={(e) => setConfirm(e.target.value)}
@@ -433,7 +433,7 @@ function RegisterContent() {
             <div className="space-y-2">
               <Label>Masukkan Kode Promo (Jika Ada)</Label>
               <Input
-                className="bg-zinc-900 h-12 border-zinc-800 focus:ring-red-600 focus:ring-2"
+                className="bg-zinc-900 h-12 border-zinc-800 focus:ring-primary focus:ring-2"
                 placeholder="Masukkan Kode Promo"
                 value={voucher}
                 onChange={(e) => {
@@ -624,7 +624,7 @@ function RegisterContent() {
                               key={`${opt.courier_name}-${opt.courier_service_name}`}
                               className={`flex items-center space-x-3 rounded-lg border p-4 transition-colors cursor-pointer ${
                                 isSelected
-                                  ? 'border-red-600 bg-red-950/30'
+                                  ? 'border-primary bg-primary/10'
                                   : 'border-zinc-800 hover:bg-zinc-800/50'
                               }`}
                             >
@@ -643,7 +643,7 @@ function RegisterContent() {
                                 </span>
                                 {(opt.price != null ||
                                   opt.shipping_fee != null) && (
-                                  <span className="text-red-500 font-semibold shrink-0">
+                                  <span className="text-primary font-semibold shrink-0">
                                     {formatPrice(
                                       String(
                                         opt.price ?? opt.shipping_fee ?? 0,
@@ -672,11 +672,11 @@ function RegisterContent() {
                 id="agree"
                 checked={agree}
                 onCheckedChange={(v) => setAgree(Boolean(v))}
-                className="border-red-600 data-[state=checked]:bg-red-600 data-[state=checked]:border-red-600 data-[state=checked]:text-white"
+                className="border-primary data-[state=checked]:bg-primary data-[state=checked]:border-primary data-[state=checked]:text-primary-foreground"
               />
               <Label htmlFor="agree" className="leading-relaxed">
                 Dengan mendaftar, saya menerima{' '}
-                <span className="text-red-500 underline">
+                <span className="text-primary underline">
                   terms & privacy policy
                 </span>{' '}
                 di akademi creator
@@ -686,7 +686,7 @@ function RegisterContent() {
             {/* Button */}
             <Button
               disabled={!agree || isPending || !isShippingComplete}
-              className="w-full h-12 rounded-xl bg-red-600 hover:bg-red-700 text-white text-base"
+              className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground text-base"
               onClick={onSubmit}
             >
               REGISTER NOW
@@ -716,7 +716,7 @@ function RegisterContent() {
                 <p className="text-xs text-zinc-400 mb-1">
                   Harga Setelah Kupon
                 </p>
-                <p className="text-3xl font-bold text-red-500">
+                <p className="text-3xl font-bold text-primary">
                   Rp
                   {formatCurrency(Number(couponResult.data.final_price))}
                 </p>
@@ -726,7 +726,7 @@ function RegisterContent() {
                 <p className="text-xs text-zinc-400 mb-1">
                   Harga Setelah Diskon
                 </p>
-                <p className="text-3xl font-bold text-red-500">
+                <p className="text-3xl font-bold text-primary">
                   Rp
                   {formatCurrency(Number(activeProduct.price))}
                 </p>
@@ -738,7 +738,7 @@ function RegisterContent() {
         <p className="text-center my-5">
           Sudah punya akun?{' '}
           <span
-            className="text-red-500 underline cursor-pointer"
+            className="text-primary underline cursor-pointer"
             onClick={() => router.push('/auth/login')}
           >
             Login
