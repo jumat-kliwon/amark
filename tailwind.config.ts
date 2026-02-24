@@ -69,6 +69,9 @@ export default {
           DEFAULT: "hsl(var(--discord))",
           foreground: "hsl(var(--discord-foreground))",
         },
+        brand: {
+          blue: "hsl(var(--brand-blue))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
