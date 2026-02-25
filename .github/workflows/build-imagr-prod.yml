@@ -53,7 +53,7 @@ jobs:
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/app:latest
           build-args: |
-            NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL_PROD }}
+            NEXT_PUBLIC_API_URL=${{ vars.NEXT_PUBLIC_API_URL_PROD }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           platforms: linux/amd64
