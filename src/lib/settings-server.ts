@@ -1,6 +1,6 @@
 import { SettingsResponse } from '@/services/settings/type';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://lms.acrehub.lol/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://lms.akademimarketer.com/api';
 
 export async function getSettingsServer(): Promise<SettingsResponse | null> {
   try {

@@ -214,14 +214,14 @@ export default function CatalogCheckoutPage() {
   const requiresShipping = product.requires_shipping !== false;
   const productPrice = parseFloat(product.price);
   const shippingCost = selectedShipping
-    ? (selectedShipping.price ?? selectedShipping.shipping_fee ?? 0)
+    ? selectedShipping.price ?? selectedShipping.shipping_fee ?? 0
     : 0;
   const subTotal = productPrice + (requiresShipping ? shippingCost : 0);
 
   const productImage =
     product.thumbnail_url ||
     (product.thumbnail
-      ? `https://lms.acrehub.lol/storage/${product.thumbnail}`
+      ? `https://lms.akademimarketer.com/storage/${product.thumbnail}`
       : null);
 
   return (

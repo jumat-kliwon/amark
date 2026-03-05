@@ -74,7 +74,7 @@ export default function BundleDetailPage() {
   const imageSrc =
     bundleData.thumbnail_url ||
     (bundleData.thumbnail
-      ? `https://lms.acrehub.lol/storage/${bundleData.thumbnail}`
+      ? `https://lms.akademimarketer.com/storage/${bundleData.thumbnail}`
       : 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400"%3E%3Crect fill="%23222" width="400" height="400"/%3E%3Ctext fill="%23666" font-family="sans-serif" font-size="16" x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle"%3EBundle%3C/text%3E%3C/svg%3E');
 
   return (
@@ -113,7 +113,8 @@ export default function BundleDetailPage() {
           <div className="flex flex-col">
             {bundleData.bundle_type && (
               <Badge variant="outline" className="mb-3 w-fit text-xs">
-                {bundleTypeLabels[bundleData.bundle_type] ?? bundleData.bundle_type}
+                {bundleTypeLabels[bundleData.bundle_type] ??
+                  bundleData.bundle_type}
               </Badge>
             )}
 
@@ -138,11 +139,12 @@ export default function BundleDetailPage() {
               </p>
             )}
 
-            {bundleData.discount_percentage != null && bundleData.discount_percentage > 0 && (
-              <p className="mt-2 text-sm text-green-500 font-medium">
-                Hemat {bundleData.discount_percentage}%
-              </p>
-            )}
+            {bundleData.discount_percentage != null &&
+              bundleData.discount_percentage > 0 && (
+                <p className="mt-2 text-sm text-green-500 font-medium">
+                  Hemat {bundleData.discount_percentage}%
+                </p>
+              )}
 
             <div className="mt-auto pt-6">
               <Link href={`/auth/register/bundle/${bundleData.slug}`}>
@@ -191,7 +193,8 @@ export default function BundleDetailPage() {
                       <div className="mt-2 flex flex-wrap items-center gap-2">
                         {product.product_type && (
                           <Badge variant="secondary" className="text-xs">
-                            {productTypeLabels[product.product_type] ?? product.product_type}
+                            {productTypeLabels[product.product_type] ??
+                              product.product_type}
                           </Badge>
                         )}
                         {product.price && (

@@ -69,7 +69,7 @@ const CourseCard = ({
             <Image
               src={
                 thumbnail
-                  ? `https://lms.acrehub.lol/storage/${thumbnail}`
+                  ? `https://lms.akademimarketer.com/storage/${thumbnail}`
                   : '/images/course-placeholder.png'
               }
               alt={title}
@@ -152,7 +152,7 @@ const CourseCard = ({
                 <Image
                   src={
                     thumbnail
-                      ? `https://lms.acrehub.lol/storage/${thumbnail}`
+                      ? `https://lms.akademimarketer.com/storage/${thumbnail}`
                       : '/images/course-placeholder.png'
                   }
                   alt={title}

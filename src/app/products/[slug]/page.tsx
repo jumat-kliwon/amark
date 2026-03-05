@@ -70,7 +70,7 @@ export default function ProductDetailPage() {
   const imageSrc =
     product.thumbnail_url ||
     (product.thumbnail
-      ? `https://lms.acrehub.lol/storage/${product.thumbnail}`
+      ? `https://lms.akademimarketer.com/storage/${product.thumbnail}`
       : 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400"%3E%3Crect fill="%23222" width="400" height="400"/%3E%3Ctext fill="%23666" font-family="sans-serif" font-size="16" x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle"%3ENo Image%3C/text%3E%3C/svg%3E');
 
   const hasSpecs =
@@ -168,18 +168,27 @@ export default function ProductDetailPage() {
               <Tabs defaultValue="deskripsi" className="w-full">
                 <div className="border-b border-border px-6 pt-6">
                   <TabsList className="h-9 w-full sm:w-auto sm:min-w-[200px]">
-                    <TabsTrigger value="deskripsi" className="flex-1 sm:flex-initial">
+                    <TabsTrigger
+                      value="deskripsi"
+                      className="flex-1 sm:flex-initial"
+                    >
                       Deskripsi
                     </TabsTrigger>
                     {hasSpecs && (
-                      <TabsTrigger value="spesifikasi" className="flex-1 sm:flex-initial">
+                      <TabsTrigger
+                        value="spesifikasi"
+                        className="flex-1 sm:flex-initial"
+                      >
                         Spesifikasi
                       </TabsTrigger>
                     )}
                   </TabsList>
                 </div>
                 <div className="px-6 py-6">
-                  <TabsContent value="deskripsi" className="mt-0 focus-visible:outline-none focus-visible:ring-0">
+                  <TabsContent
+                    value="deskripsi"
+                    className="mt-0 focus-visible:outline-none focus-visible:ring-0"
+                  >
                     {product.description ? (
                       <div
                         className="prose prose-invert prose-sm max-w-none text-muted-foreground prose-p:leading-relaxed prose-p:mb-2"
@@ -194,30 +203,49 @@ export default function ProductDetailPage() {
                     )}
                   </TabsContent>
                   {hasSpecs && (
-                    <TabsContent value="spesifikasi" className="mt-0 focus-visible:outline-none focus-visible:ring-0">
+                    <TabsContent
+                      value="spesifikasi"
+                      className="mt-0 focus-visible:outline-none focus-visible:ring-0"
+                    >
                       <dl className="grid gap-4 sm:grid-cols-2">
                         {product.weight != null && (
                           <div className="rounded-lg border border-border p-4">
-                            <dt className="text-sm text-muted-foreground">Berat</dt>
-                            <dd className="mt-1 font-medium">{product.weight} kg</dd>
+                            <dt className="text-sm text-muted-foreground">
+                              Berat
+                            </dt>
+                            <dd className="mt-1 font-medium">
+                              {product.weight} kg
+                            </dd>
                           </div>
                         )}
                         {product.length != null && (
                           <div className="rounded-lg border border-border p-4">
-                            <dt className="text-sm text-muted-foreground">Panjang</dt>
-                            <dd className="mt-1 font-medium">{product.length} cm</dd>
+                            <dt className="text-sm text-muted-foreground">
+                              Panjang
+                            </dt>
+                            <dd className="mt-1 font-medium">
+                              {product.length} cm
+                            </dd>
                           </div>
                         )}
                         {product.width != null && (
                           <div className="rounded-lg border border-border p-4">
-                            <dt className="text-sm text-muted-foreground">Lebar</dt>
-                            <dd className="mt-1 font-medium">{product.width} cm</dd>
+                            <dt className="text-sm text-muted-foreground">
+                              Lebar
+                            </dt>
+                            <dd className="mt-1 font-medium">
+                              {product.width} cm
+                            </dd>
                           </div>
                         )}
                         {product.height != null && (
                           <div className="rounded-lg border border-border p-4">
-                            <dt className="text-sm text-muted-foreground">Tinggi</dt>
-                            <dd className="mt-1 font-medium">{product.height} cm</dd>
+                            <dt className="text-sm text-muted-foreground">
+                              Tinggi
+                            </dt>
+                            <dd className="mt-1 font-medium">
+                              {product.height} cm
+                            </dd>
                           </div>
                         )}
                       </dl>
