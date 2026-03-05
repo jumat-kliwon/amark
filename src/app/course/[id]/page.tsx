@@ -52,10 +52,11 @@ export default function CourseOverviewPage() {
   }
 
   // Calculate total lessons from sections
-  const totalLessons = course.detailCourse?.data.sections?.reduce(
-    (acc, section) => acc + (section.lessons?.length || 0),
-    0
-  ) || 0;
+  const totalLessons =
+    course.detailCourse?.data.sections?.reduce(
+      (acc, section) => acc + (section.lessons?.length || 0),
+      0,
+    ) || 0;
   const completedLessons = course.moduleList?.progress.completed_lessons;
   const firstUncompletedLesson = course.moduleList?.progress.completed_lessons;
 
@@ -132,7 +133,9 @@ export default function CourseOverviewPage() {
                 <div className="flex items-center gap-2 rounded-lg bg-card/50 backdrop-blur-sm px-4 py-3 border border-border/50">
                   <Star className="h-5 w-5 fill-yellow-500 text-yellow-500" />
                   <div>
-                    <span className="font-bold">{course.detailCourse?.data.score || 0}</span>
+                    <span className="font-bold">
+                      {course.detailCourse?.data.score || 0}
+                    </span>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 rounded-lg bg-card/50 backdrop-blur-sm px-4 py-3 border border-border/50">
@@ -144,7 +147,9 @@ export default function CourseOverviewPage() {
                 <div className="flex items-center gap-2 rounded-lg bg-card/50 backdrop-blur-sm px-4 py-3 border border-border/50">
                   <Award className="h-5 w-5 text-primary" />
                   <span className="text-sm">
-                    {course.detailCourse?.data.is_featured ? 'Featured' : course.detailCourse?.data.category.name || '-'}
+                    {course.detailCourse?.data.is_featured
+                      ? 'Featured'
+                      : course.detailCourse?.data.category.name || '-'}
                   </span>
                 </div>
                 <div className="flex items-center gap-2 rounded-lg bg-card/50 backdrop-blur-sm px-4 py-3 border border-border/50">

@@ -4,7 +4,7 @@ import axios from 'axios';
 import { toast } from 'sonner';
 
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'https://lms.acrehub.lol/api',
+  baseURL: process.env.NEXT_PUBLIC_API_URL || 'https://lms.akademimarketer.com/api',
   timeout: 15000,
   headers: {
     'Content-Type': 'application/json',

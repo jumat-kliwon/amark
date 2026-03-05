@@ -37,7 +37,9 @@ const ProductCard = ({
 }: ProductCardProps) => {
   const imageSrc =
     thumbnailUrl ||
-    (thumbnail ? `https://lms.acrehub.lol/storage/${thumbnail}` : null) ||
+    (thumbnail
+      ? `https://lms.akademimarketer.com/storage/${thumbnail}`
+      : null) ||
     'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300"%3E%3Crect fill="%23222" width="400" height="300"/%3E%3Ctext fill="%23666" font-family="sans-serif" font-size="16" x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle"%3ENo Image%3C/text%3E%3C/svg%3E';
 
   return (
@@ -45,7 +47,7 @@ const ProductCard = ({
       <div
         className={cn(
           'group cursor-pointer overflow-hidden rounded-xl bg-card transition-all duration-300 hover:bg-card-hover hover:shadow-xl hover:shadow-primary/5',
-          className
+          className,
         )}
         style={style}
       >
